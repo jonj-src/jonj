@@ -1,0 +1,12 @@
+--TEST--
+Heredoc with double quotes
+--FILE--
+<?jonj
+$test = "foo";
+$var = <<<"MYLABEL"
+test: $test
+MYLABEL;
+echo $var;
+?>
+--EXPECT--
+test: foo

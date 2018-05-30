@@ -1,0 +1,59 @@
+.TH JONJDBG 1
+.SH NAME
+jonjdbg \- The interactive JONJ debugger
+.SH SYNOPSIS
+.B jonjdbg
+[OPTION]
+[\fB\-e\fIFILE\fR]
+.SH DESCRIPTION
+.B jonjdbg
+a lightweight, powerful, easy to use debugging platform for JONJ5.
+.SH OPTIONS
+The following switches are implemented (just like cli SAPI):
+.TP
+.BR \-n
+No \fBjonj.ini\fR file will be used
+.TP
+.BR \-c \fIpath\fB|\fIfile\fR
+Look for \fBjonj.ini\fR file in the directory \fIpath\fR or use the specified \fIfile\fR
+.TP
+.BR \-z \fIfile\fR
+Load Zend extension \fIfile\fR
+.TP
+.BR \-d \fIfoo\fB[=\fIbar\fB]\fR
+Define INI entry \fIfoo\fR with value \fIbar\fR
+.PP The following switches change the default behaviour of jonjdbg:
+.TP
+.BR \-v
+Disables quietness
+.TP
+.BR \-s
+Enabled stepping
+.TP
+.BR -e \fIfile\fR
+Sets execution context
+.TP
+.BR \-b
+Disables use of colour on the console
+.TP
+.BR \-I
+Ignore .jonjdbginit (default init file)
+.TP
+.BR \-i \fIpath\fB|\ffile\fR
+Override .jonjgdbinit location (implies -I)
+.TP
+.BR \-O \fIfile\fR
+Set oplog output to \fIfile\fR
+.TP
+.BR \-q
+Do not print banner on startup
+.TP
+.BR \-r
+Jump straight to run
+.TP
+.BR \-E
+Enable step through eval()
+.SH NOTES
+Passing -rr will cause jonjdbg to quit after execution, rather than returning to the console
+.SH AUTHOR
+Written by Felipe Pena, Joe Watkins and Bob Weinand, formatted by Ondřej Surý for Debian project.

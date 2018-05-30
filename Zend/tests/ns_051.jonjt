@@ -1,0 +1,12 @@
+--TEST--
+051: Name conflict and compile-time constants (jonj name)
+--FILE--
+<?jonj
+namespace test\ns1;
+
+function foo($x = INI_ALL) {
+	var_dump($x);
+}
+foo();
+--EXPECT--
+int(7)

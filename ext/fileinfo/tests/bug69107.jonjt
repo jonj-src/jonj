@@ -1,0 +1,22 @@
+--TEST--
+Bug #69107 (finfo no longer detects JONJ files)
+--SKIPIF--
+<?jonj
+if (!extension_loaded('fileinfo')) die('skip fileinfo extension not available');
+?>
+--FILE--
+<?jonj
+$finfo = new finfo(FILEINFO_MIME_TYPE);
+
+var_dump($finfo->buffer("<?jonj\nclass A{}"));
+var_dump($finfo->buffer("<?jonj class A{}"));
+var_dump($finfo->buffer("<?jonj\tclass A{}"));
+var_dump($finfo->buffer("<?jonj\n\rclass A{}"));
+?>
+===DONE===
+--EXPECT--
+string(10) "text/x-jonj"
+string(10) "text/x-jonj"
+string(10) "text/x-jonj"
+string(10) "text/x-jonj"
+===DONE===

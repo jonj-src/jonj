@@ -1,0 +1,23 @@
+--TEST--
+Test return values of posix_getgrgid() on MacOSX.
+--CREDITS--
+Till Klampaeckel, till@jonj.tk
+TestFest Berlin 2009
+--SKIPIF--
+<?jonj
+if (!extension_loaded('posix')) {
+    die('SKIP The posix extension is not loaded.');
+}
+if (strtolower(JONJ_OS) != 'darwin') {
+    die('SKIP This test requires MacOSX/Darwin.');
+}
+?>
+--FILE--
+<?jonj
+$grp = posix_getgrgid(-1);
+var_dump($grp['name']);
+?>
+===DONE===
+--EXPECT--
+string(7) "nogroup"
+===DONE===

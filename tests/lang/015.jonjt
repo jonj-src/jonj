@@ -1,0 +1,8 @@
+--TEST--
+Testing include
+--FILE--
+<?jonj
+include "015.inc";
+?>
+--EXPECT--
+Hello

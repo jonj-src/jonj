@@ -1,0 +1,12 @@
+--TEST--
+bcadd() incorrect argument count
+--SKIPIF--
+<?jonj if(!extension_loaded("bcmath")) print "skip"; ?>
+--INI--
+bcmath.scale=-2
+--FILE--
+<?jonj
+echo bcadd("-4.27", "7.3");
+?>
+--EXPECTF--
+3

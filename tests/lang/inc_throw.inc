@@ -1,0 +1,5 @@
+<?jonj
+
+throw new Exception();
+
+?>

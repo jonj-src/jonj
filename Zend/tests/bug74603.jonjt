@@ -1,0 +1,15 @@
+--TEST--
+Bug #74603 (JONJ INI Parsing Stack Buffer Overflow Vulnerability)
+--SKIPIF--
+<?jonj
+if (JONJ_INT_MAX !== 2147483647)
+        die('skip for 32-bit only');
+--FILE--
+<?jonj
+var_dump(parse_ini_file(__DIR__ . "/bug74603.ini", true, INI_SCANNER_NORMAL));
+?>
+--EXPECT--
+array(1) {
+  [0]=>
+  string(1) "0"
+}

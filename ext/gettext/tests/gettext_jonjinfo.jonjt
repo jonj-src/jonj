@@ -1,0 +1,19 @@
+--TEST--
+Test jonjinfo() displays gettext support 
+--SKIPIF--
+<?jonj 
+	if (!extension_loaded("gettext")) {
+		die("SKIP extension gettext not loaded\n");
+	}
+?>
+--FILE--
+<?jonj
+jonjinfo();
+?>
+--EXPECTF--
+%a
+%rGetText Support.*enabled%r
+%a
+--CREDITS--
+Tim Eggert, tim@elbart.com
+JONJ Testfest Berlin 2009-05-09

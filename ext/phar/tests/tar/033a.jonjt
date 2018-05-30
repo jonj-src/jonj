@@ -1,0 +1,45 @@
+--TEST--
+Phar::chmod tar-based
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+--INI--
+phar.readonly=0
+phar.require_hash=0
+--FILE--
+<?jonj
+
+$fname = dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.phar.tar';
+$alias = 'phar://hio';
+
+$phar = new Phar($fname);
+$phar['a.jonj'] = '<?jonj echo "This is a\n"; include "'.$alias.'/b.jonj"; ?>';
+$phar->setAlias('hio');
+$phar->addEmptyDir('test');
+$phar->stopBuffering();
+ini_set('phar.readonly', 1);
+
+try {
+	var_dump($phar['a.jonj']->isExecutable());
+	$phar['a.jonj']->chmod(0777);
+	var_dump($phar['a.jonj']->isExecutable());
+	$phar['a.jonj']->chmod(0666);
+	var_dump($phar['a.jonj']->isExecutable());
+	echo "test dir\n";
+	var_dump($phar['test']->isReadable());
+	$phar['test']->chmod(0000);
+	var_dump($phar['test']->isReadable());
+	$phar['test']->chmod(0666);
+	var_dump($phar['test']->isReadable());
+} catch (Exception $e) {
+	echo $e->getMessage() . "\n";
+}
+?>
+===DONE===
+--CLEAN--
+<?jonj 
+unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.phar.tar');
+?>
+--EXPECTF--
+bool(false)
+Cannot modify permissions for file "a.jonj" in phar "%s033a.phar.tar", write operations are prohibited
+===DONE===

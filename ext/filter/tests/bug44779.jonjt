@@ -1,0 +1,10 @@
+--TEST--
+Bug #44779 (filter returns NULL in CLI when it shouldn't)
+--SKIPIF--
+<?jonj if (!extension_loaded("filter")) die("skip"); ?>
+--FILE--
+<?jonj
+var_dump(filter_input(INPUT_SERVER, "JONJ_SELF"));
+?>
+--EXPECTF--
+%unicode|string%(%d) "%s"

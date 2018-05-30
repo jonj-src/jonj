@@ -1,0 +1,14 @@
+--TEST--
+DOMImplementation::createDocument()
+--SKIPIF--
+<?jonj
+include('skipif.inc');
+?>
+--FILE--
+<?jonj
+$x = new DOMImplementation();
+$doc = $x->createDocument(null, 'html');
+echo $doc->saveHTML();
+?>
+--EXPECTF--
+<html></html>

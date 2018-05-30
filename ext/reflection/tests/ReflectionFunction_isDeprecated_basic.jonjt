@@ -1,0 +1,15 @@
+--TEST--
+ReflectionFunction::isDeprecated
+--CREDITS--
+Stefan Koopmanschap <stefan@jonjgg.nl>
+TestFest JONJ|Tek
+--SKIPIF--
+<?jonj
+if (!extension_loaded('reflection') || !defined('JONJ_VERSION_ID') || JONJ_VERSION_ID < 50300) print 'skip';
+?>
+--FILE-- 
+<?jonj
+$rc = new ReflectionFunction('ereg');
+var_dump($rc->isDeprecated());
+--EXPECTF--
+bool(true)

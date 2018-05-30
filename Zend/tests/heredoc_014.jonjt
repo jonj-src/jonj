@@ -1,0 +1,12 @@
+--TEST--
+Heredoc with double quotes syntax but missing second quote
+--FILE--
+<?jonj
+$test = "foo";
+$var = <<<"MYLABEL
+test: $test
+MYLABEL;
+echo $var;
+?>
+--EXPECTF--
+Parse error: %s in %sheredoc_014.jonj on line %d

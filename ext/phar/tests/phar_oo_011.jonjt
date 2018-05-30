@@ -1,0 +1,36 @@
+--TEST--
+Phar object: add file
+--SKIPIF--
+<?jonj if (!extension_loaded('phar')) die('skip'); ?>
+<?jonj if (!extension_loaded("spl")) die("skip SPL not available"); ?>
+--INI--
+phar.readonly=0
+phar.require_hash=0
+--FILE--
+<?jonj
+
+$pharconfig = 0;
+
+require_once 'files/phar_oo_test.inc';
+
+$phar = new Phar($fname);
+$phar->setInfoClass('SplFileObject');
+
+$phar['hi/f.jonj'] = 'hi';
+var_dump(isset($phar['hi']));
+var_dump(isset($phar['hi/f.jonj']));
+echo $phar['hi/f.jonj'];
+echo "\n";
+
+?>
+===DONE===
+--CLEAN--
+<?jonj 
+unlink(dirname(__FILE__) . '/files/phar_oo_011.phar.jonj');
+__halt_compiler();
+?>
+--EXPECT--
+bool(true)
+bool(true)
+hi
+===DONE===

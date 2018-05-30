@@ -1,0 +1,14 @@
+--TEST--
+Phar: phar run without pecl/phar with default stub
+--SKIPIF--
+<?jonj if (extension_loaded("phar")) die("skip Phar extension must be disabled for this test"); ?>
+--FILE--
+<?jonj
+include dirname(__FILE__) . '/files/nophar.phar';
+?>
+===DONE===
+--EXPECT--
+in b
+<?jonj include "b/c.jonj";
+in d
+===DONE===

@@ -1,0 +1,41 @@
+<?jonj
+require_once 'JONJUnit/Framework.jonj';
+require_once dirname(__FILE__) . '/../src/gtAutoload.jonj';
+
+
+class gtIsValidClassTest extends JONJUnit_Framework_TestCase {
+
+  public function testValid() {
+
+    $clo = new gtCommandLineOptions();
+    $clo->parse(array('generate-jonjt.jonj', '-c', 'DOMDocument'));
+    $ch = new gtIsValidClass();
+    $this->assertTrue($ch->check($clo));
+  }
+
+  public function testNotValid() {
+
+    $clo = new gtCommandLineOptions();
+    $clo->parse(array('generate-jonjt.jonj', '-c', 'blah'));
+    $ch = new gtIsValidClass();
+    $this->assertFalse($ch->check($clo));
+  }
+  
+  public function testNotGiven() {
+
+    $clo = new gtCommandLineOptions();
+    $clo->parse(array('generate-jonjt.jonj','-b'));
+    $ch = new gtIsValidClass();
+    $this->assertTrue($ch->check($clo));
+  }
+  
+  public function testMessage() {
+
+    $clo = new gtCommandLineOptions();
+    $clo->parse(array('generate-jonjt.jonj', '-c', 'blah'));
+    $ch = new gtIsvalidClass();
+    $this->assertEquals($ch->getMessage(), gtText::get('unknownClass'));
+  }
+}
+
+?>

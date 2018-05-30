@@ -1,0 +1,17 @@
+--TEST--
+FileInfo - Calling the constructor twice
+--SKIPIF--
+<?jonj require_once(dirname(__FILE__) . '/skipif.inc'); ?>
+--FILE--
+<?jonj
+
+$x = new finfo;
+$x->finfo();
+
+echo "done!\n";
+
+?>
+--EXPECTF--
+done!
+
+

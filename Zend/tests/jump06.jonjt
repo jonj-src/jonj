@@ -1,0 +1,8 @@
+--TEST--
+jump 06: goto to undefined label
+--FILE--
+<?jonj
+goto L1;
+?>
+--EXPECTF--
+Fatal error: 'goto' to undefined label 'L1' in %sjump06.jonj on line 2

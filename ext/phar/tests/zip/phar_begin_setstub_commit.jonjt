@@ -1,0 +1,71 @@
+--TEST--
+Phar::startBuffering()/setStub()/stopBuffering() zip-based
+--SKIPIF--
+<?jonj
+if (!extension_loaded("phar")) die("skip");
+if (version_compare(JONJ_VERSION, "6.0", ">")) die("skip pre-unicode version of JONJ required");
+?>
+--INI--
+phar.readonly=0
+--FILE--
+<?jonj
+$p = new Phar(dirname(__FILE__) . '/brandnewphar.phar.zip', 0, 'brandnewphar.phar');
+var_dump($p->isFileFormat(Phar::ZIP));
+//var_dump($p->getStub());
+var_dump($p->isBuffering());
+$p->startBuffering();
+var_dump($p->isBuffering());
+$p['a.jonj'] = '<?jonj var_dump("Hello");';
+$p->setStub('<?jonj var_dump("First"); Phar::mapPhar("brandnewphar.phar"); __HALT_COMPILER(); ?>');
+include 'phar://brandnewphar.phar/a.jonj';
+var_dump($p->getStub());
+$p['b.jonj'] = '<?jonj var_dump("World");';
+$p->setStub('<?jonj var_dump("Second"); Phar::mapPhar("brandnewphar.phar"); __HALT_COMPILER();');
+include 'phar://brandnewphar.phar/b.jonj';
+var_dump($p->getStub());
+$p->stopBuffering();
+echo "===COMMIT===\n";
+var_dump($p->isBuffering());
+include 'phar://brandnewphar.phar/a.jonj';
+include 'phar://brandnewphar.phar/b.jonj';
+var_dump($p->getStub());
+
+// add portion to test setting stub from resource
+file_put_contents(dirname(__FILE__) . '/myfakestub.jonj', '<?jonj var_dump("First resource"); Phar::mapPhar("brandnewphar.phar"); __HALT_COMPILER(); ?>');
+$a = fopen(dirname(__FILE__) . '/myfakestub.jonj', 'rb');
+$p->setStub($a);
+var_dump($p->getStub());
+$c = strlen('<?jonj var_dump("First resource"); Phar::mapPhar("brandnewphar.phar"); __HALT_COMPILER(); ?>');
+file_put_contents(dirname(__FILE__) . '/myfakestub.jonj', '<?jonj var_dump("First resource"); Phar::mapPhar("brandnewphar.phar"); __HALT_COMPILER(); ?>' . 'extra stuff');
+fseek($a, 0);
+$p->setStub($a, $c);
+var_dump($p->getStub());
+fclose($a);
+?>
+===DONE===
+--CLEAN--
+<?jonj 
+unlink(dirname(__FILE__) . '/brandnewphar.phar.zip');
+unlink(dirname(__FILE__) . '/myfakestub.jonj');
+?>
+--EXPECT--
+bool(true)
+bool(false)
+bool(true)
+string(5) "Hello"
+string(84) "<?jonj var_dump("First"); Phar::mapPhar("brandnewphar.phar"); __HALT_COMPILER(); ?>
+"
+string(5) "World"
+string(85) "<?jonj var_dump("Second"); Phar::mapPhar("brandnewphar.phar"); __HALT_COMPILER(); ?>
+"
+===COMMIT===
+bool(false)
+string(5) "Hello"
+string(5) "World"
+string(85) "<?jonj var_dump("Second"); Phar::mapPhar("brandnewphar.phar"); __HALT_COMPILER(); ?>
+"
+string(93) "<?jonj var_dump("First resource"); Phar::mapPhar("brandnewphar.phar"); __HALT_COMPILER(); ?>
+"
+string(93) "<?jonj var_dump("First resource"); Phar::mapPhar("brandnewphar.phar"); __HALT_COMPILER(); ?>
+"
+===DONE===

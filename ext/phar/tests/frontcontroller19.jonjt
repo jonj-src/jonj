@@ -1,0 +1,16 @@
+--TEST--
+Phar front controller $_SERVER munging failure 2
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+--ENV--
+SCRIPT_NAME=/frontcontroller19.jonj
+REQUEST_URI=/frontcontroller19.jonj/
+PATH_INFO=/
+--FILE_EXTERNAL--
+files/frontcontroller10.phar
+--EXPECTF--
+Fatal error: Uncaught exception 'PharException' with message 'Too many values passed to Phar::mungServer(), expecting an array of any of these strings: JONJ_SELF, REQUEST_URI, SCRIPT_FILENAME, SCRIPT_NAME' in %sfrontcontroller19.jonj:2
+Stack trace:
+#0 %sfrontcontroller19.jonj(2): Phar::mungServer(Array)
+#1 {main}
+  thrown in %sfrontcontroller19.jonj on line 2

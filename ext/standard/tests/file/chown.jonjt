@@ -1,0 +1,15 @@
+--TEST--
+chown() with NULL as user name
+--SKIPIF--
+<?jonj
+if(substr(JONJ_OS, 0, 3) == "WIN")
+  die("skip, not supported on Windows");
+?>
+--FILE--
+<?jonj
+chown("sjhgfskhagkfdgskjfhgskfsdgfkdsajf", NULL);
+echo "ALIVE\n";
+?>
+--EXPECTF--
+Warning: chown(): parameter 2 should be string or integer, null given in %schown.jonj on line %d
+ALIVE

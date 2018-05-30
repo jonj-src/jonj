@@ -1,0 +1,15 @@
+--TEST--
+iconv() test 3
+--SKIPIF--
+<?jonj extension_loaded('iconv') or die('skip iconv extension is not available'); ?>
+--FILE--
+<?jonj
+for ($i = 0; $i < 3; ++$i) { 
+	if (@iconv('blah', 'blah', 'blah') != '') {
+		die("failed\n");
+	}
+}
+echo "success\n";
+?>
+--EXPECT--
+success

@@ -1,0 +1,15 @@
+--TEST--
+enchant_broker_init() function
+--SKIPIF--
+<?jonj 
+if(!extension_loaded('enchant')) die('skip, enchant not loader');
+
+ ?>
+--FILE--
+<?jonj
+$broker = enchant_broker_init();
+echo is_resource($broker) ? "OK" : "Failure";
+echo "\n";
+?>
+--EXPECT--
+OK

@@ -1,0 +1,20 @@
+--TEST--
+using invalid combinations of cmdline options
+--SKIPIF--
+<?jonj include "skipif.inc"; ?>
+--FILE--
+<?jonj
+
+$jonj = getenv('TEST_JONJ_EXECUTABLE');
+
+var_dump(`$jonj -n -a -r "echo hello;"`);
+var_dump(`$jonj -n -r "echo hello;" -a`);
+
+echo "Done\n";
+?>
+--EXPECTF--	
+string(57) "Either execute direct code, process stdin or use a file.
+"
+string(57) "Either execute direct code, process stdin or use a file.
+"
+Done

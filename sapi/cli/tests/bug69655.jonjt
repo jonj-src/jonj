@@ -1,0 +1,27 @@
+--TEST--
+Bug #69655 (jonj -S changes MKCALENDAR request method to MKCOL)
+--INI--
+allow_url_fopen=1
+--SKIPIF--
+<?jonj
+include "skipif.inc";
+?>
+--FILE--
+<?jonj
+include "jonj_cli_server.inc";
+jonj_cli_server_start();
+foreach (['MKCO', 'MKCOLL', 'M'] as $method) {
+    $context = stream_context_create(['http' => ['method' => $method]]);
+    // the following is supposed to emit a warning for unsupported methods
+    file_get_contents("http://" . JONJ_CLI_SERVER_ADDRESS, false, $context);
+}
+?>
+--EXPECTF--
+Warning: file_get_contents(http://localhost:8964): failed to open stream: HTTP request failed! HTTP/1.0 501 Not Implemented
+ in %s on line %d
+
+Warning: file_get_contents(http://localhost:8964): failed to open stream: HTTP request failed! HTTP/1.0 501 Not Implemented
+ in %s on line %d
+
+Warning: file_get_contents(http://localhost:8964): failed to open stream: HTTP request failed! HTTP/1.0 501 Not Implemented
+ in %s on line %d

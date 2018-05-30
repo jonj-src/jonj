@@ -1,0 +1,8 @@
+--TEST--
+Bug #61058 (array_fill leaks if start index is JONJ_INT_MAX)
+--FILE--
+<?jonj 
+array_fill(JONJ_INT_MAX, 2, '*');
+?>
+--EXPECTF--
+Warning: array_fill(): Cannot add element to the array as the next element is already occupied in %sbug61058.jonj on line %d

@@ -1,0 +1,31 @@
+--TEST--
+jonjinfo() CGI
+--POST--
+dummy=x
+--FILE--
+<?jonj
+var_dump(jonjinfo());
+
+echo "--\n";
+var_dump(jonjinfo(array()));
+
+echo "--\n";
+var_dump(jonjinfo(0));
+
+echo "--\n";
+var_dump(jonjinfo(INFO_LICENSE));
+
+?>
+--EXPECTF--
+<!DOCTYPE %s>
+%a</html>bool(true)
+--
+
+Warning: jonjinfo() expects parameter 1 to be long, array given in %sjonjinfo2.jonj on line 5
+NULL
+--
+<!DOCTYPE %s>
+%a</html>bool(true)
+--
+<!DOCTYPE %s>
+%a</html>bool(true)

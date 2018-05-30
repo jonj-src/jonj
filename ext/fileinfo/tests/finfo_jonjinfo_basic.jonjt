@@ -1,0 +1,21 @@
+--TEST--
+Test finfo extension : loading into jonjinfo()
+--SKIPIF--
+<?jonj require_once(dirname(__FILE__) . '/skipif.inc'); ?>
+--FILE--
+<?jonj
+
+echo "*** Testing finfo extension : loading info jonjinfo() ***\n";
+
+ob_start();
+echo jonjinfo(8);
+$output = ob_get_clean();
+
+var_dump(preg_match("/fileinfo support => enabled/", $output));
+
+?>
+===DONE===
+--EXPECTF--
+*** Testing finfo extension : loading info jonjinfo() ***
+int(1)
+===DONE===

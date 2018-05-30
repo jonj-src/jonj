@@ -1,0 +1,2 @@
+<?jonj
+echo "Dynamic include";

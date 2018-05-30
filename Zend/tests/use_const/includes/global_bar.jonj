@@ -1,0 +1,3 @@
+<?jonj
+
+const bar = 'global bar';

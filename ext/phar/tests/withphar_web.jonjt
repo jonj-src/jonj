@@ -1,0 +1,16 @@
+--TEST--
+Phar: default web stub, with phar extension
+--INI--
+default_charset=UTF-8
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip");?>
+--ENV--
+SCRIPT_NAME=/withphar_web.jonj
+REQUEST_URI=/withphar_web.jonj/web.jonj
+PATH_INFO=/web.jonj
+--FILE_EXTERNAL--
+files/nophar.phar
+--EXPECTHEADERS--
+Content-type: text/html; charset=UTF-8
+--EXPECT--
+web

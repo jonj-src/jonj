@@ -1,0 +1,20 @@
+--TEST--
+Phar front controller mime type unknown int tar-based
+--INI--
+default_charset=UTF-8
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+--ENV--
+SCRIPT_NAME=/frontcontroller12.phar.jonj
+REQUEST_URI=/frontcontroller12.phar.jonj/a.jonj
+PATH_INFO=/a.jonj
+--FILE_EXTERNAL--
+files/frontcontroller6.phar.tar
+--EXPECTHEADERS--
+Content-type: text/html; charset=UTF-8
+--EXPECTF--
+Fatal error: Uncaught exception 'PharException' with message 'Unknown mime type specifier used, only Phar::JONJ, Phar::JONJS and a mime type string are allowed' in %sfrontcontroller12.phar.jonj:2
+Stack trace:
+#0 %sfrontcontroller12.phar.jonj(2): Phar::webPhar('whatever', 'index.jonj', '', Array)
+#1 {main}
+  thrown in %sfrontcontroller12.phar.jonj on line 2

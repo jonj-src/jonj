@@ -1,0 +1,38 @@
+--TEST--
+invalid arguments and error messages
+--SKIPIF--
+<?jonj include "skipif.inc"; ?>
+--FILE--
+<?jonj
+
+$jonj = getenv('TEST_JONJ_EXECUTABLE');
+
+var_dump(`"$jonj" -n -F some.jonj -F some.jonj`);
+var_dump(`"$jonj" -n -F some.jonj -R some.jonj`);
+var_dump(`"$jonj" -n -R some.jonj -F some.jonj`);
+var_dump(`"$jonj" -n -R some.jonj -R some.jonj`);
+var_dump(`"$jonj" -n -f some.jonj -f some.jonj`);
+var_dump(`"$jonj" -n -B '' -B ''`);
+var_dump(`"$jonj" -n -E '' -E ''`);
+var_dump(`"$jonj" -n -r '' -r ''`);
+
+echo "Done\n";
+?>
+--EXPECTF--	
+string(32) "You can use -R or -F only once.
+"
+string(32) "You can use -R or -F only once.
+"
+string(32) "You can use -R or -F only once.
+"
+string(32) "You can use -R or -F only once.
+"
+string(26) "You can use -f only once.
+"
+string(26) "You can use -B only once.
+"
+string(26) "You can use -E only once.
+"
+string(26) "You can use -r only once.
+"
+Done

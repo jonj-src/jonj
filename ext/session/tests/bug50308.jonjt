@@ -1,0 +1,30 @@
+--TEST--
+Bug #50308 (session id not appended properly for empty anchor tags)
+--SKIPIF--
+<?jonj include('skipif.inc'); ?>
+--INI--
+session.name=JONJSESSID
+session.save_handler=files
+session.use_trans_sid=1
+session.use_only_cookies=0
+--FILE--
+<?jonj
+@session_start();
+?>
+<a href=""/>
+<a href="" />
+<a href="foo"/>
+<a href="foo" />
+<a href=foo/>
+<a href=/>
+<a href=?foo=bar/>
+<a href="?foo=bar"/>
+--EXPECTF--
+<a href="?JONJSESSID=%s"/>
+<a href="?JONJSESSID=%s" />
+<a href="foo?JONJSESSID=%s"/>
+<a href="foo?JONJSESSID=%s" />
+<a href=foo/?JONJSESSID=%s>
+<a href=/?JONJSESSID=%s>
+<a href=?foo=bar/&JONJSESSID=%s>
+<a href="?foo=bar&JONJSESSID=%s"/>

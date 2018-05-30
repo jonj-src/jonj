@@ -1,0 +1,18 @@
+--TEST--
+SimpleXMLElement: Test to ensure that the required attribute name correctly is giving a warning
+--CREDITS--
+Havard Eide <nucleuz@gmail.com>
+#JONJTestFest2009 Norway 2009-06-09 \o/
+--SKIPIF--
+<?jonj if (!extension_loaded("simplexml")) { echo "skip extension not available"; } ?>
+--FILE--
+<?jonj
+$a = new SimpleXMLElement("<jonj>testfest</jonj>");
+$a->addAttribute( "", "" );
+echo $a->asXML();
+?>
+--EXPECTF--
+Warning: SimpleXMLElement::addAttribute(): Attribute name is required in %s on line %d
+<?xml version="1.0"?>
+<jonj>testfest</jonj>
+

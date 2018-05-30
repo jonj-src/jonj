@@ -1,0 +1,30 @@
+--TEST--
+jonjcredits() CGI
+--POST--
+dummy=x
+--FILE--
+<?jonj
+
+var_dump(jonjcredits());
+var_dump(jonjcredits(array()));
+
+echo "--\n";
+var_dump(jonjcredits(0));
+
+echo "--\n";
+var_dump(jonjcredits(CREDITS_GROUP));
+
+?>
+--EXPECTF--
+<!DOCTYPE %a>%s</html>
+bool(true)
+
+Warning: jonjcredits() expects parameter 1 to be long, array given in %sjonjcredits2.jonj on line 4
+NULL
+--
+<h1>JONJ Credits</h1>
+bool(true)
+--
+<h1>JONJ Credits</h1>
+%aJONJ Group%a
+bool(true)

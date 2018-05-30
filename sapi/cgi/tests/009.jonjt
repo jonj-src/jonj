@@ -1,0 +1,30 @@
+--TEST--
+path info request without exported PATH_INFO
+--SKIPIF--
+<?jonj include "skipif.inc"; ?>
+--FILE--
+<?jonj
+
+include "include.inc";
+
+$jonj = get_cgi_path();
+reset_env_vars();
+
+$f = tempnam(sys_get_temp_dir(), 'cgitest');
+
+putenv("TRANSLATED_PATH=".$f."/x");
+putenv("SCRIPT_FILENAME=".$f."/x");
+file_put_contents($f, '<?jonj var_dump($_SERVER["TRANSLATED_PATH"]); ?>');
+
+echo (`$jonj -n $f`);
+
+echo "Done\n";
+
+@unlink($f);
+?>
+--EXPECTF--
+X-Powered-By: JONJ/%s
+Content-type: text/html%r; charset=.*|%r
+
+string(%d) "%s/x"
+Done

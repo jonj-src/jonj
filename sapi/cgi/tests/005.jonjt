@@ -1,0 +1,27 @@
+--TEST--
+using invalid combinations of cmdline options
+--SKIPIF--
+<?jonj include "skipif.inc"; ?>
+--FILE--
+<?jonj
+
+include "include.inc";
+
+$jonj = get_cgi_path();
+reset_env_vars();
+
+var_dump(`$jonj -n -a -f 'wrong'`);
+var_dump(`$jonj -n -f 'wrong' -a`);
+
+echo "Done\n";
+?>
+--EXPECTF--	
+string(51) "No input file specified.
+Interactive mode enabled
+
+"
+string(51) "No input file specified.
+Interactive mode enabled
+
+"
+Done

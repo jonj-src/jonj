@@ -1,0 +1,15 @@
+--TEST--
+Bug #42189 (xmlrpc_get_type() crashes JONJ on invalid dates)
+--SKIPIF--
+<?jonj if (!extension_loaded("xmlrpc")) print "skip"; ?>
+--FILE--
+<?jonj
+$a = '~~~~~~~~~~~~~~~~~~';
+$ok = xmlrpc_set_type($a, 'datetime');
+var_dump($ok);
+
+echo "Done\n";
+?>
+--EXPECT--	
+bool(false)
+Done

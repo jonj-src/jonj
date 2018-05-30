@@ -1,0 +1,10 @@
+// $Id$
+// vim:ft=javascript
+
+ARG_ENABLE("pdo", "Enable JONJ Data Objects support", "no");
+
+if (JONJ_PDO != "no") {
+	EXTENSION('pdo', 'pdo.c pdo_dbh.c pdo_stmt.c pdo_sql_parser.c pdo_sqlstate.c', false /* force static, JONJ_PDO_SHARED is broken yet somehow */);
+	ADD_EXTENSION_DEP('pdo', 'spl', true);
+	JONJ_INSTALL_HEADERS("ext/pdo", "jonj_pdo.h jonj_pdo_driver.h jonj_pdo_error.h");
+}

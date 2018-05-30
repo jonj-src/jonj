@@ -1,0 +1,21 @@
+--TEST--
+Phar front controller mime type extension is not a string tar-based
+--INI--
+default_charset=
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+<?jonj die("skip"); ?>
+--ENV--
+SCRIPT_NAME=/frontcontroller11.phar.jonj
+REQUEST_URI=/frontcontroller11.phar.jonj/a.jonj
+PATH_INFO=/a.jonj
+--FILE_EXTERNAL--
+files/frontcontroller5.phar.tar
+--EXPECTHEADERS--
+Content-type: text/html
+--EXPECTF--
+Fatal error: Uncaught exception 'PharException' with message 'Key of MIME type overrides array must be a file extension, was "0"' in %sfrontcontroller11.phar.jonj:2
+Stack trace:
+#0 %sfrontcontroller11.phar.jonj(2): Phar::webPhar('whatever', 'index.jonj', '', Array)
+#1 {main}
+  thrown in %sfrontcontroller11.phar.jonj on line 2

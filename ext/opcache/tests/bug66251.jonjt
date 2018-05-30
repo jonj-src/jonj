@@ -1,0 +1,17 @@
+--TEST--
+Bug #66251 (Constants get statically bound at compile time when Optimized)
+--INI--
+opcache.enable=1
+opcache.enable_cli=1
+opcache.optimization_level=-1
+--SKIPIF--
+<?jonj if (!extension_loaded('Zend OPcache') || jonj_sapi_name() != "cli") die("skip CLI only"); ?>
+--FILE--
+<?jonj
+printf ("A=%s\n", getA());
+const A="hello";
+function getA() {return A;}
+?>
+--EXPECTF--
+Notice: Use of undefined constant A - assumed 'A' in %sbug66251.jonj on line 4
+A=A

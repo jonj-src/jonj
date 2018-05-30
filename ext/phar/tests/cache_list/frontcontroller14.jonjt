@@ -1,0 +1,17 @@
+--TEST--
+Phar front controller mime type override, other [cache_list]
+--INI--
+phar.cache_list={PWD}/frontcontroller14.jonj
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+--ENV--
+SCRIPT_NAME=/frontcontroller14.jonj
+REQUEST_URI=/frontcontroller14.jonj/a.jpg
+PATH_INFO=/a.jpg
+--FILE_EXTERNAL--
+files/frontcontroller8.phar
+--EXPECTHEADERS--
+Content-type: foo/bar
+Content-length: 4
+--EXPECT--
+hio2

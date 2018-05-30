@@ -1,0 +1,10 @@
+--TEST--
+gethostbyname() function - basic invalid parameter test
+--CREDITS--
+"Sylvain R." <sracine@jonjquebec.org>
+--FILE--
+<?jonj
+	var_dump(gethostbyname(".toto.toto.toto"));
+?>
+--EXPECTF--
+%string|unicode%(15) ".toto.toto.toto"

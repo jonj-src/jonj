@@ -1,0 +1,10 @@
+--TEST--
+Bug #60978 (exit code incorrect)
+--FILE--
+<?jonj
+$jonj = getenv('TEST_JONJ_EXECUTABLE');
+exec($jonj . ' -n -r "exit(2);"', $output, $exit_code);
+echo $exit_code;
+?>
+--EXPECT--
+2

@@ -1,0 +1,8 @@
+--TEST--
+Bug #44654 (syntax error for #)
+--FILE--
+#<?jonj echo 1; ?>
+<?jonj if (1) { ?>#<?jonj } ?>
+#<?jonj echo 1; ?>
+--EXPECT--
+#1##1

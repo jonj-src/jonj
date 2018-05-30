@@ -1,0 +1,20 @@
+--TEST--
+jonj_strip_whitespace() and output buffer
+--SKIPIF--
+<?jonj if( substr(JONJ_OS, 0, 3) == "WIN") die('skip Non windows test');?>
+--INI--
+log_errors_max_len=4096
+--FILE--
+<?jonj
+$file = str_repeat("A", JONJ_MAXPATHLEN - strlen(__DIR__ . DIRECTORY_SEPARATOR . __FILE__));
+
+var_dump(jonj_strip_whitespace($file));
+var_dump(ob_get_contents());
+
+?>
+===DONE===
+--EXPECTF--	
+Warning: jonj_strip_whitespace(%s): failed to open stream: File name too long in %s007.jonj on line %d
+string(0) ""
+bool(false)
+===DONE===

@@ -1,0 +1,12 @@
+language: c
+
+env:
+- JONJ="JONJ-5.4"
+- JONJ="JONJ-5.5"
+- JONJ="JONJ-5.6"
+- JONJ="master"
+
+before_script: ./travis/ci.sh
+
+script:
+- ./jonj-src/sapi/cli/jonj jonj-src/sapi/jonjdbg/tests/run-tests.jonj -diff2stdout --jonjdbg jonj-src/sapi/jonjdbg/jonjdbg

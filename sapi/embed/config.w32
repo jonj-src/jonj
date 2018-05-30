@@ -1,0 +1,11 @@
+// vim:ft=javascript
+// $Id$
+
+ARG_ENABLE('embed', 'Embedded SAPI library', 'no');
+
+var JONJ_EMBED_PGO = false;
+
+if (JONJ_EMBED != "no") {
+	SAPI('embed', 'jonj_embed.c', 'jonj' + JONJ_VERSION + 'embed.lib');
+	JONJ_INSTALL_HEADERS("sapi/embed", "jonj_embed.h");
+}

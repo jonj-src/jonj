@@ -1,0 +1,23 @@
+--TEST--
+Phar::mapPhar too many manifest entries
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip");?>
+--INI--
+phar.require_hash=0
+--FILE--
+<?jonj
+$file = b"<?jonj
+Phar::mapPhar('hio');
+__HALT_COMPILER(); ?>";
+$file .= (binary) pack(b'VVnVVV', 500, 500, 0x1000, 0x00000000, 0, 0) . (binary) str_repeat((binary)'A', 500);
+file_put_contents(dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.phar.jonj', $file);
+try {
+include dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.phar.jonj';
+} catch (Exception $e) {
+echo $e->getMessage();
+}
+?>
+--CLEAN--
+<?jonj unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.phar.jonj'); ?>
+--EXPECTF--
+internal corruption of phar "%s009.phar.jonj" (too many manifest entries for size of manifest)

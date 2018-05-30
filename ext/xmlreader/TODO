@@ -1,0 +1,8 @@
+- Implement functions to support JONJ 4
+
+- Refactor internals once libxml 2.6.x is minimum requirement for JONJ 5
+  use new api for creating the xmlTextReaderPtr
+
+- Add Custom Error Handling
+
+

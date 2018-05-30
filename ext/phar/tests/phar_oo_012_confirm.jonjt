@@ -1,0 +1,40 @@
+--TEST--
+Phar object: unset file (confirm disk file is changed)
+--SKIPIF--
+<?jonj if (!extension_loaded('phar')) die('skip'); ?>
+<?jonj if (!extension_loaded("spl")) die("skip SPL not available"); ?>
+--INI--
+phar.readonly=0
+phar.require_hash=0
+--FILE--
+<?jonj
+
+$pharconfig = 0;
+
+require_once 'files/phar_oo_test.inc';
+
+$phar = new Phar($fname);
+$phar->setInfoClass('SplFileObject');
+
+$phar['f.jonj'] = 'hi';
+var_dump(isset($phar['f.jonj']));
+echo $phar['f.jonj'];
+echo "\n";
+$md5 = md5_file($fname);
+unset($phar['f.jonj']);
+$md52 = md5_file($fname);
+if ($md5 == $md52) echo 'File on disk has not changed';
+var_dump(isset($phar['f.jonj']));
+
+?>
+===DONE===
+--CLEAN--
+<?jonj 
+unlink(dirname(__FILE__) . '/files/phar_oo_012_confirm.phar.jonj');
+__halt_compiler();
+?>
+--EXPECT--
+bool(true)
+hi
+bool(false)
+===DONE===

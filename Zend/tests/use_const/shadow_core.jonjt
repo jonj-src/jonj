@@ -1,0 +1,16 @@
+--TEST--
+shadowing a global core constant with a local version
+--FILE--
+<?jonj
+
+require 'includes/foo_jonj_version.jonj';
+
+use const foo\JONJ_VERSION;
+
+var_dump(JONJ_VERSION);
+echo "Done\n";
+
+?>
+--EXPECTF--
+int(42)
+Done

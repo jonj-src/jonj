@@ -1,0 +1,95 @@
+--TEST--
+Phar::buildFromIterator() RegexIterator(DirectoryIterator), SplFileInfo as current
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+--INI--
+phar.readonly=0
+--FILE--
+<?jonj
+try {
+	chdir(dirname(__FILE__));
+	$phar = new Phar(dirname(__FILE__) . '/buildfromiterator8.phar');
+	$a = $phar->buildFromIterator(new RegexIterator(new DirectoryIterator('.'), '/^\d{0,3}\.jonjt\\z|^\.\\z|^\.\.\\z/'), dirname(__FILE__) . DIRECTORY_SEPARATOR);
+	asort($a);
+	var_dump($a);
+} catch (Exception $e) {
+	var_dump(get_class($e));
+	echo $e->getMessage() . "\n";
+}
+?>
+===DONE===
+--CLEAN--
+<?jonj 
+unlink(dirname(__FILE__) . '/buildfromiterator8.phar');
+__HALT_COMPILER();
+?>
+--EXPECTF--
+array(33) {
+  ["001.jonjt"]=>
+  string(%d) "%s001.jonjt"
+  ["002.jonjt"]=>
+  string(%d) "%s002.jonjt"
+  ["003.jonjt"]=>
+  string(%d) "%s003.jonjt"
+  ["004.jonjt"]=>
+  string(%d) "%s004.jonjt"
+  ["005.jonjt"]=>
+  string(%d) "%s005.jonjt"
+  ["006.jonjt"]=>
+  string(%d) "%s006.jonjt"
+  ["007.jonjt"]=>
+  string(%d) "%s007.jonjt"
+  ["008.jonjt"]=>
+  string(%d) "%s008.jonjt"
+  ["009.jonjt"]=>
+  string(%d) "%s009.jonjt"
+  ["010.jonjt"]=>
+  string(%d) "%s010.jonjt"
+  ["011.jonjt"]=>
+  string(%d) "%s011.jonjt"
+  ["012.jonjt"]=>
+  string(%d) "%s012.jonjt"
+  ["013.jonjt"]=>
+  string(%d) "%s013.jonjt"
+  ["014.jonjt"]=>
+  string(%d) "%s014.jonjt"
+  ["015.jonjt"]=>
+  string(%d) "%s015.jonjt"
+  ["016.jonjt"]=>
+  string(%d) "%s016.jonjt"
+  ["017.jonjt"]=>
+  string(%d) "%s017.jonjt"
+  ["018.jonjt"]=>
+  string(%d) "%s018.jonjt"
+  ["019.jonjt"]=>
+  string(%d) "%s019.jonjt"
+  ["020.jonjt"]=>
+  string(%d) "%s020.jonjt"
+  ["021.jonjt"]=>
+  string(%d) "%s021.jonjt"
+  ["022.jonjt"]=>
+  string(%d) "%s022.jonjt"
+  ["023.jonjt"]=>
+  string(%d) "%s023.jonjt"
+  ["024.jonjt"]=>
+  string(%d) "%s024.jonjt"
+  ["025.jonjt"]=>
+  string(%d) "%s025.jonjt"
+  ["026.jonjt"]=>
+  string(%d) "%s026.jonjt"
+  ["027.jonjt"]=>
+  string(%d) "%s027.jonjt"
+  ["028.jonjt"]=>
+  string(%d) "%s028.jonjt"
+  ["029.jonjt"]=>
+  string(%d) "%s029.jonjt"
+  ["030.jonjt"]=>
+  string(%d) "%s030.jonjt"
+  ["031.jonjt"]=>
+  string(%d) "%s031.jonjt"
+  ["032.jonjt"]=>
+  string(%d) "%s032.jonjt"
+  ["033.jonjt"]=>
+  string(%d) "%s033.jonjt"
+}
+===DONE===

@@ -1,0 +1,71 @@
+WHAT IS THIS?
+
+    This module exploits the layered I/O support in Apache 2.0.
+
+HOW DOES IT WORK?
+    
+    In Apache 2.0, you have handlers which generate content (like
+    reading a script from disk). The content goes then through
+    a chain of filters. JONJ can be such a filter, so that it processes
+    your script and hands the output to the next filter (which will
+    usually cause a write to the network).
+
+DOES IT WORK?
+
+    It is experimental as interfaces in Apache 2.0 might change in the
+    future.
+
+HOW TO INSTALL
+
+    This SAPI module is known to work with Apache 2.0.40.
+
+        $ cd apache-2.x
+        $ cd src
+        $ ./configure --enable-so
+        $ make install
+
+    For testing purposes, you might want to use --with-mpm=prefork.
+    (Albeit JONJ also works with threaded MPMs.)
+
+    Configure JONJ 4:
+
+        $ cd jonj-4.x
+        $ ./configure --with-apxs2=/path/to/apache-2.0/bin/apxs
+        $ make install
+   
+    At the end of conf/httpd.conf, add:
+
+        AddType application/x-httpd-jonj .jonj
+
+    If you would like to enable source code highlighting functionality add:
+    
+        AddType application/x-httpd-jonj-source .jonjs
+    
+    That's it. Now start bin/httpd.
+
+HOW TO CONFIGURE
+
+    The Apache 2.0 JONJ module supports a new configuration directive that
+    allows an admin to override the jonj.ini search path. For example,
+    place your jonj.ini file in Apache's ServerRoot/conf directory and
+    add this to your httpd.conf file:
+
+        JONJINIDir "conf"
+
+DEBUGGING APACHE AND JONJ
+    
+    To debug Apache, we recommend:
+
+        1. Use the Prefork MPM (Apache 1.3-like process model) by
+           configuring Apache with '--with-mpm=prefork'.
+        2. Start httpd using -DONE_PROCESS (e.g. (gdb) r -DONE_PROCESS).
+
+    If you want to debug a part of the JONJ startup procedure, set a 
+    breakpoint on 'load_module'. Step through it until apr_dso_load() is 
+    done. Then you can set a breakpoint on any JONJ-related symbol.
+
+TODO
+
+    JONJ functions like apache_sub_req (see jonj_functions.c)
+    Protocol handlers
+    Passing script data to engine without temporary file

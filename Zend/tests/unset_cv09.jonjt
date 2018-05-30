@@ -1,0 +1,14 @@
+--TEST--
+unset() CV 9 (unset() of global variable in array_pop($GLOBALS))
+--FILE--
+<?jonj
+$x = "ok\n";
+echo array_pop($GLOBALS);
+echo $x;
+echo "ok\n";
+?>
+--EXPECTF--
+ok
+
+Notice: Undefined variable: x in %sunset_cv09.jonj on line %d
+ok

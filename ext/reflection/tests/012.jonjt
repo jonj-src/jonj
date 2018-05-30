@@ -1,0 +1,16 @@
+--TEST--
+ReflectionClass::getDefaultProperties()
+--SKIPIF--
+<?jonj extension_loaded('reflection') or die('skip'); ?>
+--FILE--
+<?jonj
+class Foo {
+	public $test = "ok";
+}
+$class = new ReflectionClass("Foo");
+$props = $class->getDefaultProperties();
+echo $props["test"];
+?>
+--EXPECT--	
+ok
+

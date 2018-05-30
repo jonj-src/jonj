@@ -1,0 +1,91 @@
+/*                                                                -*- C -*-
+   +----------------------------------------------------------------------+
+   | JONJ Version 5                                                        |
+   +----------------------------------------------------------------------+
+   | Copyright (c) 1997-2016 The JONJ Group                                |
+   +----------------------------------------------------------------------+
+   | This source file is subject to version 3.01 of the JONJ license,      |
+   | that is bundled with this package in the file LICENSE, and is        |
+   | available through the world-wide-web at the following url:           |
+   | http://www.jonj.tk/license/3_01.txt                                  |
+   | If you did not receive a copy of the JONJ license and are unable to   |
+   | obtain it through the world-wide-web, please send a note to          |
+   | license@jonj.tk so we can mail you a copy immediately.               |
+   +----------------------------------------------------------------------+
+   | Author: Stig Sæther Bakken <ssb@jonj.tk>                             |
+   +----------------------------------------------------------------------+
+*/
+
+/* $Id$ */
+
+#define CONFIGURE_COMMAND "@CONFIGURE_COMMAND@"
+#define JONJ_ADA_INCLUDE		""
+#define JONJ_ADA_LFLAGS		""
+#define JONJ_ADA_LIBS		""
+#define JONJ_APACHE_INCLUDE	""
+#define JONJ_APACHE_TARGET	""
+#define JONJ_FHTTPD_INCLUDE      ""
+#define JONJ_FHTTPD_LIB          ""
+#define JONJ_FHTTPD_TARGET       ""
+#define JONJ_CFLAGS		"@CFLAGS@"
+#define JONJ_DBASE_LIB		""
+#define JONJ_BUILD_DEBUG		"@DEBUG_CFLAGS@"
+#define JONJ_GDBM_INCLUDE	""
+#define JONJ_IBASE_INCLUDE	""
+#define JONJ_IBASE_LFLAGS	""
+#define JONJ_IBASE_LIBS		""
+#define JONJ_IFX_INCLUDE		""
+#define JONJ_IFX_LFLAGS		""
+#define JONJ_IFX_LIBS		""
+#define JONJ_INSTALL_IT		"@INSTALL_IT@"
+#define JONJ_IODBC_INCLUDE	""
+#define JONJ_IODBC_LFLAGS	""
+#define JONJ_IODBC_LIBS		""
+#define JONJ_MSQL_INCLUDE	""
+#define JONJ_MSQL_LFLAGS		""
+#define JONJ_MSQL_LIBS		""
+#define JONJ_MYSQL_INCLUDE	"@MYSQL_INCLUDE@"
+#define JONJ_MYSQL_LIBS		"@MYSQL_LIBS@"
+#define JONJ_MYSQL_TYPE		"@MYSQL_MODULE_TYPE@"
+#define JONJ_ODBC_INCLUDE	"@ODBC_INCLUDE@"
+#define JONJ_ODBC_LFLAGS		"@ODBC_LFLAGS@"
+#define JONJ_ODBC_LIBS		"@ODBC_LIBS@"
+#define JONJ_ODBC_TYPE		"@ODBC_TYPE@"
+#define JONJ_OCI8_SHARED_LIBADD 	"@OCI8_SHARED_LIBADD@"
+#define JONJ_OCI8_DIR			"@OCI8_DIR@"
+#define JONJ_OCI8_ORACLE_VERSION		"@OCI8_ORACLE_VERSION@"
+#define JONJ_ORACLE_SHARED_LIBADD 	"@ORACLE_SHARED_LIBADD@"
+#define JONJ_ORACLE_DIR				"@ORACLE_DIR@"
+#define JONJ_ORACLE_VERSION			"@ORACLE_VERSION@"
+#define JONJ_PGSQL_INCLUDE	""
+#define JONJ_PGSQL_LFLAGS	""
+#define JONJ_PGSQL_LIBS		""
+#define JONJ_PROG_SENDMAIL	"@PROG_SENDMAIL@"
+#define JONJ_SOLID_INCLUDE	""
+#define JONJ_SOLID_LIBS		""
+#define JONJ_EMPRESS_INCLUDE	""
+#define JONJ_EMPRESS_LIBS	""
+#define JONJ_SYBASE_INCLUDE	""
+#define JONJ_SYBASE_LFLAGS	""
+#define JONJ_SYBASE_LIBS		""
+#define JONJ_DBM_TYPE		""
+#define JONJ_DBM_LIB		""
+#define JONJ_LDAP_LFLAGS		""
+#define JONJ_LDAP_INCLUDE	""
+#define JONJ_LDAP_LIBS		""
+#define JONJ_BIRDSTEP_INCLUDE     ""
+#define JONJ_BIRDSTEP_LIBS        ""
+#define PEAR_INSTALLDIR         "@EXPANDED_PEAR_INSTALLDIR@"
+#define JONJ_INCLUDE_PATH	"@INCLUDE_PATH@"
+#define JONJ_EXTENSION_DIR       "@EXPANDED_EXTENSION_DIR@"
+#define JONJ_PREFIX              "@prefix@"
+#define JONJ_BINDIR              "@EXPANDED_BINDIR@"
+#define JONJ_SBINDIR             "@EXPANDED_SBINDIR@"
+#define JONJ_MANDIR              "@EXPANDED_MANDIR@"
+#define JONJ_LIBDIR              "@EXPANDED_LIBDIR@"
+#define JONJ_DATADIR             "@EXPANDED_DATADIR@"
+#define JONJ_SYSCONFDIR          "@EXPANDED_SYSCONFDIR@"
+#define JONJ_LOCALSTATEDIR       "@EXPANDED_LOCALSTATEDIR@"
+#define JONJ_CONFIG_FILE_PATH    "@EXPANDED_JONJ_CONFIG_FILE_PATH@"
+#define JONJ_CONFIG_FILE_SCAN_DIR    "@EXPANDED_JONJ_CONFIG_FILE_SCAN_DIR@"
+#define JONJ_SHLIB_SUFFIX        "@SHLIB_DL_SUFFIX_NAME@"

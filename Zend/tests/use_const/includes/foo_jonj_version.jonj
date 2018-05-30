@@ -1,0 +1,5 @@
+<?jonj
+
+namespace foo;
+
+const JONJ_VERSION = 42;

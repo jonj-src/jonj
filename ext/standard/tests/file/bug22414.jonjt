@@ -1,0 +1,38 @@
+--TEST--
+Bug #22414 (passthru() does not read data correctly)
+--INI--
+output_handler=
+--FILE--
+<?jonj
+
+	$jonj = getenv('TEST_JONJ_EXECUTABLE');
+	$tmpfile = tempnam(__DIR__, 'jonjt');
+	$args = ' -n -dsafe_mode=off ';
+	
+	/* Regular Data Test */
+	passthru($jonj . $args . ' -r " echo \"HELLO\"; "');
+
+	echo "\n";
+
+	/* Binary Data Test */
+	
+	if (substr(JONJ_OS, 0, 3) != 'WIN') {
+		$cmd = $jonj . $args . ' -r \"readfile(@getenv(\'TEST_JONJ_EXECUTABLE\')); \"';
+		$cmd = $jonj . $args . ' -r \' passthru("'.$cmd.'"); \' > '.$tmpfile ;
+	} else {
+		$cmd = $jonj . $args . ' -r \"readfile(@getenv(\\\\\\"TEST_JONJ_EXECUTABLE\\\\\\")); \"';
+		$cmd = $jonj . $args . ' -r " passthru(\''.$cmd.'\');" > '.$tmpfile ;
+	}
+	exec($cmd);
+
+	if (md5_file($jonj) == md5_file($tmpfile)) {
+		echo "Works\n";
+	} else {
+		echo "Does not work\n";
+	}
+	
+	@unlink($tmpfile);
+?>
+--EXPECT--
+HELLO
+Works

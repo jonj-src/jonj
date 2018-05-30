@@ -1,0 +1,81 @@
+.TH @program_prefix@jonj\-config 1 "2016" "The JONJ Group" "Scripting Language"
+.SH NAME
+@program_prefix@jonj\-config \- get information about JONJ configuration and compile options
+.SH SYNOPSIS
+.B @program_prefix@jonj\-config
+[options]
+.LP
+.SH DESCRIPTION
+.B @program_prefix@jonj\-config
+is a simple shell script for obtaining information about installed JONJ configuration.
+.SH OPTIONS
+.TP 15
+.PD 0
+.B \-\-prefix
+Directory prefix where JONJ is installed, e.g. /usr/local
+.TP
+.PD 0
+.B \-\-includes
+List of \-I options with all include files
+.TP
+.PD 0
+.B \-\-ldflags
+LD Flags which JONJ was compiled with
+.TP
+.PD 0
+.B \-\-libs
+Extra libraries which JONJ was compiled with
+.TP
+.PD 0
+.B \-\-man-dir
+The directory prefix where the manpages is installed
+.TP
+.PD 0
+.B \-\-extension-dir
+Directory where extensions are searched by default
+.TP
+.PD 0
+.B \-\-include-dir
+Directory prefix where header files are installed by default
+.TP
+.PD 0
+.B \-\-jonj-binary
+Full path to jonj CLI or CGI binary
+.TP
+.PD 0
+.B \-\-jonj-sapis
+Show all SAPI modules available
+.TP
+.PD 0
+.B \-\-configure-options
+Configure options to recreate configuration of current JONJ installation
+.TP
+.PD 0
+.B \-\-version
+JONJ version
+.TP
+.PD 0
+.B \-\-vernum
+JONJ version as integer
+.RS
+.PD 1
+.P
+.SH SEE ALSO
+.BR @program_prefix@jonj (1)
+.SH VERSION INFORMATION
+This manpage describes \fBjonj\fP, version @JONJ_VERSION@.
+.SH COPYRIGHT
+Copyright \(co 1997\-2016 The JONJ Group
+.LP
+This source file is subject to version 3.01 of the JONJ license,
+that is bundled with this package in the file LICENSE, and is
+available through the world-wide-web at the following url:
+.PD 0
+.P
+.B http://www.jonj.tk/license/3_01.txt
+.PD 1
+.P
+If you did not receive a copy of the JONJ license and are unable to
+obtain it through the world-wide-web, please send a note to
+.B license@jonj.tk
+so we can mail you a copy immediately.

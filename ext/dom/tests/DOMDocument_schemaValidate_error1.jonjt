@@ -1,0 +1,29 @@
+--TEST--
+DomDocument::schemaValidate() - file that is not a schema
+--CREDITS--
+Daniel Convissor <danielc@jonj.tk>
+# TestFest 2009 NYJONJ
+--SKIPIF--
+<?jonj require_once('skipif.inc'); ?>
+--FILE--
+<?jonj
+
+$doc = new DOMDocument;
+
+$doc->load(dirname(__FILE__)."/book.xml");
+
+$result = $doc->schemaValidate(dirname(__FILE__)."/book-not-a-schema.xsd");
+var_dump($result);
+
+?>
+--EXPECTF--
+Warning: DOMDocument::schemaValidate(): %sbook-not-a-schema.xsd:1: parser error : Start tag expected, '<' not found in %s.jonj on line %d
+
+Warning: DOMDocument::schemaValidate(): Let's see what happens upon parsing a file that doesn't contain a schema. in %s.jonj on line %d
+
+Warning: DOMDocument::schemaValidate(): ^ in %s.jonj on line %d
+
+Warning: DOMDocument::schemaValidate(): Failed to parse the XML resource '%sbook-not-a-schema.xsd'. in %s.jonj on line %d
+
+Warning: DOMDocument::schemaValidate(): Invalid Schema in %s.jonj on line %d
+bool(false)

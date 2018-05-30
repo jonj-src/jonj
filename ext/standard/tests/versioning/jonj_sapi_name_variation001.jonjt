@@ -1,0 +1,14 @@
+--TEST--
+jonj_sapi_name() function when switching to webserver by using post 
+--POST--
+foo=BAR
+--CREDITS--
+Sebastian Schürmann
+sebs@jonj.tk
+Testfest 2009 Munich
+--FILE--
+<?jonj
+echo jonj_sapi_name();
+?>
+--EXPECT--
+cgi-fcgi

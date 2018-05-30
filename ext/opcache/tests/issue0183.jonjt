@@ -1,0 +1,25 @@
+--TEST--
+ISSUE #183 (TMP_VAR is not only used once)
+--INI--
+opcache.enable=1
+opcache.enable_cli=1
+opcache.optimization_level=-1
+--SKIPIF--
+<?jonj require_once('skipif.inc'); ?>
+<?jonj if (JONJ_OS != "Linux") die("skip, only for linux"); ?>
+--FILE--
+<?jonj
+
+switch (JONJ_OS) {
+	case "Windows":
+	break;
+	case "Darwin":
+	break;
+	case "Linux":
+		echo "okey";
+	break;
+	default:
+	break;
+}
+--EXPECT--
+okey

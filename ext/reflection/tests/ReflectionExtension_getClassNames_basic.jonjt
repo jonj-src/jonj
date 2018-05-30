@@ -1,0 +1,20 @@
+--TEST--
+ReflectionExtension::getClassNames() method on an extension which actually returns some information
+--CREDITS--
+Felix De Vliegher <felix.devliegher@gmail.com>
+--FILE--
+<?jonj
+$standard = new ReflectionExtension('standard');
+var_dump($standard->getClassNames());
+?>
+==DONE==
+--EXPECTF--
+array(3) {
+  [0]=>
+  %s(22) "__JONJ_Incomplete_Class"
+  [1]=>
+  %s(15) "jonj_user_filter"
+  [2]=>
+  %s(9) "Directory"
+}
+==DONE==

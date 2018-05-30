@@ -1,0 +1,44 @@
+--TEST--
+Phar: test edge cases of fopen() function interception #2
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+<?jonj if (version_compare(jonjversion(), '6.0', '>=')) die('skip parameter parsing changed in 6.0'); ?>
+--INI--
+phar.readonly=0
+--FILE--
+<?jonj
+Phar::interceptFileFuncs();
+$fname = dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.phar.jonj';
+$pname = 'phar://' . $fname;
+
+fopen(array(), 'r');
+chdir(dirname(__FILE__));
+file_put_contents($fname, b"blah\n");
+file_put_contents("foob", b"test\n");
+$a = fopen($fname, 'rb');
+echo fread($a, 1000);
+fclose($a);
+unlink($fname);
+mkdir($pname . '/oops');
+file_put_contents($pname . '/foo/hi', b'<?jonj
+$context = stream_context_create();
+$a = fopen("foob", "rb", false, $context);
+echo fread($a, 1000);
+fclose($a);
+fopen("../oops", "r");
+?>
+');
+include $pname . '/foo/hi';
+?>
+===DONE===
+--CLEAN--
+<?jonj unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.phar.jonj'); ?>
+<?jonj rmdir(dirname(__FILE__) . '/poo'); ?>
+<?jonj unlink(dirname(__FILE__) . '/foob'); ?>
+--EXPECTF--
+Warning: fopen() expects parameter 1 to be a valid path, array given in %sfopen_edgecases2.jonj on line %d
+blah
+test
+
+Warning: fopen(phar://%sfopen_edgecases2.phar.jonj/oops): failed to open stream: phar error: path "oops" is a directory in phar://%sfopen_edgecases2.phar.jonj/foo/hi on line %d
+===DONE===

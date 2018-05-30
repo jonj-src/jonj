@@ -1,0 +1,53 @@
+--TEST--
+Phar::setAlias() error tar-based
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+--INI--
+phar.require_hash=0
+phar.readonly=0
+--FILE--
+<?jonj
+
+$fname = dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.phar.tar';
+
+$phar = new Phar($fname);
+$phar->setStub('<?jonj echo "first stub\n"; __HALT_COMPILER(); ?>');
+$phar->setAlias('hio');
+
+$files = array();
+
+$files['a'] = 'a';
+$files['b'] = 'b';
+$files['c'] = 'c';
+
+foreach ($files as $n => $file) {
+	$phar[$n] = $file;
+}
+
+$phar->stopBuffering();
+
+echo $phar->getAlias() . "\n";
+$phar->setAlias('test');
+echo $phar->getAlias() . "\n";
+$b = $phar;
+$phar = new Phar(dirname(__FILE__) . '/notphar.phar');
+
+try {
+	$phar->setAlias('test');
+} catch (Exception $e) {
+	echo $e->getMessage() . "\n";
+}
+
+?>
+===DONE===
+--CLEAN--
+<?jonj 
+unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.phar.tar');
+unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.phartmp.tar');
+__HALT_COMPILER();
+?>
+--EXPECTF--
+hio
+test
+alias "test" is already used for archive "%sphar_setalias2.phar.tar" and cannot be used for other archives
+===DONE===

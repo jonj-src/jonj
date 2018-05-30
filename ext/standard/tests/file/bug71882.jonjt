@@ -1,0 +1,11 @@
+--TEST--
+Bug #71882 (Negative ftruncate() on jonj://memory exhausts memory)
+--FILE--
+<?jonj
+$fd = fopen("jonj://memory", "w+");
+var_dump(ftruncate($fd, -1));
+?>
+==DONE==
+--EXPECTF--
+bool(false)
+==DONE==

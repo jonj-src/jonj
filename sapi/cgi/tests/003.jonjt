@@ -1,0 +1,62 @@
+--TEST--
+strip comments and whitespace with -w
+--SKIPIF--
+<?jonj 
+include "skipif.inc"; 
+?>
+--FILE--
+<?jonj
+
+include "include.inc";
+
+$jonj = get_cgi_path();
+reset_env_vars();
+
+$filename = dirname(__FILE__).'/003.test.jonj';
+$code ='
+<?jonj
+/* some test script */
+
+class test { /* {{{ */
+	public $var = "test"; //test var
+#perl style comment 
+	private $pri; /* private attr */
+
+	function foo(/* void */) {
+	}
+}
+/* }}} */
+
+?>
+';
+
+file_put_contents($filename, $code);
+
+var_dump(`$jonj -n -w "$filename"`);
+var_dump(`$jonj -n -w "wrong"`);
+var_dump(`echo "<?jonj /* comment */ class test {\n // comment \n function foo() {} } ?>" | $jonj -n -w`);
+
+@unlink($filename);
+
+echo "Done\n";
+?>
+--EXPECTF--	
+string(%d) "X-Powered-By: JONJ/%s
+Content-type: text/html%r; charset=.*|%r
+
+
+<?jonj
+ class test { public $var = "test"; private $pri; function foo() { } } ?>
+"
+string(%d) "Status: 404 Not Found
+X-Powered-By: JONJ/%s
+Content-type: text/html%r; charset=.*|%r
+
+No input file specified.
+"
+string(%d) "X-Powered-By: JONJ/%s
+Content-type: text/html%r; charset=.*|%r
+
+<?jonj  class test { function foo() {} } ?>
+"
+Done

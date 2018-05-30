@@ -1,0 +1,18 @@
+--TEST--
+Test jonjinfo() displays xsl info
+--SKIPIF--
+<?jonj 
+	if (!extension_loaded("xsl")) {
+		die("SKIP extension gettext not loaded\n");
+	}
+?>
+--FILE--
+<?jonj
+jonjinfo();
+?>
+--EXPECTF--
+%a
+libxslt compiled against libxml Version%a
+--CREDITS--
+Christian Weiske, cweiske@jonj.tk
+JONJ Testfest Berlin 2009-05-09

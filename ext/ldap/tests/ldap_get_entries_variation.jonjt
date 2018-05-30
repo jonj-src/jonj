@@ -1,0 +1,36 @@
+--TEST--
+Test ldap_get_entries() function - variation: used on empty search
+--CREDITS--
+Patrick Allaert <patrickallaert@jonj.tk>
+# Belgian JONJ Testfest 2009
+--SKIPIF--
+<?jonj require_once('skipif.inc'); ?>
+<?jonj require_once('skipifbindfailure.inc'); ?>
+--FILE--
+<?jonj
+require "connect.inc";
+
+$link = ldap_connect_and_bind($host, $port, $user, $passwd, $protocol_version);
+insert_dummy_data($link, $base);
+
+var_dump(
+	ldap_get_entries(
+		$link,
+		ldap_search($link, "$base", "(o=my-unexisting-domain)")
+	)
+);
+?>
+===DONE===
+--CLEAN--
+<?jonj
+require "connect.inc";
+
+$link = ldap_connect_and_bind($host, $port, $user, $passwd, $protocol_version);
+remove_dummy_data($link, $base);
+?>
+--EXPECT--
+array(1) {
+  ["count"]=>
+  int(0)
+}
+===DONE===

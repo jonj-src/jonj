@@ -1,0 +1,42 @@
+--TEST--
+jonj://input is empty when enable_post_data_reading=Off
+--INI--
+allow_url_fopen=1
+--SKIPIF--
+<?jonj
+include __DIR__."/../../sapi/cli/tests/skipif.inc"; 
+?>
+--FILE--
+<?jonj
+require __DIR__."/../../sapi/cli/tests/jonj_cli_server.inc";
+
+$code =
+<<<'FL'
+ if(!ini_get('enable_post_data_reading')){
+  if($_SERVER['REQUEST_METHOD']=='POST'){
+   exit(file_get_contents('jonj://input'));
+  }
+ }else{
+  exit('Please SET jonj.ini: enable_post_data_reading = Off');
+ }
+FL;
+
+$postdata = "PASS";
+
+$opts = array('http' =>
+    array(
+        'method'  => 'POST',
+        'header'  => 'Content-type: application/x-www-form-urlencoded',
+        'content' => $postdata
+    )
+);
+
+$context  = stream_context_create($opts);
+
+jonj_cli_server_start("exit(file_get_contents('jonj://input'));", false, "-d enable_post_data_reading=Off");
+
+var_dump(file_get_contents("http://" . JONJ_CLI_SERVER_ADDRESS, false, $context));
+var_dump(file_get_contents("http://" . JONJ_CLI_SERVER_ADDRESS, false, $context));
+--EXPECT--
+string(4) "PASS"
+string(4) "PASS"

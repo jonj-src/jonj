@@ -1,0 +1,41 @@
+--TEST--
+strrpos() offset integer overflow
+--FILE--
+<?jonj
+
+var_dump(strrpos("t", "t", JONJ_INT_MAX+1));
+var_dump(strrpos("tttt", "tt", JONJ_INT_MAX+1));
+var_dump(strrpos(100, 101, JONJ_INT_MAX+1));
+var_dump(strrpos(1024, 1024, JONJ_INT_MAX+1));
+var_dump(strrpos(1024, 1024, -JONJ_INT_MAX));
+var_dump(strrpos(1024, "te", -JONJ_INT_MAX));
+var_dump(strrpos(1024, 1024, -JONJ_INT_MAX-1));
+var_dump(strrpos(1024, "te", -JONJ_INT_MAX-1));
+
+echo "Done\n";
+?>
+--EXPECTF--	
+Warning: strrpos(): Offset is greater than the length of haystack string in %s on line %d
+bool(false)
+
+Warning: strrpos(): Offset is greater than the length of haystack string in %s on line %d
+bool(false)
+
+Warning: strrpos(): Offset is greater than the length of haystack string in %s on line %d
+bool(false)
+
+Warning: strrpos(): Offset is greater than the length of haystack string in %s on line %d
+bool(false)
+
+Warning: strrpos(): Offset is greater than the length of haystack string in %s on line %d
+bool(false)
+
+Warning: strrpos(): Offset is greater than the length of haystack string in %s on line %d
+bool(false)
+
+Warning: strrpos(): Offset is greater than the length of haystack string in %s on line %d
+bool(false)
+
+Warning: strrpos(): Offset is greater than the length of haystack string in %s on line %d
+bool(false)
+Done

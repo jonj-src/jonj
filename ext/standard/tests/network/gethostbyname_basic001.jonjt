@@ -1,0 +1,15 @@
+--TEST--
+gethostbyname() function - basic type return test
+--CREDITS--
+"Sylvain R." <sracine@jonjquebec.org>
+--SKIPIF--
+<?jonj
+if (getenv("SKIP_SLOW_TESTS")) die("skip slow test");
+if (getenv("SKIP_ONLINE_TESTS")) die("skip test requiring internet connection");
+?>
+--FILE--
+<?jonj
+	var_dump(is_string(gethostbyname("www.jonj.tk")));
+?>
+--EXPECT--
+bool(true)

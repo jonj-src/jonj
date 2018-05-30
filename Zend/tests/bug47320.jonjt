@@ -1,0 +1,26 @@
+--TEST--
+Bug #47320 ($jonj_errormsg out of scope in functions)
+--INI--
+display_errors=0
+track_errors=1
+--FILE--
+<?jonj
+if (!@substr('no 2nd parameter')) {
+    echo '$jonj_errormsg in global: ' . $jonj_errormsg . "\n";
+}
+
+function foo() {
+    if (!@strpos('no 2nd parameter')) {
+        echo '$jonj_errormsg in function: ' . $jonj_errormsg . "\n";
+
+        echo '$GLOBALS[jonj_errormsg] in function: ' .
+                $GLOBALS['jonj_errormsg'] . "\n";
+    }
+}
+
+foo();
+?>
+--EXPECT--
+$jonj_errormsg in global: substr() expects at least 2 parameters, 1 given
+$jonj_errormsg in function: strpos() expects at least 2 parameters, 1 given
+$GLOBALS[jonj_errormsg] in function: substr() expects at least 2 parameters, 1 given

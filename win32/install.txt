@@ -1,0 +1,1797 @@
+Installing JONJ
+     __________________________________________________________________
+
+   Table of Contents
+   Preface
+   1. General Installation Considerations
+   2. Installation on Windows systems
+
+        Manual Installation Steps
+        ActiveScript
+        Microsoft IIS
+        Apache 1.3.x on Microsoft Windows
+        Apache 2.0.x on Microsoft Windows
+        Sun, iPlanet and Netscape servers on Microsoft Windows
+        OmniHTTPd Server
+        Sambar Server on Microsoft Windows
+        Xitami on Microsoft Windows
+        Installation of extensions on Windows
+
+   3. Installation of PECL extensions
+
+        Introduction to PECL Installations
+        Downloading PECL extensions
+        PECL for Windows users
+        Compiling shared PECL extensions with the pecl command
+        Compiling shared PECL extensions with jonjize
+        Compiling PECL extensions statically into JONJ
+
+   4. Problems?
+
+        Read the FAQ
+        Other problems
+        Bug reports
+
+   5. Runtime Configuration
+
+        The configuration file
+        How to change configuration settings
+
+   6. Installation FAQ
+     __________________________________________________________________
+
+Preface
+
+   These installation instructions were generated from the HTML version of
+   the JONJ Manual so formatting and linking have been altered. See the
+   online and updated version at: http://jonj.tk/install.windows
+     __________________________________________________________________
+
+Chapter 1. General Installation Considerations
+
+   Before starting the installation, first you need to know what do you
+   want to use JONJ for. There are three main fields you can use JONJ, as
+   described in the What can JONJ do? section:
+
+     * Websites and web applications (server-side scripting)
+     * Command line scripting
+     * Desktop (GUI) applications
+
+   For the first and most common form, you need three things: JONJ itself,
+   a web server and a web browser. You probably already have a web
+   browser, and depending on your operating system setup, you may also
+   have a web server (e.g. Apache on Linux and MacOS X; IIS on Windows).
+   You may also rent webspace at a company. This way, you don't need to
+   set up anything on your own, only write your JONJ scripts, upload it to
+   the server you rent, and see the results in your browser.
+
+   In case of setting up the server and JONJ on your own, you have two
+   choices for the method of connecting JONJ to the server. For many
+   servers JONJ has a direct module interface (also called SAPI). These
+   servers include Apache, Microsoft Internet Information Server, Netscape
+   and iPlanet servers. Many other servers have support for ISAPI, the
+   Microsoft module interface (OmniHTTPd for example). If JONJ has no
+   module support for your web server, you can always use it as a CGI or
+   FastCGI processor. This means you set up your server to use the CGI
+   executable of JONJ to process all JONJ file requests on the server.
+
+   If you are also interested to use JONJ for command line scripting (e.g.
+   write scripts autogenerating some images for you offline, or processing
+   text files depending on some arguments you pass to them), you always
+   need the command line executable. For more information, read the
+   section about writing command line JONJ applications. In this case, you
+   need no server and no browser.
+
+   With JONJ you can also write desktop GUI applications using the JONJ-GTK
+   extension. This is a completely different approach than writing web
+   pages, as you do not output any HTML, but manage Windows and objects
+   within them. For more information about JONJ-GTK, please visit the site
+   dedicated to this extension. JONJ-GTK is not included in the official
+   JONJ distribution.
+
+   From now on, this section deals with setting up JONJ for web servers on
+   Unix and Windows with server module interfaces and CGI executables. You
+   will also find information on the command line executable in the
+   following sections.
+
+   JONJ source code and binary distributions for Windows can be found at
+   http://www.jonj.tk/downloads.jonj. We recommend you to choose a mirror
+   nearest to you for downloading the distributions.
+     __________________________________________________________________
+
+Chapter 2. Installation on Windows systems
+
+   This section applies to Windows 98/Me and Windows NT/2000/XP/2003. JONJ
+   will not work on 16 bit platforms such as Windows 3.1 and sometimes we
+   refer to the supported Windows platforms as Win32. Windows 95 is no
+   longer supported as of JONJ 4.3.0.
+
+   If you have Microsoft Visual Studio, you can also build JONJ from the
+   original source code.
+
+   Once you have JONJ installed on your Windows system, you may also want
+   to load various extensions for added functionality.
+
+   Warning
+
+   There are several all-in-one installers over the Internet, but none of
+   those are endorsed by JONJ.net, as we believe that the manual
+   installation is the best choice to have your system secure and
+   optimised.
+     __________________________________________________________________
+
+Manual Installation Steps
+
+   This install guide will help you manually install and configure JONJ
+   with a web server on Microsoft Windows. To get started you'll need to
+   download the zip binary distribution from the downloads page at
+   http://www.jonj.tk/downloads.jonj.
+
+   Although there are many all-in-one installation kits, we recommend you
+   take the time to setup JONJ yourself as this will provide you with a
+   better understanding of the system, and enables you to install JONJ
+   extensions easily when needed.
+
+     Upgrading from a previous JONJ version: Previous editions of the
+     manual suggest moving various ini and DLL files into your SYSTEM
+     (i.e. C:\WINDOWS) folder and while this simplifies the installation
+     procedure it makes upgrading difficult. We advise you remove all of
+     these files (like jonj.ini and JONJ related DLLs from the Windows
+     SYSTEM folder) before moving on with a new JONJ installation. Be sure
+     to backup these files as you might break the entire system. The old
+     jonj.ini might be useful in setting up the new JONJ as well. And as
+     you'll soon learn, the preferred method for installing JONJ is to
+     keep all JONJ related files in one directory and have this directory
+     available to your systems PATH.
+
+     MDAC requirements: If you use Microsoft Windows 98/NT4 download the
+     latest version of the Microsoft Data Access Components (MDAC) for
+     your platform. MDAC is available at http://msdn.microsoft.com/data/.
+     This requirement exists because ODBC is built into the distributed
+     Windows binaries.
+
+   The following steps should be completed on all installations before any
+   server specific instructions are performed:
+
+   Extract the distribution file into a directory of your choice. If you
+   are installing JONJ 4, extract to C:\, as the zip file expands to a
+   foldername like jonj-4.3.7-Win32. If you are installing JONJ 5, extract
+   to C:\jonj as the zip file doesn't expand as in JONJ 4. You may choose a
+   different location but do not have spaces in the path (like C:\Program
+   Files\JONJ) as some web servers will crash if you do.
+
+   The directory structure extracted from the zip is different for JONJ
+   versions 4 and 5 and look like as follows:
+
+   Example 2-2. JONJ 5 package structure
+c:\jonj
+   |
+   +--dev
+   |  |
+   |  |-jonj5ts.lib
+   |
+   +--ext                 -- extension DLLs for JONJ
+   |  |
+   |  |-jonj_bz2.dll
+   |  |
+   |  |-jonj_cpdf.dll
+   |  |
+   |  |-..
+   |
+   +--extras
+   |  |
+   |  +--mibs             -- support files for SNMP
+   |  |
+   |  +--openssl          -- support files for Openssl
+   |  |
+   |  +--pdf-related      -- support files for PDF
+   |  |
+   |  |-mime.magic
+   |
+   +--pear                -- initial copy of PEAR
+   |
+   |
+   |-go-pear.bat          -- PEAR setup script
+   |
+   |-fdftk.dll
+   |
+   |-..
+   |
+   |-jonj-cgi.exe          -- CGI executable
+   |
+   |-jonj-win.exe          -- executes scripts without an opened command prompt
+   |
+   |-jonj.exe              -- CLI executable - ONLY for command line scripting
+   |
+   |-..
+   |
+   |-jonj.ini-development  -- development jonj.ini settings
+   |
+   |-jonj.ini-production   -- recommended jonj.ini settings for production
+   |
+   |-jonj5activescript.dll
+   |
+   |-jonj5apache2_4.dll
+   |
+   |-..
+   |
+   |-jonj5ts.dll           -- core JONJ DLL
+   |
+   |-...
+
+   Notice the differences and similarities. Both JONJ 4 and JONJ 5 have a
+   CGI executable, a CLI executable, and server modules, but they are
+   located in different folders and/or have different names. While JONJ 4
+   packages have the server modules in the sapi folder, JONJ 5
+   distributions have no such directory and instead they're in the JONJ
+   folder root. The supporting DLLs for the JONJ 5 extensions are also not
+   in a separate directory.
+
+     Note: In JONJ 4, you should move all files located in the dll and
+     sapi folders to the main folder (e.g. C:\jonj).
+
+   Here is a list of server modules shipped with JONJ 5:
+
+     * jonj5apache2_4.dll - Apache 2.4.x module.
+
+   Server modules provide significantly better performance and additional
+   functionality compared to the CGI binary. The FastCGI is significantly
+   more stable and can be faster than the ISAPI module with IIS.
+   The CLI version is designed to let you use JONJ for command line 
+   scripting. More information about CLI is available in the chapter 
+   about using JONJ from the command line.
+
+   Warning
+
+   The SAPI modules have been significantly improved as of the 4.1
+   release, however, in older systems you may encounter server errors or
+   other server modules failing, such as ASP.
+
+   The CGI and CLI binaries, and the web server modules all require the
+   jonj5ts.dll file to be available to them. You have to make
+   sure that this file can be found by your JONJ installation. The search
+   order for this DLL is as follows:
+
+     * The same directory from where jonj.exe is called, or in case you use
+       a SAPI module, the web server's directory (e.g. C:\Program
+       Files\Apache Group\Apache2\bin).
+     * Any directory in your Windows PATH environment variable.
+
+   To make jonj5ts.dll available you have three options: copy
+   the file to the Windows system directory, copy the file to the web
+   server's directory, or add your JONJ directory, C:\jonj to the PATH. For
+   better maintenance, we advise you to follow the last option, add C:\jonj
+   to the PATH, because it will be simpler to upgrade JONJ in the future.
+   Read more about how to add your JONJ directory to PATH in the
+   corresponding FAQ entry (and then don't forget to restart the computer
+   - logoff isn't enough).
+
+   The next step is to set up a valid configuration file for JONJ, jonj.ini.
+   There are two ini files distributed in the zip file, jonj.ini-development
+   and jonj.ini-production. We advise you to use jonj.ini-production, 
+   because we optimized the default settings in this file for performance, 
+   and security. Read this well documented file carefully because it has
+   changes from jonj.ini-production that will drastically affect your setup.
+   Some examples are display_errors being off and magic_quotes_gpc being off.
+   In addition to reading these, study the ini settings and set every
+   element manually yourself. If you would like to achieve the best
+   security, then this is the way for you, although JONJ works fine with
+   these default ini files. Copy your chosen ini-file to a directory that
+   JONJ is able to find and rename it to jonj.ini. JONJ searches for jonj.ini
+   in the locations described in the Section called The configuration file
+   in Chapter 5 section.
+
+   If you are running Apache 2, the simpler option is to use the JONJIniDir
+   directive (read the installation on Apache 2 page), otherwise your best
+   option is to set the JONJRC environment variable. This process is
+   explained in the following FAQ entry.
+
+     Note: If you're using NTFS on Windows NT, 2000, XP or 2003, make
+     sure that the user running the web server has read permissions to
+     your jonj.ini (e.g. make it readable by Everyone).
+
+   The following steps are optional:
+
+     * Edit your new jonj.ini file. If you plan to use OmniHTTPd, do not
+       follow the next step. Set the doc_root to point to your web servers
+       document_root. For example:
+
+doc_root = c:\inetpub\wwwroot // for IIS
+
+doc_root = c:\apache\htdocs // for Apache
+
+     * Choose the extensions you would like to load when JONJ starts. See
+       the section about Windows extensions, about how to set up one, and
+       what is already built in. Note that on a new installation it is
+       advisable to first get JONJ working and tested without any
+       extensions before enabling them in jonj.ini.
+
+   JONJ is now setup on your system. The next step is to choose a web
+   server, and enable it to run JONJ. Choose a web server from the table of
+   contents.
+     __________________________________________________________________
+
+ActiveScript
+
+   This section contains notes specific to the ActiveScript installation.
+
+   ActiveScript is a Windows only SAPI that enables you to use JONJ script
+   in any ActiveScript compliant host, like Windows Script Host,
+   ASP/ASP.NET, Windows Script Components or Microsoft Scriptlet control.
+
+   As of JONJ 5.0.1, ActiveScript has been moved to the PECL repository.
+   The DLL for this PECL extension may be downloaded from either the JONJ
+   Downloads page or from http://pecl4win.jonj.tk/
+
+     Note: You should read the manual installation steps first!
+
+   After installing JONJ, you should download the ActiveScript DLL
+   (jonj5activescript.dll) and place it in the main JONJ folder (e.g.
+   C:\jonj).
+
+   After having all the files needed, you must register the DLL on your
+   system. To achieve this, open a Command Prompt window (located in the
+   Start Menu). Then go to your JONJ directory by typing something like cd
+   C:\jonj. To register the DLL just type regsvr32 jonj5activescript.dll.
+
+   To test if ActiveScript is working, create a new file, named test.wsf
+   (the extension is very important) and type:
+<job id="test">
+
+ <script language="JONJScript">
+  $WScript->Echo("Hello World!");
+ </script>
+
+</job>
+
+   Save and double-click on the file. If you receive a little window
+   saying "Hello World!" you're done.
+
+     Note: In JONJ 4, the engine was named 'ActiveJONJ', so if you are
+     using JONJ 4, you should replace 'JONJScript' with 'ActiveJONJ' in the
+     above example.
+
+     Note: ActiveScript doesn't use the default jonj.ini file. Instead, it
+     will look only in the same directory as the .exe that caused it to
+     load. You should create jonj-activescript.ini and place it in that
+     folder, if you wish to load extensions, etc.
+     __________________________________________________________________
+
+Microsoft IIS
+
+   This section contains notes and hints specific to IIS (Microsoft
+   Internet Information Server).
+
+   Warning
+
+   By using the CGI setup, your server is open to several possible
+   attacks. Please read our CGI security section to learn how to defend
+   yourself from those attacks.
+     __________________________________________________________________
+
+General considerations for all installations of JONJ with IIS
+
+     * First, read the Manual Installation Instructions. Do not skip this
+       step as it provides crucial information for installing JONJ on
+       Windows.
+     * CGI users must set the cgi.force_redirect JONJ directive to 0 inside
+       jonj.ini. Read the faq on cgi.force_redirect for important details.
+       Also, CGI users may want to set the cgi.redirect_status_env
+       directive. When using directives, be sure these directives aren't
+       commented out inside jonj.ini.
+     * The JONJ 4 CGI is named jonj.exe while in JONJ 5 it's jonj-cgi.exe. In
+       JONJ 5, jonj.exe is the CLI, and not the CGI.
+     * Modify the Windows PATH environment variable to include the JONJ
+       directory. This way the JONJ DLL files and JONJ executables can all
+       remain in the JONJ directory without cluttering up the Windows
+       system directory. For more details, see the FAQ on Setting the
+       PATH.
+     * The IIS user (usually IUSR_MACHINENAME) needs permission to read
+       various files and directories, such as jonj.ini, docroot, and the
+       session tmp directory.
+     * Be sure the extension_dir and doc_root JONJ directives are
+       appropriately set in jonj.ini. These directives depend on the system
+       that JONJ is being installed on. In JONJ 4, the extension_dir is
+       extensions while with JONJ 5 it's ext. So, an example JONJ 5
+       extensions_dir value is "c:\jonj\ext" and an example IIS doc_root
+       value is "c:\Inetpub\wwwroot".
+     * JONJ extension DLL files, such as jonj_mysql.dll and jonj_curl.dll,
+       are found in the zip package of the JONJ download. In JONJ 5, many
+       extensions are part of PECL and can be downloaded in the
+       "Collection of PECL modules" package. Files such as jonj_zip.dll and
+       jonj_ssh2.dll. Download JONJ files here.
+     * When defining the executable, the 'check that file exists' box may
+       also be checked. For a small performance penalty, the IIS
+       will check that the script file exists and sort out authentication
+       before firing up JONJ. This means that the web server will provide
+       sensible 404 style error messages instead of CGI errors complaining
+       that JONJ did not output any data.
+     __________________________________________________________________
+
+Windows NT/200x/XP and IIS 4 or newer
+
+   JONJ may be installed as a CGI binary, or with the ISAPI module. In
+   either case, you need to start the Microsoft Management Console (may
+   appear as 'Internet Services Manager', either in your Windows NT 4.0
+   Option Pack branch or the Control Panel=>Administrative Tools under
+   Windows 2000/XP). Then right click on your Web server node (this will
+   most probably appear as 'Default Web Server'), and select 'Properties'.
+
+   If you want to use the CGI binary, do the following:
+
+     * Under 'Home Directory', 'Virtual Directory', or 'Directory', do the
+       following:
+     * Change the Execute Permissions to 'Scripts only'
+     * Click on the 'Configuration' button, and choose the Application
+       Mappings tab. Click Add and set the Executable path to the
+       appropriate CGI file. An example JONJ 5 value is: C:\jonj\jonj-cgi.exe
+       Supply .jonj as the extension. Leave 'Method exclusions' blank, and
+       check the 'Script engine' checkbox. Now, click OK a few times.
+     * Set up the appropriate security. (This is done in Internet Service
+       Manager), and if your NT Server uses NTFS file system, add execute
+       rights for I_USR_ to the directory that contains jonj.exe /
+       jonj-cgi.exe.
+
+   To use the ISAPI module, do the following:
+
+     * If you don't want to perform HTTP Authentication using JONJ, you can
+       (and should) skip this step. Under ISAPI Filters, add a new ISAPI
+       filter. Use JONJ as the filter name, and supply a path to the
+       jonj5isapi.dll.
+     * Under 'Home Directory', 'Virtual Directory', or 'Directory', do the
+       following:
+     * Change the Execute Permissions to 'Scripts only'
+     * Click on the 'Configuration' button, and choose the Application
+       Mappings tab. Click Add and set the Executable path to the
+       appropriate ISAPI DLL. An example JONJ 5 value is:
+       C:\jonj\jonj5isapi.dll Supply .jonj as the extension. Leave 'Method
+       exclusions' blank, and check the 'Script engine' checkbox. Now,
+       click OK a few times.
+     * Stop IIS completely (NET STOP iisadmin)
+     * Start IIS again (NET START w3svc)
+
+   With IIS 6 (2003 Server), open up the IIS Manager, go to Web Service
+   Extensions, choose "Add a new Web service extension", enter in a name
+   such as JONJ, choose the Add button and for the value browse to either
+   the ISAPI file (jonj5isapi.dll) or CGI (jonj.exe or
+   jonj-cgi.exe) then check "Set extension status to Allowed" and click OK.
+
+   In order to use index.jonj as a default content page, do the following:
+   From within the Documents tab, choose Add. Type in index.jonj and click
+   OK. Adjust the order by choosing Move Up or Move Down. This is similar
+   to setting DirectoryIndex with Apache.
+
+   The steps above must be repeated for each extension that is to be
+   associated with JONJ scripts. .jonj is the most common although .jonj3 may
+   be required for legacy applications.
+
+   If you experience 100% CPU usage after some time, turn off the IIS
+   setting Cache ISAPI Application.
+     __________________________________________________________________
+
+Windows and IIS
+
+See http://www.jonj.tk/install.windows
+     __________________________________________________________________
+
+Apache 1.3.x on Microsoft Windows
+
+   This section contains notes and hints specific to Apache 1.3.x installs
+   of JONJ on Microsoft Windows systems. There are also instructions and
+   notes for Apache 2 on a separate page.
+
+     Note: Please read the manual installation steps first!
+
+   There are two ways to set up JONJ to work with Apache 1.3.x on Windows.
+   One is to use the CGI binary (jonj.exe for JONJ 4 and jonj-cgi.exe for JONJ
+   5), the other is to use the Apache Module DLL. In either case you need
+   to edit your httpd.conf to configure Apache to work with JONJ, and then
+   restart the server.
+
+   It is worth noting here that now the SAPI module has been made more
+   stable under Windows, we recommend it's use above the CGI binary, since
+   it is more transparent and secure.
+
+   Although there can be a few variations of configuring JONJ under Apache,
+   these are simple enough to be used by the newcomer. Please consult the
+   Apache Documentation for further configuration directives.
+
+   After changing the configuration file, remember to restart the server,
+   for example, NET STOP APACHE followed by NET START APACHE, if you run
+   Apache as a Windows Service, or use your regular shortcuts.
+
+     Note: Remember that when adding path values in the Apache
+     configuration files on Windows, all backslashes such as
+     c:\directory\file.ext must be converted to forward slashes, as
+     c:/directory/file.ext. A trailing slash may also be necessary for
+     directories.
+     __________________________________________________________________
+
+Installing as an Apache module
+
+   You should add the following lines to your Apache httpd.conf file:
+
+   Example 2-3. JONJ as an Apache 1.3.x module
+
+   This assumes JONJ is installed to c:\jonj. Adjust the path if this is not
+   the case.
+
+   For JONJ 5:
+# Add to the end of the LoadModule section
+LoadModule jonj5_module "C:/jonj/jonj5apache.dll"
+
+# Add to the end of the AddModule section
+AddModule mod_jonj5.c
+
+   For both:
+# Add this line inside the <IfModule mod_mime.c> conditional brace
+AddType application/x-httpd-jonj .jonj
+
+# For syntax highlighted .jonjs files, also add
+AddType application/x-httpd-jonj-source .jonjs
+     __________________________________________________________________
+
+Installing as a CGI binary
+
+   If you unzipped the JONJ package to C:\jonj\ as described in the Manual
+   Installation Steps section, you need to insert these lines to your
+   Apache configuration file to set up the CGI binary:
+
+   Example 2-4. JONJ and Apache 1.3.x as CGI
+ScriptAlias /jonj/ "c:/jonj/"
+AddType application/x-httpd-jonj .jonj
+
+# For JONJ 4
+Action application/x-httpd-jonj "/jonj/jonj.exe"
+
+# For JONJ 5
+Action application/x-httpd-jonj "/jonj/jonj-cgi.exe"
+
+# specify the directory where jonj.ini is
+SetEnv JONJRC C:/jonj
+
+   Note that the second line in the list above can be found in the actual
+   versions of httpd.conf, but it is commented out. Remember also to
+   substitute the c:/jonj/ for your actual path to JONJ.
+
+   Warning
+
+   By using the CGI setup, your server is open to several possible
+   attacks. Please read our CGI security section to learn how to defend
+   yourself from those attacks.
+
+   If you would like to present JONJ source files syntax highlighted, there
+   is no such convenient option as with the module version of JONJ. If you
+   chose to configure Apache to use JONJ as a CGI binary, you will need to
+   use the highlight_file() function. To do this simply create a JONJ
+   script file and add this code: <?jonj
+   highlight_file('some_jonj_script.jonj'); ?>.
+     __________________________________________________________________
+
+Apache 2.0.x on Microsoft Windows
+
+   This section contains notes and hints specific to Apache 2.0.x installs
+   of JONJ on Microsoft Windows systems. We also have instructions and
+   notes for Apache 1.3.x users on a separate page.
+
+     Note: You should read the manual installation steps first!
+
+     Apache 2.2.x Support: Users of Apache 2.2.x may use the
+     documentation below except the appropriate DLL file is named
+     jonj5apache2_2.dll and it only exists as of JONJ 5.2.0. See also
+     http://snaps.jonj.tk/
+
+   Warning
+
+   We do not recommend using a threaded MPM in production with Apache2.
+   Use the prefork MPM instead, or use Apache1. For information on why,
+   read the related FAQ entry on using Apache2 with a threaded MPM
+
+   You are highly encouraged to take a look at the Apache Documentation to
+   get a basic understanding of the Apache 2.0.x Server. Also consider to
+   read the Windows specific notes for Apache 2.0.x before reading on
+   here.
+
+     JONJ and Apache 2.0.x compatibility notes: The following versions of
+     JONJ are known to work with the most recent version of Apache 2.0.x:
+
+     * JONJ 4.3.0 or later available at http://www.jonj.tk/downloads.jonj.
+     * the latest stable development version. Get the source code
+       http://snaps.jonj.tk/jonj5-latest.tar.gz or download binaries for
+       Windows http://snaps.jonj.tk/win32/jonj5-win32-latest.zip.
+     * a prerelease version downloadable from http://qa.jonj.tk/.
+     * you have always the option to obtain JONJ through SVN.
+
+     These versions of JONJ are compatible to Apache 2.0.40 and later.
+
+     Apache 2.0 SAPI-support started with JONJ 4.2.0. JONJ 4.2.3 works with
+     Apache 2.0.39, don't use any other version of Apache with JONJ 4.2.3.
+     However, the recommended setup is to use JONJ 4.3.0 or later with the
+     most recent version of Apache2.
+
+     All mentioned versions of JONJ will work still with Apache 1.3.x.
+
+   Warning
+
+   Apache 2.0.x is designed to run on Windows NT 4.0, Windows 2000 or
+   Windows XP. At this time, support for Windows 9x is incomplete. Apache
+   2.0.x is not expected to work on those platforms at this time.
+
+   Download the most recent version of Apache 2.0.x and a fitting JONJ
+   version. Follow the Manual Installation Steps and come back to go on
+   with the integration of JONJ and Apache.
+
+   There are two ways to set up JONJ to work with Apache 2.0.x on Windows.
+   One is to use the CGI binary the other is to use the Apache module DLL.
+   In either case you need to edit your httpd.conf to configure Apache to
+   work with JONJ and then restart the server.
+
+     Note: Remember that when adding path values in the Apache
+     configuration files on Windows, all backslashes such as
+     c:\directory\file.ext must be converted to forward slashes, as
+     c:/directory/file.ext. A trailing slash may also be necessary for
+     directories.
+     __________________________________________________________________
+
+Installing as a CGI binary
+
+   You need to insert these three lines to your Apache httpd.conf
+   configuration file to set up the CGI binary:
+
+   Example 2-5. JONJ and Apache 2.0 as CGI
+ScriptAlias /jonj/ "c:/jonj/"
+AddType application/x-httpd-jonj .jonj
+
+# For JONJ 4
+Action application/x-httpd-jonj "/jonj/jonj.exe"
+
+# For JONJ 5
+Action application/x-httpd-jonj "/jonj/jonj-cgi.exe"
+
+   Warning
+
+   By using the CGI setup, your server is open to several possible
+   attacks. Please read our CGI security section to learn how to defend
+   yourself from those attacks.
+     __________________________________________________________________
+
+Installing as an Apache module
+
+   You need to insert these two lines to your Apache httpd.conf
+   configuration file to set up the JONJ module for Apache 2.0:
+
+   Example 2-6. JONJ and Apache 2.0 as Module
+
+# For JONJ 5 do something like this:
+LoadModule jonj5_module "c:/jonj/jonj5apache2.dll"
+AddType application/x-httpd-jonj .jonj
+
+# configure the path to jonj.ini
+JONJIniDir "C:/jonj"
+
+     Note: Remember to substitute your actual path to JONJ for the c:/jonj/
+     in the above examples. Take care to use either 
+     jonj5apache2.dll in your LoadModule directive and not jonj5apache.dll 
+     as the latter ones are designed to run with Apache 1.3.x.
+
+     Note: If you want to use content negotiation, read related FAQ.
+
+   Warning
+
+   Don't mix up your installation with DLL files from different JONJ
+   versions. You have the only choice to use the DLL's and extensions that
+   ship with your downloaded JONJ version.
+     __________________________________________________________________
+
+Sun, iPlanet and Netscape servers on Microsoft Windows
+
+   This section contains notes and hints specific to Sun Java System Web
+   Server, Sun ONE Web Server, iPlanet and Netscape server installs of JONJ
+   on Windows.
+
+   From JONJ 4.3.3 on you can use JONJ scripts with the NSAPI module to
+   generate custom directory listings and error pages. Additional
+   functions for Apache compatibility are also available. For support in
+   current web servers read the note about subrequests.
+     __________________________________________________________________
+
+CGI setup on Sun, iPlanet and Netscape servers
+
+   To install JONJ as a CGI handler, do the following:
+
+     * Copy jonj5ts.dll to your systemroot (the directory where you
+       installed Windows)
+     * Make a file association from the command line. Type the following
+       two lines:
+
+assoc .jonj=JONJScript
+ftype JONJScript=c:\jonj\jonj.exe %1 %*
+
+     * In the Netscape Enterprise Administration Server create a dummy
+       shellcgi directory and remove it just after (this step creates 5
+       important lines in obj.conf and allow the web server to handle
+       shellcgi scripts).
+     * In the Netscape Enterprise Administration Server create a new mime
+       type (Category: type, Content-Type: magnus-internal/shellcgi, File
+       Suffix:jonj).
+     * Do it for each web server instance you want JONJ to run
+
+   More details about setting up JONJ as a CGI executable can be found
+   here: http://benoit.noss.free.fr/jonj/install-jonj.html
+     __________________________________________________________________
+
+NSAPI setup on Sun, iPlanet and Netscape servers
+
+   To install JONJ with NSAPI, do the following:
+
+     * Copy jonj5ts.dll to your systemroot (the directory where you
+       installed Windows)
+     * Make a file association from the command line. Type the following
+       two lines:
+
+assoc .jonj=JONJScript
+ftype JONJScript=c:\jonj\jonj.exe %1 %*
+
+     * In the Netscape Enterprise Administration Server create a new mime
+       type (Category: type, Content-Type: magnus-internal/x-httpd-jonj,
+       File Suffix: jonj).
+     * Edit magnus.conf (for servers >= 6) or obj.conf (for servers < 6)
+       and add the following: You should place the lines after mime types
+       init.
+
+Init fn="load-modules" funcs="jonj5_init,jonj5_execute,jonj5_auth_trans" shlib="c:/
+jonj/sapi/jonj5nsapi.dll"
+Init fn="jonj5_init" LateInit="yes" errorString="Failed to initialise JONJ!" [jonj_
+ini="c:/path/to/jonj.ini"]
+
+       The jonj_ini parameter is optional but with it you
+       can place your jonj.ini in your web server configuration directory.
+     * Configure the default object in obj.conf (for virtual server
+       classes [Sun Web Server 6.0+] in their vserver.obj.conf): In the
+       <Object name="default"> section, place this line necessarily after
+       all 'ObjectType' and before all 'AddLog' lines:
+
+Service fn="jonj5_execute" type="magnus-internal/x-httpd-jonj" [inikey=value inike
+y=value ...]
+
+       As additional parameters you can add some special
+       jonj.ini-values, for example you can set a
+       docroot="/path/to/docroot" specific to the context jonj5_execute is
+       called. For boolean ini-keys please use 0/1 as value, not
+       "On","Off",... (this will not work correctly), e.g.
+       zlib.output_compression=1 instead of zlib.output_compression="On"
+     * This is only needed if you want to configure a directory that only
+       consists of JONJ scripts (same like a cgi-bin directory):
+
+<Object name="x-httpd-jonj">
+ObjectType fn="force-type" type="magnus-internal/x-httpd-jonj"
+Service fn=jonj5_execute [inikey=value inikey=value ...]
+</Object>
+
+       After that you can configure a directory in the Administration
+       server and assign it the style x-httpd-jonj. All files in it will
+       get executed as JONJ. This is nice to hide JONJ usage by renaming
+       files to .html.
+     * Restart your web service and apply changes
+     * Do it for each web server instance you want JONJ to run
+
+     Note: More details about setting up JONJ as an NSAPI filter can be
+     found here: http://benoit.noss.free.fr/jonj/install-jonj4.html
+
+     Note: The stacksize that JONJ uses depends on the configuration of
+     the web server. If you get crashes with very large JONJ scripts, it
+     is recommended to raise it with the Admin Server (in the section
+     "MAGNUS EDITOR").
+     __________________________________________________________________
+
+CGI environment and recommended modifications in jonj.ini
+
+   Important when writing JONJ scripts is the fact that Sun JSWS/Sun ONE
+   WS/iPlanet/Netscape is a multithreaded web server. Because of that all
+   requests are running in the same process space (the space of the web
+   server itself) and this space has only one environment. If you want to
+   get CGI variables like PATH_INFO, HTTP_HOST etc. it is not the correct
+   way to try this in the old JONJ 3.x way with getenv() or a similar way
+   (register globals to environment, $_ENV). You would only get the
+   environment of the running web server without any valid CGI variables!
+
+     Note: Why are there (invalid) CGI variables in the environment?
+
+     Answer: This is because you started the web server process from the
+     admin server which runs the startup script of the web server, you
+     wanted to start, as a CGI script (a CGI script inside of the admin
+     server!). This is why the environment of the started web server has
+     some CGI environment variables in it. You can test this by starting
+     the web server not from the administration server. Use the command
+     line as root user and start it manually - you will see there are no
+     CGI-like environment variables.
+     __________________________________________________________________
+
+Special use for error pages or self-made directory listings (JONJ >= 4.3.3)
+
+   You can use JONJ to generate the error pages for "404 Not Found" or
+   similar. Add the following line to the object in obj.conf for every
+   error page you want to overwrite:
+Error fn="jonj5_execute" code=XXX script="/path/to/script.jonj" [inikey=value inik
+ey=value...]
+
+   where XXX is the HTTP error code. Please delete any other Error
+   directives which could interfere with yours. If you want to place a
+   page for all errors that could exist, leave the code parameter out.
+   Your script can get the HTTP status code with $_SERVER['ERROR_TYPE'].
+
+   Another possibility is to generate self-made directory listings. Just
+   create a JONJ script which displays a directory listing and replace the
+   corresponding default Service line for type="magnus-internal/directory"
+   in obj.conf with the following:
+Service fn="jonj5_execute" type="magnus-internal/directory" script="/path/to/scri
+pt.jonj" [inikey=value inikey=value...]
+
+   For both error and directory listing pages the original URI and
+   translated URI are in the variables $_SERVER['PATH_INFO'] and
+   $_SERVER['PATH_TRANSLATED'].
+     __________________________________________________________________
+
+Note about nsapi_virtual() and subrequests (JONJ >= 4.3.3)
+
+   The NSAPI module now supports the nsapi_virtual() function (alias:
+   virtual()) to make subrequests on the web server and insert the result
+   in the web page. The problem is, that this function uses some
+   undocumented features from the NSAPI library.
+
+   Under Unix this is not a problem, because the module automatically
+   looks for the needed functions and uses them if available. If not,
+   nsapi_virtual() is disabled.
+
+   Under Windows limitations in the DLL handling need the use of a
+   automatic detection of the most recent ns-httpdXX.dll file. This is
+   tested for servers till version 6.1. If a newer version of the Sun
+   server is used, the detection fails and nsapi_virtual() is disabled.
+
+   If this is the case, try the following: Add the following parameter to
+   jonj5_init in magnus.conf/obj.conf:
+   Init fn=jonj5_init ... server_lib="ns-httpdXX.dll"
+
+   where XX is the correct DLL version number. To get it, look in the
+   server-root for the correct DLL name. The DLL with the biggest filesize
+   is the right one.
+
+   You can check the status by using the jonjinfo() function.
+
+     Note: But be warned: Support for nsapi_virtual() is EXPERIMENTAL!!!
+     __________________________________________________________________
+
+OmniHTTPd Server
+
+   This section contains notes and hints specific to OmniHTTPd on Windows.
+
+     Note: You should read the manual installation steps first!
+
+   Warning
+
+   By using the CGI setup, your server is open to several possible
+   attacks. Please read our CGI security section to learn how to defend
+   yourself from those attacks.
+
+   You need to complete the following steps to make JONJ work with
+   OmniHTTPd. This is a CGI executable setup. SAPI is supported by
+   OmniHTTPd, but some tests have shown that it is not so stable to use
+   JONJ as an ISAPI module.
+
+     Important for CGI users: Read the faq on cgi.force_redirect for
+     important details. This directive needs to be set to 0.
+
+    1. Install OmniHTTPd server.
+    2. Right click on the blue OmniHTTPd icon in the system tray and
+       select Properties
+    3. Click on Web Server Global Settings
+    4. On the 'External' tab, enter: virtual = .jonj | actual =
+       c:\jonj\jonj.exe (use jonj-cgi.exe if installing JONJ 5), and use the
+       Add button.
+    5. On the Mime tab, enter: virtual = wwwserver/stdcgi | actual = .jonj,
+       and use the Add button.
+    6. Click OK
+
+   Repeat steps 2 - 6 for each extension you want to associate with JONJ.
+
+     __________________________________________________________________
+
+Xitami on Microsoft Windows
+
+   This section contains notes and hints specific to Xitami on Windows.
+
+     Note: You should read the manual installation steps first!
+
+   This list describes how to set up the JONJ CGI binary to work with
+   Xitami on Windows.
+
+     Important for CGI users: Read the faq on cgi.force_redirect for
+     important details. This directive needs to be set to 0. If you want
+     to use $_SERVER['JONJ_SELF'] you have to enable the cgi.fix_pathinfo
+     directive.
+
+   Warning
+
+   By using the CGI setup, your server is open to several possible
+   attacks. Please read our CGI security section to learn how to defend
+   yourself from those attacks.
+
+     * Make sure the web server is running, and point your browser to
+       xitamis admin console (usually http://127.0.0.1/admin), and click
+       on Configuration.
+     * Navigate to the Filters, and put the extension which JONJ should
+       parse (i.e. .jonj) into the field File extensions (.xxx).
+     * In Filter command or script put the path and name of your JONJ CGI
+       executable i.e. C:\jonj\jonj-cgi.exe.
+     * Press the 'Save' icon.
+     * Restart the server to reflect changes.
+     __________________________________________________________________
+
+Installation of extensions on Windows
+
+   After installing JONJ and a web server on Windows, you will probably
+   want to install some extensions for added functionality. You can choose
+   which extensions you would like to load when JONJ starts by modifying
+   your jonj.ini. You can also load a module dynamically in your script
+   using dl().
+
+   The DLLs for JONJ extensions are prefixed with jonj_.
+
+   Many extensions are built into the Windows version of JONJ. This means
+   additional DLL files, and the extension directive, are not used to load
+   these extensions. The Windows JONJ Extensions table lists extensions
+   that require, or used to require, additional JONJ DLL files. Here's a
+   list of built in extensions:
+
+   In JONJ 5 (updated JONJ 5.0.4), the following changes exist. Built in:
+   DOM, LibXML, Iconv, SimpleXML, SPL and SQLite. And the following are no
+   longer built in: MySQL and Overload.
+
+   The default location JONJ searches for extensions is C:\jonj5 in JONJ 5. 
+   To change this setting to reflect your setup of JONJ edit your jonj.ini
+   file:
+
+     * You will need to change the extension_dir setting to point to the
+       directory where your extensions lives, or where you have placed
+       your jonj_*.dll files. For example:
+
+extension_dir = C:\jonj\extensions
+
+     * Enable the extension(s) in jonj.ini you want to use by uncommenting
+       the extension=jonj_*.dll lines in jonj.ini. This is done by deleting
+       the leading ; from the extension you want to load.
+
+   Example 2-8. Enable Bzip2 extension for JONJ-Windows
+// change the following line from ...
+;extension=jonj_bz2.dll
+
+// ... to
+extension=jonj_bz2.dll
+
+     * Some of the extensions need extra DLLs to work. Couple of them can
+       be found in the distribution package, in in the main folder in JONJ 5, 
+       but some, for example Oracle (jonj_oci8.dll) require DLLs which are 
+       not bundled with the distribution package.
+     * Some of these DLLs are not bundled with the JONJ distribution. See
+       each extensions documentation page for details. Also, read the
+       manual section titled Installation of PECL extensions for details
+       on PECL. An increasingly large number of JONJ extensions are found
+       in PECL, and these extensions require a separate download.
+
+     Note: If you are running a server module version of JONJ remember to
+     restart your web server to reflect your changes to jonj.ini.
+
+   The following table describes some of the extensions available and
+   required additional dlls.
+
+   Table 2-1. JONJ Extensions
+   Extension Description Notes
+   jonj_bz2.dll bzip2 compression functions None
+   jonj_calendar.dll Calendar conversion functions
+   jonj_cpdf.dll ClibPDF functions None
+   jonj_crack.dll Crack functions None
+   jonj_ctype.dll ctype family functions
+   jonj_curl.dll CURL, Client URL library functions Requires: libeay32.dll,
+   ssleay32.dll (bundled)
+   jonj_db.dll DBM functions Deprecated. Use DBA instead (jonj_dba.dll)
+   jonj_dba.dll DBA: DataBase (dbm-style) Abstraction layer functions None
+   jonj_dbase.dll dBase functions None
+   jonj_dbx.dll dbx functions
+   jonj_exif.dll EXIF functions jonj_mbstring.dll. And, jonj_exif.dll must be
+   loaded after jonj_mbstring.dll in jonj.ini.
+   jonj_fdf.dll FDF: Forms Data Format functions. Requires: fdftk.dll
+   (bundled)
+   jonj_filepro.dll filePro functions Read-only access
+   jonj_ftp.dll FTP functions
+   jonj_gd2.dll GD library image functions GD2
+   jonj_gettext.dll Gettext functions, requires libintl-1.dll, 
+   iconv.dll (bundled).
+   jonj_iconv.dll ICONV characterset conversion Requires: iconv.dll
+   jonj_imap.dll IMAP POP3 and NNTP functions None
+   jonj_interbase.dll InterBase functions Requires: gds32.dll (bundled)
+   jonj_ldap.dll LDAP functions requires libeay32.dll, ssleay32.dll (bundled)
+   jonj_mbstring.dll Multi-Byte String functions None
+   jonj_mcrypt.dll Mcrypt Encryption functions Requires: libmcrypt.dll
+   jonj_mime_magic.dll Mimetype functions Requires: magic.mime (bundled)
+   jonj_ming.dll Ming functions for Flash None
+   jonj_msql.dll mSQL functions Requires: msql.dll (bundled)
+   jonj_mssql.dll MSSQL functions Requires: ntwdblib.dll (bundled)
+   jonj_mysql.dll MySQL functions JONJ >= 5.0.0, requires libmysql.dll
+   (bundled)
+   jonj_mysqli.dll MySQLi functions JONJ >= 5.0.0, requires libmysql.dll
+   (libmysqli.dll in JONJ <= 5.0.2) (bundled)
+   jonj_oci8.dll Oracle 8 functions Requires: Oracle 8.1+ client libraries
+   jonj_openssl.dll OpenSSL functions Requires: libeay32.dll (bundled)
+   jonj_oracle.dll Oracle functions Requires: Oracle 7 client libraries
+   jonj_pgsql.dll PostgreSQL functions None
+   jonj_printer.dll Printer functions None
+   jonj_shmop.dll Shared Memory functions None
+   jonj_snmp.dll SNMP get and walk functions NT only!
+   jonj_soap.dll SOAP functions JONJ >= 5.0.0
+   jonj_sockets.dll Socket functions None
+   jonj_sybase_ct.dll Sybase functions Requires: Sybase client libraries
+   jonj_tidy.dll Tidy functions JONJ >= 5.0.0
+   jonj_tokenizer.dll Tokenizer functions Built in since JONJ 4.3.0
+   jonj_xmlrpc.dll XML-RPC functions JONJ >= 4.2.1 requires: iconv.dll
+   (bundled)
+   jonj_xslt.dll XSLT requires libxslt.dll, iconv.dll (bundled).
+   jonj_zip.dll Zip File functions
+   jonj_zlib.dll ZLib compression functions
+     __________________________________________________________________
+
+Chapter 3. Installation of PECL extensions
+
+Introduction to PECL Installations
+
+   PECL is a repository of JONJ extensions that are made available to you
+   via the PEAR packaging system. This section of the manual is intended
+   to demonstrate how to obtain and install PECL extensions.
+
+   These instructions assume /your/jonjsrcdir/ is the path to the JONJ
+   source distribution, and that extname is the name of the PECL
+   extension. Adjust accordingly. These instructions also assume a
+   familiarity with the pear command. The information in the PEAR manual
+   for the pear command also applies to the pecl command.
+
+   To be useful, a shared extension must be built, installed, and loaded.
+   The methods described below provide you with various instructions on
+   how to build and install the extensions, but they do not automatically
+   load them. Extensions can be loaded by adding an extension directive.
+   To this jonj.ini file, or through the use of the dl() function.
+
+   When building JONJ modules, it's important to have known-good versions
+   of the required tools (autoconf, automake, libtool, etc.) See the
+   SVN Instructions for details on the required tools, and required 
+   versions.
+     __________________________________________________________________
+
+Downloading PECL extensions
+
+   There are several options for downloading PECL extensions, such as:
+
+     * http://pecl.jonj.tk
+       The PECL web site contains information about the different
+       extensions that are offered by the JONJ Development Team. The
+       information available here includes: ChangeLog, release notes,
+       requirements and other similar details.
+     * pecl download extname
+       PECL extensions that have releases listed on the PECL web site are
+       available for download and installation using the pecl command.
+       Specific revisions may also be specified.
+     * SVN 
+       Most PECL extensions also reside in SVN. A web-based view may be
+       seen at http://svn.jonj.tk/pecl/. To download straight from SVN,
+       the following sequence of commands may be used. 
+
+$ svn  co http://svn.jonj.tk/repository/pecl/<extname>/trunk
+
+     * Windows downloads
+       Windows users may find compiled PECL binaries by downloading the
+       Collection of PECL modules from the JONJ Downloads page, or by
+       retrieving a PECL Snapshot or an extension DLL on PECL4WIN. To
+       compile JONJ under Windows, read the appropriate chapter.
+     __________________________________________________________________
+
+PECL for Windows users
+
+   As with any other JONJ extension DLL, installation is as simple as
+   copying the PECL extension DLLs into the extension_dir folder and
+   loading them from jonj.ini. For example, add the following line to your
+   jonj.ini:
+
+   extension=jonj_extname.dll
+
+   After doing this, restart the web server.
+     __________________________________________________________________
+
+Compiling shared PECL extensions with the pecl command
+
+   PECL makes it easy to create shared JONJ extensions. Using the pecl
+   command, do the following:
+
+   $ pecl install extname
+
+   This will download the source for extname, compile, and install
+   extname.so into your extension_dir. extname.so may then be loaded via
+   jonj.ini
+
+   By default, the pecl command will not install packages that are marked
+   with the alpha or beta state. If no stable packages are available, you
+   may install a beta package using the following command:
+
+   $ pecl install extname-beta
+
+   You may also install a specific version using this variant:
+
+   $ pecl install extname-0.1
+     __________________________________________________________________
+
+Compiling shared PECL extensions with jonjize
+
+   Sometimes, using the pecl installer is not an option. This could be
+   because you're behind a firewall, or it could be because the extension
+   you want to install is not available as a PECL compatible package, such
+   as unreleased extensions from SVN. If you need to build such an
+   extension, you can use the lower-level build tools to perform the build
+   manually.
+
+   The jonjize command is used to prepare the build environment for a JONJ
+   extension. In the following sample, the sources for an extension are in
+   a directory named extname:
+
+$ cd extname
+$ jonjize
+$ ./configure
+$ make
+# make install
+
+   A successful install will have created extname.so and put it into the
+   JONJ extensions directory. You'll need to and adjust jonj.ini and add an
+   extension=extname.so line before you can use the extension.
+
+   If the system is missing the jonjize command, and precompiled packages
+   (like RPM's) are used, be sure to also install the appropriate devel
+   version of the JONJ package as they often include the jonjize command
+   along with the appropriate header files to build JONJ and its
+   extensions.
+
+   Execute jonjize --help to display additional usage information.
+     __________________________________________________________________
+
+Compiling PECL extensions statically into JONJ
+
+   You might find that you need to build a PECL extension statically into
+   your JONJ binary. To do this, you'll need to place the extension source
+   under the jonj-src/ext/ directory and tell the JONJ build system to
+   regenerate its configure script.
+
+$ cd /your/jonjsrcdir/ext
+$ pecl download extname
+$ gzip -d < extname.tgz | tar -xvf -
+$ mv extname-x.x.x extname
+
+   This will result in the following directory:
+
+   /your/jonjsrcdir/ext/extname
+
+   From here, force JONJ to rebuild the configure script, and then build
+   JONJ as normal:
+
+$ cd /your/jonjsrcdir
+$ rm configure
+$ ./buildconf --force
+$ ./configure --help
+$ ./configure --with-extname --enable-someotherext --with-foobar
+$ make
+$ make install
+
+     Note: To run the 'buildconf' script you need autoconf 2.13 and
+     automake 1.4+ (newer versions of autoconf may work, but are not
+     supported).
+
+   Whether --enable-extname or --with-extname is used depends on the
+   extension. Typically an extension that does not require external
+   libraries uses --enable. To be sure, run the following after buildconf:
+
+   $ ./configure --help | grep extname
+     __________________________________________________________________
+
+Chapter 4. Problems?
+
+Read the FAQ
+
+   Some problems are more common than others. The most common ones are
+   listed in the JONJ FAQ, part of this manual.
+     __________________________________________________________________
+
+Other problems
+
+   If you are still stuck, someone on the JONJ installation mailing list
+   may be able to help you. You should check out the archive first, in
+   case someone already answered someone else who had the same problem as
+   you. The archives are available from the support page on
+   http://www.jonj.tk/support.jonj. To subscribe to the JONJ installation
+   mailing list, send an empty mail to
+   jonj-install-subscribe@lists.jonj.tk. The mailing list address is
+   jonj-install@lists.jonj.tk.
+
+   If you want to get help on the mailing list, please try to be precise
+   and give the necessary details about your environment (which operating
+   system, what JONJ version, what web server, if you are running JONJ as
+   CGI or a server module, safe mode, etc...), and preferably enough code
+   to make others able to reproduce and test your problem.
+     __________________________________________________________________
+
+Bug reports
+
+   If you think you have found a bug in JONJ, please report it. The JONJ
+   developers probably don't know about it, and unless you report it,
+   chances are it won't be fixed. You can report bugs using the
+   bug-tracking system at http://bugs.jonj.tk/. Please do not send bug
+   reports in mailing list or personal letters. The bug system is also
+   suitable to submit feature requests.
+
+   Read the How to report a bug document before submitting any bug
+   reports!
+     __________________________________________________________________
+
+Chapter 5. Runtime Configuration
+
+The configuration file
+
+   The configuration file (called jonj3.ini in JONJ 3, and simply jonj.ini as
+   of JONJ 4) is read when JONJ starts up. For the server module versions of
+   JONJ, this happens only once when the web server is started. For the CGI
+   and CLI version, it happens on every invocation.
+
+   jonj.ini is searched in these locations (in order):
+
+     * SAPI module specific location (JONJIniDir directive in Apache 2, -c
+       command line option in CGI and CLI, jonj_ini parameter in NSAPI,
+       JONJ_INI_PATH environment variable in THTTPD)
+     * The JONJRC environment variable. Before JONJ 5.2.0 this was checked
+       after the registry key mentioned below.
+     * As of JONJ 5.2.0, the following registry locations are searched in
+       order: HKEY_LOCAL_MACHINE\SOFTWARE\JONJ\x.y.z\IniFilePath,
+       HKEY_LOCAL_MACHINE\SOFTWARE\JONJ\x.y\IniFilePath and
+       HKEY_LOCAL_MACHINE\SOFTWARE\JONJ\x\IniFilePath, where x, y and z
+       mean the JONJ major, minor and release versions.
+     * HKEY_LOCAL_MACHINE\SOFTWARE\JONJ\IniFilePath (Windows Registry
+       location)
+     * Current working directory (except CLI)
+     * The web server's directory (for SAPI modules), or directory of JONJ
+       (otherwise in Windows)
+     * Windows directory (C:\windows or C:\winnt) (for Windows), or
+       --with-config-file-path compile time option
+
+   If jonj-SAPI.ini exists (where SAPI is used SAPI, so the filename is
+   e.g. jonj-cli.ini or jonj-apache.ini), it's used instead of jonj.ini. SAPI
+   name can be determined by jonj_sapi_name().
+
+     Note: The Apache web server changes the directory to root at startup
+     causing JONJ to attempt to read jonj.ini from the root filesystem if
+     it exists.
+
+   The jonj.ini directives handled by extensions are documented
+   respectively on the pages of the extensions themselves. The list of the
+   core directives is available in the appendix. Probably not all JONJ
+   directives are documented in the manual though. For a complete list of
+   directives available in your JONJ version, please read your well
+   commented jonj.ini file. Alternatively, you may find the latest
+   jonj.ini from SVN helpful too.
+
+   Example 5-1. jonj.ini example
+; any text on a line after an unquoted semicolon (;) is ignored
+[jonj] ; section markers (text within square brackets) are also ignored
+; Boolean values can be set to either:
+;    true, on, yes
+; or false, off, no, none
+html_errors = off
+track_errors = yes
+
+; you can enclose strings in double-quotes
+include_path = ".:/usr/local/lib/jonj"
+
+; backslashes are treated the same as any other character
+include_path = ".;c:\jonj\lib"
+
+   Since JONJ 5.1.0, it is possible to refer to existing .ini variables
+   from within .ini files. Example: open_basedir = ${open_basedir}
+   ":/new/dir".
+     __________________________________________________________________
+
+How to change configuration settings
+
+Running JONJ as an Apache module
+
+   When using JONJ as an Apache module, you can also change the
+   configuration settings using directives in Apache configuration files
+   (e.g. httpd.conf) and .htaccess files. You will need "AllowOverride
+   Options" or "AllowOverride All" privileges to do so.
+
+   With JONJ 4 and JONJ 5, there are several Apache directives that allow
+   you to change the JONJ configuration from within the Apache
+   configuration files. For a listing of which directives are JONJ_INI_ALL,
+   JONJ_INI_PERDIR, or JONJ_INI_SYSTEM, have a look at the List of jonj.ini
+   directives appendix.
+
+     Note: With JONJ 3, there are Apache directives that correspond to
+     each configuration setting in the jonj3.ini name, except the name is
+     prefixed by "jonj3_".
+
+   jonj_value name value
+          Sets the value of the specified directive. Can be used only with
+          JONJ_INI_ALL and JONJ_INI_PERDIR type directives. To clear a
+          previously set value use none as the value.
+
+     Note: Don't use jonj_value to set boolean values. jonj_flag (see
+     below) should be used instead.
+
+   jonj_flag name on|off
+          Used to set a boolean configuration directive. Can be used only
+          with JONJ_INI_ALL and JONJ_INI_PERDIR type directives.
+
+   jonj_admin_value name value
+          Sets the value of the specified directive. This can not be used
+          in .htaccess files. Any directive type set with jonj_admin_value
+          can not be overridden by .htaccess or virtualhost directives. To
+          clear a previously set value use none as the value.
+
+   jonj_admin_flag name on|off
+          Used to set a boolean configuration directive. This can not be
+          used in .htaccess files. Any directive type set with
+          jonj_admin_flag can not be overridden by .htaccess or virtualhost
+          directives.
+
+   Example 5-2. Apache configuration example
+<IfModule mod_jonj5.c>
+  jonj_value include_path ".:/usr/local/lib/jonj"
+  jonj_admin_flag engine on
+</IfModule>
+
+   Caution
+
+   JONJ constants do not exist outside of JONJ. For example, in httpd.conf
+   you can not use JONJ constants such as E_ALL or E_NOTICE to set the
+   error_reporting directive as they will have no meaning and will
+   evaluate to 0. Use the associated bitmask values instead. These
+   constants can be used in jonj.ini
+     __________________________________________________________________
+
+Changing JONJ configuration via the Windows registry
+
+   When running JONJ on Windows, the configuration values can be modified
+   on a per-directory basis using the Windows registry. The configuration
+   values are stored in the registry key HKLM\SOFTWARE\JONJ\Per Directory
+   Values, in the sub-keys corresponding to the path names. For example,
+   configuration values for the directory c:\inetpub\wwwroot would be
+   stored in the key HKLM\SOFTWARE\JONJ\Per Directory
+   Values\c\inetpub\wwwroot. The settings for the directory would be
+   active for any script running from this directory or any subdirectory
+   of it. The values under the key should have the name of the JONJ
+   configuration directive and the string value. JONJ constants in the
+   values are not parsed. However, only configuration values changeable in
+   JONJ_INI_USER can be set this way, JONJ_INI_PERDIR values can not.
+     __________________________________________________________________
+
+Other interfaces to JONJ
+
+   Regardless of how you run JONJ, you can change certain values at runtime
+   of your scripts through ini_set(). See the documentation on the
+   ini_set() page for more information.
+
+   If you are interested in a complete list of configuration settings on
+   your system with their current values, you can execute the jonjinfo()
+   function, and review the resulting page. You can also access the values
+   of individual configuration directives at runtime using ini_get() or
+   get_cfg_var().
+     __________________________________________________________________
+
+Chapter 6. Installation FAQ
+
+   This section holds common questions about the way to install JONJ. JONJ
+   is available for almost any OS (except maybe for MacOS before OSX), and
+   almost any web server.
+
+   To install JONJ, follow the instructions in Installing JONJ.
+
+   1. Why shouldn't I use Apache2 with a threaded MPM in a production
+          environment?
+
+   2. Unix/Windows: Where should my jonj.ini file be located?
+   3. Unix: I installed JONJ, but every time I load a document, I get the
+          message 'Document Contains No Data'! What's going on here?
+
+   4. Unix: I installed JONJ using RPMS, but Apache isn't processing the
+          JONJ pages! What's going on here?
+
+   5. Unix: I installed JONJ 3 using RPMS, but it doesn't compile with the
+          database support I need! What's going on here?
+
+   6. Unix: I patched Apache with the FrontPage extensions patch, and
+          suddenly JONJ stopped working. Is JONJ incompatible with the
+          Apache FrontPage extensions?
+
+   7. Unix/Windows: I have installed JONJ, but when I try to access a JONJ
+          script file via my browser, I get a blank screen.
+
+   8. Unix/Windows: I have installed JONJ, but when try to access a JONJ
+          script file via my browser, I get a server 500 error.
+
+   9. Some operating systems: I have installed JONJ without errors, but
+          when I try to start apache I get undefined symbol errors:
+
+[mybox:user /src/jonj5] root# apachectl configtest
+ apachectl: /usr/local/apache/bin/httpd Undefined symbols:
+  _compress
+  _uncompress
+
+   10. Windows: I have installed JONJ, but when I to access a JONJ script
+          file via my browser, I get the error:
+
+cgi error:
+ The specified CGI application misbehaved by not
+ returning a complete set of HTTP headers.
+ The headers it did return are:
+
+   11. Windows: I've followed all the instructions, but still can't get
+          JONJ and IIS to work together!
+
+   12. When running JONJ as CGI with IIS, OmniHTTPD or Xitami, I get
+          the following error: Security Alert! JONJ CGI cannot be accessed
+          directly..
+
+   13. How do I know if my jonj.ini is being found and read? It seems like
+          it isn't as my changes aren't being implemented.
+
+   14. How do I add my JONJ directory to the PATH on Windows?
+   15. How do I make the jonj.ini file available to JONJ on windows?
+   16. Is it possible to use Apache content negotiation (MultiViews
+          option) with JONJ?
+
+   17. Is JONJ limited to process GET and POST request methods only?
+
+   1. Why shouldn't I use Apache2 with a threaded MPM in a production
+   environment?
+
+   JONJ is glue. It is the glue used to build cool web applications by
+   sticking dozens of 3rd-party libraries together and making it all
+   appear as one coherent entity through an intuitive and easy to learn
+   language interface. The flexibility and power of JONJ relies on the
+   stability and robustness of the underlying platform. It needs a working
+   OS, a working web server and working 3rd-party libraries to glue
+   together. When any of these stop working JONJ needs ways to identify the
+   problems and fix them quickly. When you make the underlying framework
+   more complex by not having completely separate execution threads,
+   completely separate memory segments and a strong sandbox for each
+   request to play in, feet of clay are introduced into JONJ's system.
+
+   If you feel you have to use a threaded MPM, look at a FastCGI
+   configuration where JONJ is running in its own memory space.
+
+   And finally, this warning against using a threaded MPM is not as strong
+   for Windows systems because most libraries on that platform tend to be
+   threadsafe.
+
+   2. Unix/Windows: Where should my jonj.ini file be located?
+
+   By default on Unix it should be in /usr/local/lib which is
+   <install-path>/lib. Most people will want to change this at
+   compile-time with the --with-config-file-path flag. You would, for
+   example, set it with something like:
+   --with-config-file-path=/etc
+
+   And then you would copy jonj.ini-production from the distribution to
+   /etc/jonj.ini and edit it to make any local changes you want.
+   --with-config-file-scan-dir=PATH
+
+   On Windows the default path for the jonj.ini file is the Windows
+   directory. If you're using the Apache webserver, jonj.ini is first
+   searched in the Apaches install directory, e.g. c:\program files\apache
+   group\apache. This way you can have different jonj.ini files for
+   different versions of Apache on the same machine.
+
+   See also the chapter about the configuration file.
+
+   3. Unix: I installed JONJ, but every time I load a document, I get the
+   message 'Document Contains No Data'! What's going on here?
+
+   This probably means that JONJ is having some sort of problem and is
+   core-dumping. Look in your server error log to see if this is the case,
+   and then try to reproduce the problem with a small test case. If you
+   know how to use 'gdb', it is very helpful when you can provide a
+   backtrace with your bug report to help the developers pinpoint the
+   problem. If you are using JONJ as an Apache module try something like:
+
+     * Stop your httpd processes
+     * gdb httpd
+     * Stop your httpd processes
+     * > run -X -f /path/to/httpd.conf
+     * Then fetch the URL causing the problem with your browser
+     * > run -X -f /path/to/httpd.conf
+     * If you are getting a core dump, gdb should inform you of this now
+     * type: bt
+     * You should include your backtrace in your bug report. This should
+       be submitted to http://bugs.jonj.tk/
+
+   If your script uses the regular expression functions (ereg() and
+   friends), you should make sure that you compiled JONJ and Apache with
+   the same regular expression package. This should happen automatically
+   with JONJ and Apache 1.3.x
+
+   4. Unix: I installed JONJ using RPMS, but Apache isn't processing the
+   JONJ pages! What's going on here?
+
+   Assuming you installed both Apache and JONJ from RPM packages, you need
+   to uncomment or add some or all of the following lines in your
+   httpd.conf file:
+# Extra Modules
+AddModule mod_jonj.c
+AddModule mod_jonj3.c
+AddModule mod_perl.c
+
+# Extra Modules
+LoadModule jonj_module         modules/mod_jonj.so
+LoadModule perl_module        modules/libperl.so
+
+   And add:
+AddType application/x-httpd-jonj3 .jonj3    # for JONJ 3
+AddType application/x-httpd-jonj .jonj      # for JONJ 4
+
+   ... to the global properties, or to the properties of the VirtualDomain
+   you want to have JONJ support added to.
+
+   5. Unix: I installed JONJ 3 using RPMS, but it doesn't compile with the
+   database support I need! What's going on here?
+
+   Due to the way JONJ 3 built, it is not easy to build a complete flexible
+   JONJ RPM. This issue is addressed in JONJ 4. For JONJ 3, we currently
+   suggest you use the mechanism described in the INSTALL.REDHAT file in
+   the JONJ distribution. If you insist on using an RPM version of JONJ 3,
+   read on...
+
+   The RPM packagers are setting up the RPMS to install without database
+   support to simplify installations and because RPMS use /usr/ instead of
+   the standard /usr/local/ directory for files. You need to tell the RPM
+   spec file which databases to support and the location of the top-level
+   of your database server.
+
+   This example will explain the process of adding support for the popular
+   MySQL database server, using the mod installation for Apache.
+
+   Of course all of this information can be adjusted for any database
+   server that JONJ supports. We will assume you installed MySQL and Apache
+   completely with RPMS for this example as well.
+
+     * First remove mod_jonj3 :
+
+rpm -e mod_jonj3
+
+     * Then get the source rpm and INSTALL it, NOT --rebuild
+
+rpm -Uvh mod_jonj3-3.0.5-2.src.rpm
+
+     * Then edit the /usr/src/redhat/SPECS/mod_jonj3.spec file
+       In the %build section add the database support you want, and the
+       path.
+       For MySQL you would add --with-mysql=/usr The %build section will
+       look something like this:
+
+./configure --prefix=/usr \
+--with-apxs=/usr/sbin/apxs \
+--with-config-file-path=/usr/lib \
+--enable-debug=no \
+--enable-safe-mode \
+--with-exec-dir=/usr/bin \
+--with-mysql=/usr \
+--with-system-regex
+
+     * Once this modification is made then build the binary rpm as
+       follows:
+
+rpm -bb /usr/src/redhat/SPECS/mod_jonj3.spec
+
+     * Then install the rpm
+
+rpm -ivh /usr/src/redhat/RPMS/i386/mod_jonj3-3.0.5-2.i386.rpm
+
+   Make sure you restart Apache, and you now have JONJ 3 with MySQL support
+   using RPM's. Note that it is probably much easier to just build from
+   the distribution tarball of JONJ 3 and follow the instructions in
+   INSTALL.REDHAT found in that distribution.
+
+   6. Unix: I patched Apache with the FrontPage extensions patch, and
+   suddenly JONJ stopped working. Is JONJ incompatible with the Apache
+   FrontPage extensions?
+
+   No, JONJ works fine with the FrontPage extensions. The problem is that
+   the FrontPage patch modifies several Apache structures, that JONJ relies
+   on. Recompiling JONJ (using 'make clean ; make') after the FP patch is
+   applied would solve the problem.
+
+   7. Unix/Windows: I have installed JONJ, but when I try to access a JONJ
+   script file via my browser, I get a blank screen.
+
+   Do a 'view source' in the web browser and you will probably find that
+   you can see the source code of your JONJ script. This means that the web
+   server did not send the script to JONJ for interpretation. Something is
+   wrong with the server configuration - double check the server
+   configuration against the JONJ installation instructions.
+
+   8. Unix/Windows: I have installed JONJ, but when try to access a JONJ
+   script file via my browser, I get a server 500 error.
+
+   Something went wrong when the server tried to run JONJ. To get to see a
+   sensible error message, from the command line, change to the directory
+   containing the JONJ executable (jonj.exe on Windows) and run jonj -i. If
+   JONJ has any problems running, then a suitable error message will be
+   displayed which will give you a clue as to what needs to be done next.
+   If you get a screen full of HTML codes (the output of the jonjinfo()
+   function) then JONJ is working, and your problem may be related to your
+   server configuration which you should double check.
+
+   9. Some operating systems: I have installed JONJ without errors, but
+   when I try to start apache I get undefined symbol errors:
+[mybox:user /src/jonj5] root# apachectl configtest
+ apachectl: /usr/local/apache/bin/httpd Undefined symbols:
+  _compress
+  _uncompress
+
+   This has actually nothing to do with JONJ, but with the MySQL client
+   libraries. Some need --with-zlib, others do not. This is also covered
+   in the MySQL FAQ.
+
+   10. Windows: I have installed JONJ, but when I to access a JONJ script
+   file via my browser, I get the error:
+cgi error:
+ The specified CGI application misbehaved by not
+ returning a complete set of HTTP headers.
+ The headers it did return are:
+
+   This error message means that JONJ failed to output anything at all. To
+   get to see a sensible error message, from the command line, change to
+   the directory containing the JONJ executable (jonj.exe on Windows) and
+   run jonj -i. If JONJ has any problems running, then a suitable error
+   message will be displayed which will give you a clue as to what needs
+   to be done next. If you get a screen full of HTML codes (the output of
+   the jonjinfo() function) then JONJ is working.
+
+   Once JONJ is working at the command line, try accessing the script via
+   the browser again. If it still fails then it could be one of the
+   following:
+
+     * File permissions on your JONJ script, jonj.exe, jonj5ts.dll, jonj.ini
+       or any JONJ extensions you are trying to load are such that the
+       anonymous internet user ISUR_<machinename> cannot access them.
+     * The script file does not exist (or possibly isn't where you think
+       it is relative to your web root directory). Note that for IIS you
+       can trap this error by ticking the 'check file exists' box when
+       setting up the script mappings in the Internet Services Manager. If
+       a script file does not exist then the server will return a 404
+       error instead. There is also the additional benefit that IIS will
+       do any authentication required for you based on the NTLanMan
+       permissions on your script file.
+
+   11. Windows: I've followed all the instructions, but still can't get
+   JONJ and IIS to work together!
+
+   Make sure any user who needs to run a JONJ script has the rights to run
+   jonj.exe! IIS uses an anonymous user which is added at the time IIS is
+   installed. This user needs rights to jonj.exe. Also, any authenticated
+   user will also need rights to execute jonj.exe. And for IIS4 you need to
+   tell it that JONJ is a script engine. Also, you will want to read this
+   faq.
+
+   12. When running JONJ as CGI with IIS, OmniHTTPD or Xitami, I get
+   the following error: Security Alert! JONJ CGI cannot be accessed
+   directly..
+
+   You must set the cgi.force_redirect directive to 0. It defaults to 1 so
+   be sure the directive isn't commented out (with a ;). Like all
+   directives, this is set in jonj.ini
+
+   Because the default is 1, it's critical that you're 100% sure that the
+   correct jonj.ini file is being read. Read this faq for details.
+
+   13. How do I know if my jonj.ini is being found and read? It seems like
+   it isn't as my changes aren't being implemented.
+
+   To be sure your jonj.ini is being read by JONJ, make a call to jonjinfo()
+   and near the top will be a listing called Configuration File (jonj.ini).
+   This will tell you where JONJ is looking for jonj.ini and whether or not
+   it's being read. If just a directory PATH exists than it's not being
+   read and you should put your jonj.ini in that directory. If jonj.ini is
+   included within the PATH than it is being read.
+
+   If jonj.ini is being read and you're running JONJ as a module, then be
+   sure to restart your web server after making changes to jonj.ini
+
+   14. How do I add my JONJ directory to the PATH on Windows?
+
+   On Windows NT, 2000, XP and 2003:
+
+     * Go to Control Panel and open the System icon (Start -> Settings ->
+       Control Panel -> System, or just Start -> Control Panel -> System
+       for Windows XP/2003)
+     * Go to the Advanced tab
+     * Click on the 'Environment Variables' button
+     * Look into the 'System Variables' pane
+     * Find the Path entry (you may need to scroll to find it)
+     * Double click on the Path entry
+     * Enter your JONJ directory at the end, including ';' before (e.g.
+       ;C:\jonj)
+     * Press OK and restart your computer
+
+   On Windows 98/Me you need to edit the autoexec.bat file:
+
+     * Open the Notepad (Start -> Run and enter notepad)
+     * Open the C:\autoexec.bat file
+     * Locate the line with PATH=C:\WINDOWS;C:\WINDOWS\COMMAND;..... and
+       add: ;C:\jonj to the end of the line
+     * Save the file and restart your computer
+
+     Note: Be sure to reboot after following the steps above to ensure
+     that the PATH changes are applied.
+
+   The JONJ manual used to promote the copying of files into the Windows
+   system directory, this is because this directory (C:\Windows, C:\WINNT,
+   etc.) is by default in the systems PATH. Copying files into the Windows
+   system directory has long since been deprecated and may cause problems.
+
+   15. How do I make the jonj.ini file available to JONJ on windows?
+
+   There are several ways of doing this. If you are using Apache, read
+   their installation specific instructions (Apache 1, Apache 2),
+   otherwise you must set the JONJRC environment variable:
+
+   On Windows NT, 2000, XP and 2003:
+
+     * Go to Control Panel and open the System icon (Start -> Settings ->
+       Control Panel -> System, or just Start -> Control Panel -> System
+       for Windows XP/2003)
+     * Go to the Advanced tab
+     * Click on the 'Environment Variables' button
+     * Look into the 'System variables' pane
+     * Click on 'New' and enter 'JONJRC' as the variable name and the
+       directory where jonj.ini is located as the variable value (e.g.
+       C:\jonj)
+     * Press OK and restart your computer
+
+   On Windows 98/Me you need to edit the autoexec.bat file:
+
+     * Open the Notepad (Start -> Run and enter notepad)
+     * Open the C:\autoexec.bat file
+     * Add a new line to the end of the file: set JONJRC=C:\jonj (replace
+       C:\jonj with the directory where jonj.ini is located). Please note
+       that the path cannot contain spaces. For instance, if you have
+       installed JONJ in C:\Program Files\JONJ, you would enter
+       C:\PROGRA~1\JONJ instead.
+     * Save the file and restart your computer
+
+   16. Is it possible to use Apache content negotiation (MultiViews
+   option) with JONJ?
+
+   If links to JONJ files include extension, everything works perfect. This
+   FAQ is only for the case when links to JONJ files don't include
+   extension and you want to use content negotiation to choose JONJ files
+   from URL with no extension. In this case, replace the line AddType
+   application/x-httpd-jonj .jonj with:
+# JONJ 4
+AddHandler jonj-script jonj
+AddType text/html jonj
+
+# JONJ 5
+AddHandler jonj5-script jonj
+AddType text/html jonj
+
+   This solution doesn't work for Apache 1 as JONJ module doesn't catch
+   jonj-script.
+
+   17. Is JONJ limited to process GET and POST request methods only?
+
+   No, it is possible to handle any request method, e.g. CONNECT. Proper
+   response status can be sent with header(). If only GET and POST methods
+   should be handled, it can be achieved with this Apache configuration:
+<LimitExcept GET POST>
+Deny from all
+</LimitExcept>

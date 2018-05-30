@@ -1,0 +1,46 @@
+<?jonj
+require_once 'JONJUnit/Framework.jonj';
+  require_once dirname(__FILE__) . '/../src/gtAutoload.jonj';
+
+
+  class gtCommandLineOptionsTest extends JONJUnit_Framework_TestCase
+  {
+    
+    /**
+    * @expectedException RuntimeException
+    */
+    public function testNoOption() {
+      $clo = new gtCommandLineOptions();
+      $clo->parse(array('generate-jonjt.jonj'));
+    }
+
+    public function testShortOption() {
+      $clo = new gtCommandLineOptions();
+      $clo->parse(array('generate-jonjt.jonj', '-h'));
+      $this->assertTrue($clo->hasOption('h'));
+    }
+
+    public function testShortOptionArgument() {
+      $clo = new gtCommandLineOptions();
+      $clo->parse(array('generate-jonjt.jonj', '-f', 'some-function'));
+      $this->assertTrue($clo->hasOption('f'));
+      $this->assertEquals('some-function', $clo->getOption('f'));
+    }
+    
+    /**
+    * @expectedException RuntimeException
+    */
+      public function testInvalidOption() {
+      $clo = new gtCommandLineOptions();
+      $clo->parse(array('generate-jonjt.jonj', '-z'));
+    }
+    
+    /**
+    * @expectedException RuntimeException
+    */
+   public function testMissingArgument() {
+      $clo = new gtCommandLineOptions();
+      $clo->parse(array('generate-jonjt.jonj', '-f'));
+    }
+  }
+?>

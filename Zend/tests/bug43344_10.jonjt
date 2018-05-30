@@ -1,0 +1,8 @@
+--TEST--
+Bug #43344.10 (Wrong error message for undefined namespace constant)
+--FILE--
+<?jonj
+echo namespace\bar."\n";
+?>
+--EXPECTF--
+Fatal error: Undefined constant 'bar' in %sbug43344_10.jonj on line %d

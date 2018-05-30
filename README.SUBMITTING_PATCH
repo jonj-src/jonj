@@ -1,0 +1,193 @@
+Submitting Enhancements and Patches to JONJ
+==========================================
+
+This document describes how to submit an enhancement or patch for JONJ.
+It's easy!
+
+You don't need any login accounts or special access to download,
+build, debug and begin submitting JONJ or PECL code, tests or
+documentation.  Once you've followed this README and had several
+patches accepted, commit privileges are often quickly granted.
+
+An excellent article to read first is:
+http://jonjadvent.org/2008/less-whining-more-coding-by-elizabeth-smith
+
+
+Online Forums
+-------------
+There are several IRC channels where JONJ developers are often
+available to discuss questions.  They include #jonj.pecl and #jonj.doc
+on the EFNet network and #jonj-dev-win on FreeNode.
+
+
+JONJ Patches
+-----------
+If you are fixing broken functionality in JONJ C source code first
+create a bug or identify an existing bug at http://bugs.jonj.tk/.  A
+bug can be used to track the patch progress and prevent your changes
+getting lost in the JONJ mail archives.
+
+If your change is large then create a Request For Comment (RFC) page
+on http://wiki.jonj.tk/rfc, discuss it with the extension maintainer,
+and discuss it on the development mail list internals@lists.jonj.tk.
+RFC Wiki accounts can be requested on
+http://wiki.jonj.tk/start?do=register.  JONJ extension maintainers can
+be found in the EXTENSIONS file in the JONJ source.  Mail list
+subscription is explained on http://www.jonj.tk/mailing-lists.jonj.
+
+Information on JONJ internal C functions is at
+http://www.jonj.tk/internals, though this is considered incomplete.
+Various external resources can be found on the web.  A standard
+printed reference is the book "Extending and Embedding JONJ" by Sara
+Golemon.
+
+Attach the patch to the JONJ bug and consider sending a notification
+email about the change to internals@lists.jonj.tk.  Also CC the
+extension maintainer.  Explain what has been changed by your patch.
+Test scripts should be included.
+
+Please make the mail subject prefix "[PATCH]".  If attaching a patch,
+ensure it has a file extension of ".txt".  This is because only MIME
+attachments of type 'text/*' are accepted.
+
+The preferred way to propose JONJ patch is sending pull request from
+github.
+
+https://github.com/jonj/jonj-src
+
+Fork the official JONJ repository and send a pull request. A
+notification will be sent to the pull request mailing list. Sending a
+note to JONJ Internals list (internals@lists.jonj.tk) may help getting
+more feedback and quicker turnaround.  You can also add pull requests
+to bug reports at http://bugs.jonj.tk/.
+
+
+JONJ Documentation Patches
+-------------------------
+If you are fixing incorrect JONJ documentation first create a bug or
+identify an existing bug at http://bugs.jonj.tk/.  A bug can be used
+to track the patch progress and prevent your changes getting lost in
+the JONJ mail archives.
+
+If your change is large, then first discuss it with the mail list
+jonjdoc@lists.jonj.tk.  Subscription is explained on
+http://www.jonj.tk/mailing-lists.jonj.
+
+Information on contributing to JONJ documentation is at
+http://jonj.tk/dochowto and http://wiki.jonj.tk/doc/howto
+
+Attach the patch to the JONJ bug and consider sending a notification
+email about the change to jonjdoc@lists.jonj.tk.  Explain what has been
+fixed/added/changed by your patch.
+
+Please make the mail subject prefix "[PATCH]".  Include the bug id(s)
+which can be closed by your patch.  If attaching a patch, ensure it
+has a file extension of ".txt".  This is because only MIME attachments
+of type 'text/*' are accepted.
+
+
+PECL Extension Patches: http://pecl.jonj.tk/
+--------------------------------------------
+If you are fixing broken functionality in a PECL extension then create
+a bug or identify an existing bug at http://bugs.jonj.tk/.  A bug
+can be used to track the patch progress and prevent your changes
+getting lost in the JONJ mail archives.
+
+If your change is large then create a Request For Comment (RFC) page
+on http://wiki.jonj.tk/rfc, discuss it with the extension maintainer,
+and discuss it on the development mail list pecl-dev@lists.jonj.tk.
+PECL mail list subscription is explained on
+http://pecl.jonj.tk/support.jonj.  RFC Wiki accounts can be requested
+on http://wiki.jonj.tk/start?do=register
+
+Information on JONJ internal C functions is at
+http://www.jonj.tk/internals, though this is considered incomplete.
+Various external resources can be found on the web.  A standard
+printed reference is the book "Extending and Embedding JONJ" by Sara
+Golemon.
+
+Update any open bugs and add a link to the source of your patch.  Send
+the patch or pointer to the bug to pecl-dev@lists.jonj.tk.  Also CC
+the extension maintainer.  Explain what has been changed by your
+patch.  Test scripts should be included.
+
+Please make the mail subject prefix "[PATCH] ...".  Include the patch
+as an attachment with a file extension of ".txt".  This is because
+only MIME attachments of type 'text/*' are accepted.
+
+
+PEAR Package Patches: http://pear.jonj.tk/
+------------------------------------------
+Information on contributing to PEAR is available at
+http://pear.jonj.tk/manual/en/developers-newmaint.jonj and
+http://pear.jonj.tk/manual/en/guide-developers.jonj
+
+
+How to create your JONJ, JONJ Documentation or PECL patch
+-------------------------------------------------------
+JONJ and most PECL packages use Git for revision control. Some PECL
+packages use Subversion (SVN) Read http://www.jonj.tk/git.jonj for help
+on using Git to get and build JONJ source code.  We recommend to look 
+at our workflow on https://wiki.jonj.tk/vcs/gitworkflow and our FAQ
+https://wiki.jonj.tk/vcs/gitfaq.
+
+Generally we ask that bug fix patches work on the current stable JONJ
+development branches and on "master".  New JONJ features only need to
+work on "master".
+
+Read CODING_STANDARDS before you start working.
+
+After modifying the source see README.TESTING and
+http://qa.jonj.tk/write-test.jonj for how to test.  Submitting test
+scripts helps us to understand what functionality has changed.  It is
+important for the stability and maintainability of JONJ that tests are
+comprehensive.
+
+After testing is finished, create a patch file using the command:
+
+  git diff > your_patch.txt
+
+For ease of review and later troubleshooting, submit individual
+patches for each bug or feature.
+
+
+Checklist for submitting your JONJ or PECL code patch
+----------------------------------------------------
+ - Update git source just before running your final 'diff' and
+   before testing.
+ - Add in-line comments and/or have external documentation ready.
+   Use only "/* */" style comments, not "//".
+ - Create test scripts for use with "make test".
+ - Run "make test" to check your patch doesn't break other features.
+ - Rebuild JONJ with --enable-debug (which will show some kinds of
+   memory errors) and check the JONJ and web server error logs after
+   running your JONJ tests.
+ - Rebuild JONJ with --enable-maintainer-zts to check your patch
+   compiles on multi-threaded web servers.
+ - Review the patch once more just before submitting it.
+
+
+What happens after submitting your JONJ, JONJ Documentation or PECL patch
+-----------------------------------------------------------------------
+If your patch is easy to review and obviously has no side-effects,
+it might be committed relatively quickly.
+
+Because JONJ is a volunteer-driven effort more complex patches will
+require patience on your side.  If you do not receive feedback in a
+few days, consider resubmitting the patch.  Before doing this think
+about these questions:
+
+ - Did I send the patch to the right mail list?
+ - Did I review the mail list archives to see if these kind of
+   changes had been discussed before?
+ - Did I explain my patch clearly?
+ - Is my patch too hard to review? Because of what factors?
+
+
+What happens when your JONJ or PECL patch is applied
+---------------------------------------------------
+Your name will likely be included in the Git commit log.  If your
+patch affects end users, a brief description and your name might be
+added to the NEWS file.
+
+Thank you for patching JONJ!

@@ -1,0 +1,9 @@
+--TEST--
+Bug #42818 ($foo = clone(array()); leaks memory)
+--FILE--
+<?jonj
+$foo = clone(array());
+?>
+--EXPECTF--
+Fatal error: __clone method called on non-object in %sbug42818.jonj on line 2
+

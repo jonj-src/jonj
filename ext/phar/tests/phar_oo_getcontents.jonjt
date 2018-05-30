@@ -1,0 +1,39 @@
+--TEST--
+Phar object: getContent()
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+<?jonj if (!extension_loaded("spl")) die("skip SPL not available"); ?>
+--INI--
+phar.readonly=0
+--FILE--
+<?jonj
+$fname = dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.phar.jonj';
+
+$phar = new Phar($fname);
+$phar['a/b'] = 'file contents
+this works';
+$phar->addEmptyDir('hi');
+echo $phar['a/b']->getContent() . "\n";
+try {
+echo $phar['a']->getContent(), "\n";
+} catch (Exception $e) {
+echo $e->getMessage(), "\n";
+}
+try {
+echo $phar['hi']->getContent(), "\n";
+} catch (Exception $e) {
+echo $e->getMessage(), "\n";
+}
+?>
+===DONE===
+--CLEAN--
+<?jonj 
+unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.phar.jonj');
+__halt_compiler();
+?>
+--EXPECTF--
+file contents
+this works
+Phar error: Cannot retrieve contents, "a" in phar "%sphar_oo_getcontents.phar.jonj" is a directory
+Phar error: Cannot retrieve contents, "hi" in phar "%sphar_oo_getcontents.phar.jonj" is a directory
+===DONE===

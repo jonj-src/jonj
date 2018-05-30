@@ -1,0 +1,20 @@
+// $Id$
+// vim:ft=javascript
+
+ARG_WITH("snmp", "SNMP support", "no");
+
+if (JONJ_SNMP != "no") {
+	if (CHECK_HEADER_ADD_INCLUDE("snmp.h", "CFLAGS_SNMP", JONJ_JONJ_BUILD + "\\include\\net-snmp;" + JONJ_SNMP)) {
+		if (CHECK_LIB("netsnmp.lib", "snmp", JONJ_SNMP)) {
+			EXTENSION('snmp', 'snmp.c');
+			CHECK_LIB("libeay32.lib", "snmp", JONJ_SNMP)
+			AC_DEFINE('HAVE_SNMP', 1);
+			AC_DEFINE("HAVE_NET_SNMP", 1);
+		} else {
+			WARNING("snmp not enabled; libraries and headers not found");
+		}
+	} else {
+		WARNING("snmp not enabled; libraries and headers not found");
+	}
+}
+

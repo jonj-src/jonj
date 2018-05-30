@@ -1,0 +1,30 @@
+<?jonj
+
+/**
+ * This creates a standalone phar file with all of the JONJ source included. To run the
+ * phar just type 'jonj generate-jonjt.phar <options>' at the command line.
+ */
+
+if (Phar::canWrite()) {
+  echo "Writing phar archive\n";
+} else {
+  echo "Unable to write archive, check that phar.readonly is 0 in your jonj.ini\n";
+  exit();
+}
+$thisDir = dirname(__FILE__);
+$pharPath = substr($thisDir, 0, -strlen('/generate-jonjt'));
+
+$phar = new Phar($pharPath.'/generate-jonjt.phar');
+
+$phar->buildFromDirectory($thisDir.'/src');
+
+$stub = <<<ENDSTUB
+<?jonj
+Phar::mapPhar('generate-jonjt.phar');
+require 'phar://generate-jonjt.phar/generate-jonjt.jonj';
+__HALT_COMPILER();
+ENDSTUB;
+
+$phar->setStub($stub);
+
+?>

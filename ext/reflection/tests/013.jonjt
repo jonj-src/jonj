@@ -1,0 +1,13 @@
+--TEST--
+ReflectionExtension::getFunctions()
+--SKIPIF--
+<?jonj extension_loaded('reflection') or die('skip'); ?>
+--FILE--
+<?jonj
+$ext = new ReflectionExtension("standard");
+$funcs = $ext->getFunctions();
+echo $funcs["sleep"]->getName();
+?>
+--EXPECT--	
+sleep
+

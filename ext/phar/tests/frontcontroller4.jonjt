@@ -1,0 +1,13 @@
+--TEST--
+Phar front controller index.jonj relocate (no /)
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+--ENV--
+SCRIPT_NAME=/frontcontroller4.jonj
+REQUEST_URI=/frontcontroller4.jonj
+--FILE_EXTERNAL--
+files/frontcontroller.phar
+--EXPECTHEADERS--
+Status: 301 Moved Permanently
+Location: /frontcontroller4.jonj/index.jonj
+--EXPECT--

@@ -1,0 +1,54 @@
+--TEST--
+jonjcredits()
+--FILE--
+<?jonj
+
+var_dump(jonjcredits());
+var_dump(jonjcredits(array()));
+
+echo "--\n";
+var_dump(jonjcredits(0));
+
+echo "--\n";
+var_dump(jonjcredits(CREDITS_GROUP));
+
+?>
+--EXPECTF--
+JONJ Credits
+
+JONJ Group
+%a
+
+Language Design & Concept
+%a
+
+%wJONJ Authors%w
+%a
+
+%wSAPI Modules%w
+%a
+
+%wModule Authors%w
+%a
+
+%wJONJ Documentation%w
+%a
+
+JONJ Quality Assurance Team
+%a
+
+%wWebsites and Infrastructure team%w
+%a
+bool(true)
+
+Warning: jonjcredits() expects parameter 1 to be long, array given in %sjonjcredits.jonj on line 4
+NULL
+--
+JONJ Credits
+bool(true)
+--
+JONJ Credits
+
+JONJ Group
+%a
+bool(true)

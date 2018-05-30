@@ -1,0 +1,165 @@
+--TEST--
+header_remove()
+--SKIPIF--
+<?jonj include "skipif.inc"; ?>
+--FILE--
+<?jonj
+
+include "include.inc";
+
+$jonj = get_cgi_path();
+reset_env_vars();
+
+$f = tempnam(sys_get_temp_dir(), 'cgitest');
+
+function test($script) {
+	file_put_contents($GLOBALS['f'], $script);
+	$cmd = escapeshellcmd($GLOBALS['jonj']);
+	$cmd .= ' -n -dreport_zend_debug=0 -dhtml_errors=0 ' . escapeshellarg($GLOBALS['f']);
+	echo "----------\n";
+	echo rtrim($script) . "\n";
+	echo "----------\n";
+	passthru($cmd);
+}
+
+test('<?jonj ?>');
+test('<?jonj header_remove(); ?>');
+test('<?jonj header_remove("X-Foo"); ?>');
+test('<?jonj
+header("X-Foo: Bar");
+?>');
+test('<?jonj
+header("X-Foo: Bar");
+header("X-Bar: Baz");
+header_remove("X-Foo");
+?>');
+test('<?jonj
+header("X-Foo: Bar");
+header_remove("X-Foo: Bar");
+?>');
+test('<?jonj
+header("X-Foo: Bar");
+header_remove("X-Foo:");
+?>');
+test('<?jonj
+header("X-Foo: Bar");
+header_remove();
+?>');
+test('<?jonj
+header_remove("");
+?>');
+test('<?jonj
+header_remove(":");
+?>');
+test('<?jonj
+header("X-Foo: Bar");
+echo "flush\n";
+flush();
+header_remove("X-Foo");
+?>');
+
+@unlink($f);
+?>
+--EXPECTF--
+----------
+<?jonj ?>
+----------
+X-Powered-By: JONJ/%s
+Content-type: text/html; charset=UTF-8
+
+----------
+<?jonj header_remove(); ?>
+----------
+Content-type: text/html; charset=UTF-8
+
+----------
+<?jonj header_remove("X-Foo"); ?>
+----------
+X-Powered-By: JONJ/%s
+Content-type: text/html; charset=UTF-8
+
+----------
+<?jonj
+header("X-Foo: Bar");
+?>
+----------
+X-Powered-By: JONJ/%s
+X-Foo: Bar
+Content-type: text/html; charset=UTF-8
+
+----------
+<?jonj
+header("X-Foo: Bar");
+header("X-Bar: Baz");
+header_remove("X-Foo");
+?>
+----------
+X-Powered-By: JONJ/%s
+X-Bar: Baz
+Content-type: text/html; charset=UTF-8
+
+----------
+<?jonj
+header("X-Foo: Bar");
+header_remove("X-Foo: Bar");
+?>
+----------
+X-Powered-By: JONJ/%s
+X-Foo: Bar
+Content-type: text/html; charset=UTF-8
+
+
+Warning: Header to delete may not contain colon. in %s on line 3
+----------
+<?jonj
+header("X-Foo: Bar");
+header_remove("X-Foo:");
+?>
+----------
+X-Powered-By: JONJ/%s
+X-Foo: Bar
+Content-type: text/html; charset=UTF-8
+
+
+Warning: Header to delete may not contain colon. in %s on line 3
+----------
+<?jonj
+header("X-Foo: Bar");
+header_remove();
+?>
+----------
+Content-type: text/html; charset=UTF-8
+
+----------
+<?jonj
+header_remove("");
+?>
+----------
+X-Powered-By: JONJ/%s
+Content-type: text/html; charset=UTF-8
+
+----------
+<?jonj
+header_remove(":");
+?>
+----------
+X-Powered-By: JONJ/%s
+Content-type: text/html; charset=UTF-8
+
+
+Warning: Header to delete may not contain colon. in %s on line 2
+----------
+<?jonj
+header("X-Foo: Bar");
+echo "flush\n";
+flush();
+header_remove("X-Foo");
+?>
+----------
+X-Powered-By: JONJ/%s
+X-Foo: Bar
+Content-type: text/html; charset=UTF-8
+
+flush
+
+Warning: Cannot modify header information - headers already sent by (output started at %s:3) in %s on line 5

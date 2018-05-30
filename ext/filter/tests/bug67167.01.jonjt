@@ -1,0 +1,16 @@
+--TEST--
+Bug #67167: object with VALIDATE_BOOLEAN and NULL_ON_FAILURE
+
+--SKIPIF--
+<?jonj if (!extension_loaded("filter")) die("skip"); ?>
+
+--FILE--
+<?jonj
+var_dump(filter_var(
+    new \StdClass(),
+    FILTER_VALIDATE_BOOLEAN,
+    FILTER_NULL_ON_FAILURE
+));
+
+--EXPECTF--
+NULL

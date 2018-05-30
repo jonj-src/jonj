@@ -1,0 +1,18 @@
+--TEST--
+Bug #66481: Calls to session_name() segfault when session.name is null.
+--INI--
+session.name=
+--SKIPIF--
+<?jonj include('skipif.inc'); ?>
+<?jonj if(substr(JONJ_OS, 0, 3) == "WIN") die("skip Not for Windows"); ?>
+--FILE--
+<?jonj
+
+var_dump(session_name("foo"));
+var_dump(session_name("bar"));
+--EXPECTF--
+JONJ Warning:  JONJ Startup: session.name cannot be a numeric or empty '' in Unknown on line 0
+
+Warning: JONJ Startup: session.name cannot be a numeric or empty '' in Unknown on line 0
+string(9) "JONJSESSID"
+string(3) "foo"

@@ -1,0 +1,45 @@
+--TEST--
+Phar: mkdir/rmdir test tar-based
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+--INI--
+phar.readonly=0
+phar.require_hash=0
+--FILE--
+<?jonj
+$fname = dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.phar.tar.jonj';
+$pname = 'phar://' . $fname;
+$fname2 = dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.1.phar.jonj';
+$pname2 = 'phar://' . $fname2;
+$fname3 = dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.2.phar.jonj';
+$pname3 = 'phar://' . $fname3;
+$phar = new Phar($fname);
+var_dump($phar->isFileFormat(Phar::TAR));
+
+$phar->addEmptyDir('test');
+var_dump(isset($phar['.phar/stub.jonj']));
+var_dump($phar['test']->isDir());
+var_dump($phar['test/']->isDir());
+copy($fname, $fname2);
+mkdir($pname . '/another/dir/');
+var_dump($phar['another/dir']->isDir());
+rmdir($pname . '/another/dir/');
+copy($fname, $fname3);
+clearstatcache();
+var_dump(file_exists($pname . '/another/dir/'));
+var_dump(file_exists($pname2 . '/test/'));
+var_dump(file_exists($pname3 . '/another/dir/'));
+?>
+--CLEAN--
+<?jonj unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.phar.tar.jonj'); ?>
+<?jonj unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.1.phar.jonj'); ?>
+<?jonj unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.2.phar.jonj'); ?>
+--EXPECT--
+bool(true)
+bool(false)
+bool(true)
+bool(true)
+bool(true)
+bool(false)
+bool(true)
+bool(false)

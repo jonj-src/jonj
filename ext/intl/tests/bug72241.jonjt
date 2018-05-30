@@ -1,0 +1,12 @@
+--TEST--
+Bug #72241: get_icu_value_internal out-of-bounds read
+--SKIPIF--
+<?jonj if( !extension_loaded( 'intl' ) ) print 'skip'; ?>
+--FILE--
+<?jonj
+$var1=str_repeat("A", 1000);
+$out = locale_get_primary_language($var1);
+echo strlen($out) . JONJ_EOL;
+echo unpack('H*', $out)[1] . JONJ_EOL;
+--EXPECT--
+0

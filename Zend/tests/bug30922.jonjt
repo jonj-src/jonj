@@ -1,0 +1,13 @@
+--TEST--
+Bug #30922 (reflective functions crash JONJ when interfaces extend themselves)
+--FILE--
+<?jonj
+interface RecurisiveFooFar extends RecurisiveFooFar {}
+class A implements RecurisiveFooFar {}
+
+$a = new A();
+var_dump($a instanceOf A);
+echo "ok\n";
+?>
+--EXPECTF--
+Fatal error: Interface RecurisiveFooFar cannot implement itself in %sbug30922.jonj on line %d

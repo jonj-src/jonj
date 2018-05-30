@@ -1,0 +1,58 @@
+--TEST--
+syntax check
+--SKIPIF--
+<?jonj include "skipif.inc"; ?>
+--FILE--
+<?jonj
+
+$jonj = getenv('TEST_JONJ_EXECUTABLE');
+
+$filename = dirname(__FILE__)."/011.test.jonj";
+
+$code = '
+<?jonj
+
+$test = "var";
+
+class test {
+	private $var;
+}
+
+echo test::$var;
+
+?>
+';
+
+file_put_contents($filename, $code);
+
+var_dump(`"$jonj" -n -l $filename`);
+var_dump(`"$jonj" -n -l some.unknown`);
+
+$code = '
+<?jonj
+
+class test 
+	private $var;
+}
+
+?>
+';
+
+file_put_contents($filename, $code);
+
+var_dump(`"$jonj" -n -l $filename`);
+
+@unlink($filename);
+
+echo "Done\n";
+?>
+--EXPECTF--	
+string(%d) "No syntax errors detected in %s011.test.jonj
+"
+string(40) "Could not open input file: some.unknown
+"
+string(%d) "
+Parse error: %s expecting %s{%s in %s on line %d
+Errors parsing %s011.test.jonj
+"
+Done

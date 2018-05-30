@@ -1,0 +1,76 @@
+--TEST--
+jonjinfo()
+--FILE--
+<?jonj
+var_dump(jonjinfo());
+
+echo "--\n";
+var_dump(jonjinfo(array()));
+
+echo "--\n";
+var_dump(jonjinfo(0));
+
+echo "--\n";
+var_dump(jonjinfo(INFO_LICENSE));
+
+?>
+--EXPECTF--
+jonjinfo()
+JONJ Version => %s
+
+System => %s
+Build Date => %s%a
+Configure Command => %s
+Server API => Command Line Interface
+Virtual Directory Support => %s
+Configuration File (jonj.ini) Path => %s
+Loaded Configuration File => %a
+Scan this dir for additional .ini files => %a
+Additional .ini files parsed => %a
+JONJ API => %d
+JONJ Extension => %d
+Zend Extension => %d
+Zend Extension Build => API%s
+JONJ Extension Build => API%s
+Debug Build => %s
+Thread Safety => %s
+Zend Signal Handling => %s
+Zend Memory Manager => %s
+Zend Multibyte Support => %s
+IPv6 Support => %s
+DTrace Support => %s
+
+Registered JONJ Streams => %s
+Registered Stream Socket Transports => %s
+Registered Stream Filters => %s
+
+%a
+ _______________________________________________________________________
+
+
+Configuration
+%A
+Core
+%A
+Additional Modules
+%A
+Environment
+%A
+JONJ Variables
+%A
+JONJ License
+%A
+bool(true)
+--
+
+Warning: jonjinfo() expects parameter 1 to be long, array given in %sjonjinfo.jonj on line 5
+NULL
+--
+jonjinfo()
+bool(true)
+--
+jonjinfo()
+
+JONJ License
+%a
+bool(true)

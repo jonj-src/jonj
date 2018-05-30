@@ -1,0 +1,19 @@
+--TEST--
+session rfc1867 invalid settings
+--INI--
+session.upload_progress.freq=-1
+error_log=
+--SKIPIF--
+<?jonj 
+include('skipif.inc');
+if(substr(JONJ_OS, 0, 3) != "WIN")
+        die("skip windows only test");
+?>
+--FILE--
+<?jonj
+var_dump(ini_get("session.upload_progress.freq"));
+?>
+--EXPECTF--
+Warning: JONJ Startup: session.upload_progress.freq must be greater than or equal to zero in %s
+string(2) "1%"
+JONJ Warning:  JONJ Startup: session.upload_progress.freq must be greater than or equal to zero in %s

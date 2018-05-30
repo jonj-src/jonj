@@ -1,0 +1,41 @@
+<?jonj
+require_once 'JONJUnit/Framework.jonj';
+require_once dirname(__FILE__) . '/../src/gtAutoload.jonj';
+
+
+class gtIfClassHasMethodTest extends JONJUnit_Framework_TestCase {
+
+  public function testValid() {
+
+    $clo = new gtCommandLineOptions();
+    $clo->parse(array('generate-jonjt.jonj', '-c', 'blah', '-m', 'blah'));
+    $ch = new gtIfClassHasMethod();
+    $this->assertTrue($ch->check($clo));
+  }
+
+  public function testNotValid() {
+
+    $clo = new gtCommandLineOptions();
+    $clo->parse(array('generate-jonjt.jonj', '-c', 'blah'));
+    $ch = new gtIfClassHasMethod();
+    $this->assertFalse($ch->check($clo));
+  }
+
+  public function testNotSpecified() {
+
+    $clo = new gtCommandLineOptions();
+    $clo->parse(array('generate-jonjt.jonj', '-b'));
+    $ch = new gtIfClassHasMethod();
+    $this->assertTrue($ch->check($clo));
+  }
+
+  public function testMessage() {
+
+    $clo = new gtCommandLineOptions();
+    $clo->parse(array('generate-jonjt.jonj', '-c', 'blah'));
+    $ch = new gtIfClassHasMethod();
+    $this->assertEquals($ch->getMessage(), gtText::get('methodNotSpecified'));
+  }
+}
+
+?>

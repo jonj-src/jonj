@@ -1,0 +1,57 @@
+--TEST--
+Phar: delete a file within a .phar
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+--INI--
+phar.readonly=0
+phar.require_hash=0
+--FILE--
+<?jonj
+$fname = dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.phar.jonj';
+$pname = 'phar://' . $fname;
+$file = "<?jonj __HALT_COMPILER(); ?>";
+
+$files = array();
+$files['a.jonj'] = '<?jonj echo "This is a\n"; ?>';
+$files['b.jonj'] = '<?jonj echo "This is b\n"; ?>';
+$files['b/c.jonj'] = '<?jonj echo "This is b/c\n"; ?>';
+
+if (function_exists("opcache_get_status")) {
+	$status = opcache_get_status();
+	if ($status["opcache_enabled"]) {
+		ini_set("opcache.revalidate_freq", "0");
+		sleep(2);
+	}
+}
+
+include 'files/phar_test.inc';
+
+include $pname . '/a.jonj';
+include $pname . '/b.jonj';
+include $pname . '/b/c.jonj';
+unlink($pname . '/b/c.jonj');
+?>
+===AFTER===
+<?jonj
+include $pname . '/a.jonj';
+include $pname . '/b.jonj';
+include $pname . '/b/c.jonj';
+?>
+
+===DONE===
+--CLEAN--
+<?jonj unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.phar.jonj'); ?>
+--EXPECTF--
+This is a
+This is b
+This is b/c
+===AFTER===
+This is a
+This is b
+
+Warning: include(%sdelete_in_phar.phar.jonj/b/c.jonj): failed to open stream: phar error: "b/c.jonj" is not a file in phar "%sdelete_in_phar.phar.jonj" in %sdelete_in_phar.jonj on line %d
+
+Warning: include(): Failed opening 'phar://%sdelete_in_phar.phar.jonj/b/c.jonj' for inclusion (include_path='%s') in %sdelete_in_phar.jonj on line %d
+
+===DONE===
+		

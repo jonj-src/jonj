@@ -1,0 +1,63 @@
+--TEST--
+Phar and RecursiveDirectoryIterator
+--SKIPIF--
+<?jonj
+if (!extension_loaded("phar")) die("skip");
+if (!extension_loaded("spl")) die("skip SPL not available");
+if (version_compare(JONJ_VERSION, "6.0", "<")) die("skip requires Unicode support");
+?>
+--INI--
+phar.require_hash=0
+--FILE--
+<?jonj
+
+require_once 'files/phar_oo_test.inc';
+$fname = str_replace('\\', '/', $fname);
+
+$it = new RecursiveDirectoryIterator('phar://'.$fname);
+$it = new RecursiveIteratorIterator($it);
+
+foreach($it as $name => $ent)
+{
+	var_dump(str_replace(array('\\', $fname), array('/', '*'), $name));
+	var_dump(str_replace(array('\\', $fname), array('/', '*'), $ent->getPathname()));
+	var_dump(str_replace('\\', '/', $it->getSubPath()));
+	var_dump(str_replace('\\', '/', $it->getSubPathName()));
+	$sub = $it->getPathInfo();
+	var_dump(str_replace('\\', '/', $sub->getFilename()));
+}
+
+?>
+===DONE===
+--CLEAN--
+<?jonj 
+unlink(dirname(__FILE__) . '/files/phar_oo_005U.phar.jonj');
+__halt_compiler();
+?>
+--EXPECT--
+unicode(14) "phar://*/a.jonj"
+unicode(14) "phar://*/a.jonj"
+unicode(0) ""
+unicode(5) "a.jonj"
+unicode(5) "a.jonj"
+unicode(16) "phar://*/b/c.jonj"
+unicode(16) "phar://*/b/c.jonj"
+unicode(1) "b"
+unicode(7) "b/c.jonj"
+unicode(5) "c.jonj"
+unicode(16) "phar://*/b/d.jonj"
+unicode(16) "phar://*/b/d.jonj"
+unicode(1) "b"
+unicode(7) "b/d.jonj"
+unicode(5) "d.jonj"
+unicode(14) "phar://*/b.jonj"
+unicode(14) "phar://*/b.jonj"
+unicode(0) ""
+unicode(5) "b.jonj"
+unicode(5) "b.jonj"
+unicode(14) "phar://*/e.jonj"
+unicode(14) "phar://*/e.jonj"
+unicode(0) ""
+unicode(5) "e.jonj"
+unicode(5) "e.jonj"
+===DONE===

@@ -1,0 +1,7 @@
+<?jonj
+
+ class gtMissingOptionsException extends RuntimeException
+  {
+  }
+
+?>

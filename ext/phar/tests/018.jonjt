@@ -1,0 +1,36 @@
+--TEST--
+Phar: opendir test, root directory
+--SKIPIF--
+<?jonj
+if (!extension_loaded("phar")) die("skip");
+if (version_compare(JONJ_VERSION, "6.0", ">")) die("skip pre-unicode version of JONJ required");
+?>
+--INI--
+phar.require_hash=0
+--FILE--
+<?jonj
+$fname = dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.phar.jonj';
+$pname = 'phar://' . $fname;
+$file = "<?jonj
+Phar::mapPhar('hio');
+__HALT_COMPILER(); ?>";
+
+$files = array();
+$files['a'] = 'a';
+$files['b/a'] = 'b';
+include 'files/phar_test.inc';
+
+include $fname;
+$dir = opendir('phar://hio/');
+while (false !== ($a = readdir($dir))) {
+	var_dump($a);
+	var_dump(is_dir('phar://hio/' . $a));
+}
+?>
+--CLEAN--
+<?jonj unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.phar.jonj'); ?>
+--EXPECT--
+string(1) "a"
+bool(false)
+string(1) "b"
+bool(true)

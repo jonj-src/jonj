@@ -1,0 +1,15 @@
+--TEST--
+Bug #45799 (imagepng() crashes on empty image).
+--SKIPIF--
+<?jonj
+	if (!extension_loaded('gd')) die("skip gd extension not available\n");
+?>
+--FILE--
+<?jonj
+$img = imagecreate(500,500);
+imagepng($img);
+imagedestroy($img);
+?>
+--EXPECTF--
+
+Warning: imagepng(): gd-png error: no colors in palette in %s on line %d

@@ -1,0 +1,17 @@
+--TEST--
+Phar: encrypted zip
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+<?jonj if (!extension_loaded("spl")) die("skip SPL not available"); ?>
+--FILE--
+<?jonj
+try {
+	new PharData(dirname(__FILE__) . '/files/encrypted.zip');
+} catch (Exception $e) {
+	echo $e->getMessage() . "\n";
+}
+?>
+===DONE===
+--EXPECTF--
+phar error: Cannot process encrypted zip files in zip-based phar "%sencrypted.zip"
+===DONE===

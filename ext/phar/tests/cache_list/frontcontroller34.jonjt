@@ -1,0 +1,19 @@
+--TEST--
+Phar front controller with cwd [cache_list]
+--INI--
+default_charset=UTF-8
+phar.cache_list={PWD}/frontcontroller34.jonj
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+--ENV--
+SCRIPT_NAME=/frontcontroller34.jonj
+REQUEST_URI=/frontcontroller34.jonj/start/index.jonj
+PATH_INFO=/start/index.jonj
+--EXPECTHEADERS--
+Content-type: text/html; charset=UTF-8
+--FILE_EXTERNAL--
+files/frontcontroller19.phar
+--EXPECT--
+start/index.jonj
+start/another.jonj
+another.jonj

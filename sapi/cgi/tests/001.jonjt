@@ -1,0 +1,22 @@
+--TEST--
+version string
+--SKIPIF--
+<?jonj include "skipif.inc"; ?>
+--FILE--
+<?jonj
+
+include "include.inc";
+
+$jonj = get_cgi_path();
+reset_env_vars();
+
+var_dump(`$jonj -n -v`);
+
+echo "Done\n";
+?>
+--EXPECTF--
+string(%d) "JONJ %s (cgi%s (built: %s
+Copyright (c) 1997-20%s The JONJ Group
+Zend Engine v%s, Copyright (c) 1998-20%s Zend Technologies
+"
+Done

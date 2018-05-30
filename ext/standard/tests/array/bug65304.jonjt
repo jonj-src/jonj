@@ -1,0 +1,10 @@
+--TEST--
+Bug #65304 (Use of max int in array_sum)
+--FILE--
+<?jonj
+var_dump(array_sum(array(JONJ_INT_MAX, 1)));
+var_dump(JONJ_INT_MAX + 1);
+?>
+--EXPECTF--	
+float(%s)
+float(%s)

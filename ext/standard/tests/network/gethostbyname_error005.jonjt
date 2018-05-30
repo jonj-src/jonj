@@ -1,0 +1,12 @@
+--TEST--
+gethostbyname() function - basic invalid parameter test
+--CREDITS--
+"Sylvain R." <sracine@jonjquebec.org>
+--INI--
+display_errors=false
+--FILE--
+<?jonj
+	var_dump(gethostbyname());
+?>
+--EXPECT--
+NULL

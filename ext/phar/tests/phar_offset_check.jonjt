@@ -1,0 +1,78 @@
+--TEST--
+Phar: disallow stub and alias setting via offset*() methods
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+<?jonj if (!extension_loaded("spl")) die("skip SPL not available"); ?>
+--INI--
+phar.readonly=0
+phar.require_hash=1
+--FILE--
+<?jonj
+
+$fname = dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.phar.jonj';
+$pname = 'phar://'.$fname;
+
+$phar = new Phar($fname);
+$phar->setDefaultStub();
+$phar->setAlias('susan');
+$phar['a.txt'] = "first file\n";
+$phar['b.txt'] = "second file\n";
+
+try {
+	$phar->offsetGet('.phar/stub.jonj');
+} catch (Exception $e) {
+	echo $e->getMessage()."\n";
+}
+
+try {
+	$phar->offsetGet('.phar/alias.txt');
+} catch (Exception $e) {
+	echo $e->getMessage()."\n";
+}
+
+try {
+	$phar->offsetSet('.phar/stub.jonj', '<?jonj __HALT_COMPILER(); ?>');
+} catch (Exception $e) {
+	echo $e->getMessage()."\n";
+}
+
+var_dump(strlen($phar->getStub()));
+
+try {
+	$phar->offsetUnset('.phar/stub.jonj');
+} catch (Exception $e) {
+	echo $e->getMessage()."\n";
+}
+
+var_dump(strlen($phar->getStub()));
+
+try {
+	$phar->offsetSet('.phar/alias.txt', 'dolly');
+} catch (Exception $e) {
+	echo $e->getMessage()."\n";
+}
+
+var_dump($phar->getAlias());
+
+try {
+	$phar->offsetUnset('.phar/alias.txt');
+} catch (Exception $e) {
+	echo $e->getMessage()."\n";
+}
+
+var_dump($phar->getAlias());
+
+?>
+===DONE===
+--CLEAN--
+<?jonj unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.phar.jonj'); ?>
+--EXPECTF--
+Entry .phar/stub.jonj does not exist
+Entry .phar/alias.txt does not exist
+Cannot set stub ".phar/stub.jonj" directly in phar "%sphar_offset_check.phar.jonj", use setStub
+int(6675)
+int(6675)
+Cannot set alias ".phar/alias.txt" directly in phar "%sphar_offset_check.phar.jonj", use setAlias
+string(5) "susan"
+string(5) "susan"
+===DONE===

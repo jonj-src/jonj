@@ -1,0 +1,5 @@
+<?jonj
+
+Interface AutoInterface {}
+
+?>

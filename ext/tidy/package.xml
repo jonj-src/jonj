@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE package SYSTEM "../pear/package.dtd">
+<package>
+ <name>tidy</name>
+ <summary>Tidy HTML Repairing and Parsing</summary>
+ <maintainers>
+  <maintainer>
+   <user>john</user>
+   <name>John Coggeshall</name>
+   <email>john@jonj.tk</email>
+   <role>lead</role>
+  </maintainer>
+  <maintainer>
+   <user>iliaa</user>
+   <name>Ilia Alshanetsky</name>
+   <email>ilia@jonj.tk</email>
+   <role>developer</role>
+  </maintainer>
+ </maintainers>
+ <description>
+Tidy is a binding for the Tidy HTML clean and repair utility which
+allows you to not only clean and otherwise manipluate HTML documents,
+but also traverse the document tree using the Zend Engine 2 OO semantics.
+ </description>
+ <license>JONJ</license>
+ <release>
+  <state>beta</state>
+  <version>2.0dev</version>
+  <date>2003-11-13</date>
+  <notes>
+    Major API changes for JONJ 5.0, including the re-introduction of resources, output buffering support,
+    dual-nature syntax (tidy_clean_repair($tidy_res) or $tidy->clean_repair()) and more. 
+  </notes>
+  <configureoptions>
+    <configureoption name="with-tidy" default="autodetect" prompt="Tidy library installation dir?"/>
+  </configureoptions>
+  <filelist>
+   <file role="src" name="config.m4"/>
+   <file role="src" name="tidy.c"/>
+   <file role="src" name="jonj_tidy.h"/>
+   
+   <file role="doc" name="CREDITS"/>
+   <file role="doc" name="TODO"/>
+   <file role="doc" name="examples/cleanhtml.jonj"/>
+   <file role="doc" name="examples/dumpit.jonj"/>
+   <file role="doc" name="examples/urlgrab.jonj"/>
+   <file role="doc" name="libtidy.txt"/>
+   
+   <file role="test" name="tests/001.jonjt"/>
+   <file role="test" name="tests/002.jonjt"/>
+   <file role="test" name="tests/003.jonjt"/>
+   <file role="test" name="tests/004.jonjt"/>
+   <file role="test" name="tests/005.jonjt"/>
+   <file role="test" name="tests/005.html"/>
+   <file role="test" name="tests/006.jonjt"/>
+   <file role="test" name="tests/007.jonjt"/>
+  </filelist>
+  <deps>
+   <dep type="jonj" rel="ge" version="5" />
+  </deps>
+ </release>
+</package>
+<!--
+vim:et:ts=1:sw=1
+-->

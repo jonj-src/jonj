@@ -1,0 +1,21 @@
+--TEST--
+SPL: spl_object_hash()
+--FILE--
+<?jonj
+
+var_dump(spl_object_hash(new stdClass));
+var_dump(spl_object_hash(42));
+var_dump(spl_object_hash());
+
+?>
+===DONE===
+<?jonj exit(0); ?>
+--EXPECTF--
+string(32) "%s"
+
+Warning: spl_object_hash() expects parameter 1 to be object, integer given in %sspl_005.jonj on line %d
+NULL
+
+Warning: spl_object_hash() expects exactly 1 parameter, 0 given in %sspl_005.jonj on line %d
+NULL
+===DONE===

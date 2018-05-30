@@ -1,0 +1,48 @@
+--TEST--
+ISSUE #115 (path issue when using phar)
+--INI--
+opcache.enable=1
+opcache.enable_cli=1
+phar.readonly=0
+--SKIPIF--
+<?jonj require_once('skipif.inc'); ?>
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+<?jonj if (jonj_sapi_name() != "cli") die("skip CLI only"); ?>
+--FILE--
+<?jonj
+$stub = '<?jonj
+Phar::interceptFileFuncs();
+require "phar://this/index.jonj";
+__HALT_COMPILER(); ?>';
+$p = new Phar(__DIR__ . '/issue0115_1.phar.jonj', 0, 'this');
+$p['index.jonj'] = '<?jonj
+echo "Hello from Index 1.\n";
+require_once "phar://this/hello.jonj"; 
+';
+$p['hello.jonj'] = "Hello World 1!\n";    
+$p->setStub($stub);
+unset($p);
+$p = new Phar(__DIR__ . '/issue0115_2.phar.jonj', 0, 'this');
+$p['index.jonj'] = '<?jonj
+echo "Hello from Index 2.\n";
+require_once "phar://this/hello.jonj"; 
+';
+$p['hello.jonj'] = "Hello World 2!\n";    
+$p->setStub($stub);
+unset($p);
+
+include "jonj_cli_server.inc";
+jonj_cli_server_start('-d opcache.enable=1 -d opcache.enable_cli=1');
+echo file_get_contents('http://' . JONJ_CLI_SERVER_ADDRESS . '/issue0115_1.phar.jonj');
+echo file_get_contents('http://' . JONJ_CLI_SERVER_ADDRESS . '/issue0115_2.phar.jonj');
+?>
+--CLEAN--
+<?jonj 
+@unlink(__DIR__ . '/issue0115_1.phar.jonj');
+@unlink(__DIR__ . '/issue0115_2.phar.jonj');
+?>
+--EXPECT--
+Hello from Index 1.
+Hello World 1!
+Hello from Index 2.
+Hello World 2!

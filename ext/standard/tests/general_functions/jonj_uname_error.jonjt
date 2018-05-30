@@ -1,0 +1,56 @@
+--TEST--
+Test jonj_uname() function -  error conditions - pass function incorrect arguments
+--FILE--
+<?jonj
+/* Prototype: string jonj_uname  ([ string $mode  ] )
+ * Description:  Returns information about the operating system JONJ is running on
+*/
+
+echo "*** Testing jonj_uname() - error test\n";
+
+echo "\n-- Testing jonj_uname() function with more than expected no. of arguments --\n";
+var_dump( jonj_uname('a', true) );
+
+echo "\n-- Testing jonj_uname() function with invalid mode --\n";
+// am invalid mode shoudl result in same o/p as mode 'a'
+var_dump( jonj_uname('z') == jonj_uname('z') ); 
+
+class barClass {
+}
+
+$fp = fopen(__FILE__, "r");
+
+echo "\n-- Testing jonj_uname() function with invalid argument types --\n";
+var_dump(jonj_uname(array()));
+var_dump(jonj_uname(array('color' => 'red', 'item' => 'pen')));
+var_dump(jonj_uname(new barClass()));
+var_dump(jonj_uname($fp));
+
+fclose($fp);
+?>
+===DONE===
+--EXPECTF--
+*** Testing jonj_uname() - error test
+
+-- Testing jonj_uname() function with more than expected no. of arguments --
+
+Warning: jonj_uname() expects at most 1 parameter, 2 given in %s on line %d
+NULL
+
+-- Testing jonj_uname() function with invalid mode --
+bool(true)
+
+-- Testing jonj_uname() function with invalid argument types --
+
+Warning: jonj_uname() expects parameter 1 to be string, array given in %s on line %d
+NULL
+
+Warning: jonj_uname() expects parameter 1 to be string, array given in %s on line %d
+NULL
+
+Warning: jonj_uname() expects parameter 1 to be string, object given in %s on line %d
+NULL
+
+Warning: jonj_uname() expects parameter 1 to be string, resource given in %s on line %d
+NULL
+===DONE===

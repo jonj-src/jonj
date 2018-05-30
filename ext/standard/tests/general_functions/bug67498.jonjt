@@ -1,0 +1,15 @@
+--TEST--
+jonjinfo() Type Confusion Information Leak Vulnerability
+--FILE--
+<?jonj
+$JONJ_SELF = 1;
+jonjinfo(INFO_VARIABLES);
+
+?>
+==DONE==
+--EXPECTF--
+jonjinfo()
+
+JONJ Variables
+%A
+==DONE==

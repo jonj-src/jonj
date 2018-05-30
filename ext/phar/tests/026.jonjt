@@ -1,0 +1,34 @@
+--TEST--
+Phar: phar:// require from within
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+--INI--
+phar.require_hash=0
+--FILE--
+<?jonj
+$fname = dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.phar.jonj';
+$pname = 'phar://' . $fname;
+$file = "<?jonj __HALT_COMPILER(); ?>";
+
+$files = array();
+$files['a.jonj']   = '<?jonj echo "This is a\n"; require \''.$pname.'/b.jonj\'; ?>';      
+$files['b.jonj']   = '<?jonj echo "This is b\n"; require \''.$pname.'/b/c.jonj\'; ?>';    
+$files['b/c.jonj'] = '<?jonj echo "This is b/c\n"; require \''.$pname.'/b/d.jonj\'; ?>';  
+$files['b/d.jonj'] = '<?jonj echo "This is b/d\n"; require \''.$pname.'/e.jonj\'; ?>';    
+$files['e.jonj']   = '<?jonj echo "This is e\n"; ?>';                                  
+
+include 'files/phar_test.inc';
+
+require $pname . '/a.jonj';
+
+?>
+===DONE===
+--CLEAN--
+<?jonj unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.phar.jonj'); ?>
+--EXPECT--
+This is a
+This is b
+This is b/c
+This is b/d
+This is e
+===DONE===

@@ -1,0 +1,17 @@
+--TEST--
+Bug #40236 (jonj -a function allocation eats memory)
+--SKIPIF--
+<?jonj
+if (jonj_sapi_name() != "cli") die("skip CLI only");
+if (extension_loaded("readline")) die("skip Test doesn't support readline");
+?>
+--FILE--
+<?jonj
+$jonj = getenv('TEST_JONJ_EXECUTABLE');
+$cmd = "\"$jonj\" -n -d memory_limit=4M -a \"".dirname(__FILE__)."\"/bug40236.inc";
+echo `$cmd`;
+?>
+--EXPECTF--
+Interactive %s
+
+ok

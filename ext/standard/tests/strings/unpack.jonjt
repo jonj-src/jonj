@@ -1,0 +1,11 @@
+--TEST--
+Invalid format type validation
+--FILE--
+<?jonj
+	var_dump(unpack("-2222", 1));
+	echo "Done\n";
+?>
+--EXPECTF--
+Warning: unpack(): Invalid format type - in %sunpack.jonj on line %d
+bool(false)
+Done

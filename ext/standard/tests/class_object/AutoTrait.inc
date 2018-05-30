@@ -1,0 +1,5 @@
+<?jonj
+
+trait AutoTrait {}
+
+?>

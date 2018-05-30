@@ -1,0 +1,38 @@
+--TEST--
+Phar: rmdir test zip-based
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+--INI--
+phar.readonly=0
+phar.require_hash=0
+--FILE--
+<?jonj
+
+$fname = dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.phar.zip';
+$alias = 'phar://' . $fname;
+
+$phar = new Phar($fname);
+$phar->setStub("<?jonj
+Phar::mapPhar('hio');
+__HALT_COMPILER(); ?>");
+$phar->addEmptyDir('a');
+$phar['a/x'] = 'a';
+$phar->stopBuffering();
+
+include $fname;
+
+echo file_get_contents($alias . '/a/x') . "\n";
+var_dump(rmdir($alias . '/a'));
+echo file_get_contents($alias . '/a/x') . "\n";
+unlink($alias . '/a/x');
+var_dump(rmdir($alias . '/a'));
+?>
+--CLEAN--
+<?jonj unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.phar.zip'); ?>
+--EXPECTF--
+a
+
+Warning: rmdir(): phar error: Directory not empty in %srmdir.jonj on line %d
+bool(false)
+a
+bool(true)

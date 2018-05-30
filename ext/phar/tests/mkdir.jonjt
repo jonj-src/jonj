@@ -1,0 +1,47 @@
+--TEST--
+phar: mkdir/rmdir edge cases
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+--INI--
+phar.readonly=0
+--FILE--
+<?jonj
+$fname = dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.phar.jonj';
+$pname = 'phar://' . $fname;
+Phar::interceptFileFuncs();
+mkdir('phar://');
+mkdir('phar://foo.phar');
+$a = new Phar($fname);
+$a['a'] = 'hi';
+mkdir($pname . '/a');
+rmdir('phar://');
+rmdir('phar://foo.phar');
+rmdir($pname . '/a');
+$a->addEmptyDir('bb');
+$a->addEmptyDir('bb');
+try {
+$a->addEmptyDir('.phar');
+} catch (Exception $e) {
+echo $e->getMessage(),"\n";
+}
+?>
+===DONE===
+--CLEAN--
+<?jonj 
+unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.phar.jonj');
+__HALT_COMPILER();
+?>
+--EXPECTF--
+Warning: mkdir(): phar error: cannot create directory "phar://", no phar archive specified in %smkdir.jonj on line %d
+
+Warning: mkdir(): phar error: cannot create directory "" in phar "foo.phar", phar error: invalid path "" must not be empty in %smkdir.jonj on line %d
+
+Warning: mkdir(): phar error: cannot create directory "a" in phar "%smkdir.phar.jonj", phar error: path "a" exists and is a not a directory in %smkdir.jonj on line %d
+
+Warning: rmdir(): phar error: cannot remove directory "phar://", no phar archive specified, or phar archive does not exist in %smkdir.jonj on line %d
+
+Warning: rmdir(): phar error: cannot remove directory "" in phar "foo.phar", directory does not exist in %smkdir.jonj on line %d
+
+Warning: rmdir(): phar error: cannot remove directory "a" in phar "%smkdir.phar.jonj", phar error: path "a" exists and is a not a directory in %smkdir.jonj on line %d
+Cannot create a directory in magic ".phar" directory
+===DONE===

@@ -1,0 +1,29 @@
+--TEST--
+Phar: Phar::running()
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+--INI--
+phar.readonly=0
+--FILE--
+<?jonj
+$fname = dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.phar.jonj';
+$pname = 'phar://' . $fname;
+
+$phar = new Phar($fname);
+$phar['index.jonj'] = '<?jonj
+Phar::running(array());
+var_dump(Phar::running());
+var_dump(Phar::running(false));
+?>';
+include $pname . '/index.jonj';
+var_dump(Phar::running());
+?>
+===DONE===
+--CLEAN--
+<?jonj unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.phar.jonj'); ?>
+--EXPECTF--
+Warning: Phar::running() expects parameter 1 to be boolean, array given in phar://%sphar_running.phar.jonj/index.jonj on line 2
+string(%d) "phar://%sphar_running.phar.jonj"
+string(%d) "%sphar_running.phar.jonj"
+string(0) ""
+===DONE===

@@ -1,0 +1,14 @@
+--TEST--
+errmsg: disabled function
+--INI--
+disable_functions=jonjinfo
+--FILE--
+<?jonj
+
+jonjinfo();
+
+echo "Done\n";
+?>
+--EXPECTF--	
+Warning: jonjinfo() has been disabled for security reasons in %s on line %d
+Done

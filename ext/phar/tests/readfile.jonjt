@@ -1,0 +1,30 @@
+--TEST--
+Phar: test readfile() interception
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip");?>
+--INI--
+phar.require_hash=1
+phar.readonly=0
+--FILE--
+<?jonj
+$fname = dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.phar.jonj';
+$a = new Phar($fname);
+$a['index.jonj'] = '<?jonj
+readfile("dir/file1.txt");
+readfile("file1.txt", true);
+?>';
+$a['dir/file1.txt'] = 'hi';
+$a['dir/file2.txt'] = 'hi2';
+$a['dir/file3.txt'] = 'hi3';
+$a->setStub('<?jonj
+Phar::interceptFileFuncs();
+set_include_path("phar://" . __FILE__ . "/dir" . PATH_SEPARATOR . "phar://" . __FILE__);
+include "index.jonj";
+__HALT_COMPILER();');
+include $fname;
+?>
+===DONE===
+--CLEAN--
+<?jonj unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.phar.jonj'); ?>
+--EXPECT--
+hihi===DONE===

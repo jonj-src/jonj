@@ -1,0 +1,12 @@
+--TEST--
+SplDoublyLinkedList getIteratorMode with an unexpected parameter
+--CREDITS--
+JONJNW Testfest 2009 - Lorna Mitchell
+--FILE--
+<?jonj
+$list = new SplDoublyLinkedList();
+$list->getIteratorMode(24);
+?>
+--EXPECTF--
+Warning: SplDoublyLinkedList::getIteratorMode() expects exactly 0 parameters, 1 given in %s on line %d
+

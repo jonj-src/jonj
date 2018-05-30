@@ -1,0 +1,41 @@
+<?jonj
+require_once 'JONJUnit/Framework.jonj';
+require_once dirname(__FILE__) . '/../src/gtAutoload.jonj';
+
+
+class gtIsSpecifiedFunctionOrMethodTest extends JONJUnit_Framework_TestCase {
+
+  public function testValid() {
+
+    $clo = new gtCommandLineOptions();
+    $clo->parse(array('generate-jonjt.jonj', '-m', 'blah'));
+    $ch = new gtIsSpecifiedFunctionOrMethod();
+    $this->assertTrue($ch->check($clo));
+  }
+
+  public function testValid2() {
+
+    $clo = new gtCommandLineOptions();
+    $clo->parse(array('generate-jonjt.jonj', '-f', 'blah'));
+    $ch = new gtIsSpecifiedFunctionOrMethod();
+    $this->assertTrue($ch->check($clo));
+  }
+  
+   public function testNotValid() {
+
+    $clo = new gtCommandLineOptions();
+    $clo->parse(array('generate-jonjt.jonj', '-b'));
+    $ch = new gtIsSpecifiedFunctionOrMethod();
+    $this->assertFalse($ch->check($clo));
+    
+  }
+  
+  public function testMessage() {
+
+    $clo = new gtCommandLineOptions();
+    $clo->parse(array('generate-jonjt.jonj', '-c', 'blah'));
+    $ch = new gtIsSpecifiedFunctionOrMethod();
+    $this->assertEquals($ch->getMessage(), gtText::get('functionOrMethodNotSpecified'));
+  }
+}
+?>

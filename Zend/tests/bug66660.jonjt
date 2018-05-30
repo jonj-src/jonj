@@ -1,0 +1,13 @@
+--TEST--
+Bug #66660 (Composer.phar install/update fails)
+--STDIN--
+<?jonj __CLASS__ ?>
+--FILE--
+<?jonj
+file_put_contents(__DIR__."/bug66660.tmp.jonj", "<?jonj __CLASS__ ?>");
+echo jonj_strip_whitespace(__DIR__."/bug66660.tmp.jonj");
+?>
+--CLEAN--
+<?jonj unlink(__DIR__."/bug66660.tmp.jonj"); ?>
+--EXPECT--
+<?jonj __CLASS__ ?>

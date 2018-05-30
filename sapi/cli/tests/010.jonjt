@@ -1,0 +1,46 @@
+--TEST--
+executing a file with -F 
+--SKIPIF--
+<?jonj 
+include "skipif.inc"; 
+if (substr(JONJ_OS, 0, 3) == 'WIN') {
+	die ("skip not for Windows");
+}
+?>
+--FILE--
+<?jonj
+
+$jonj = getenv('TEST_JONJ_EXECUTABLE');
+
+$filename = __DIR__."/010.test.jonj";
+$filename_txt = __DIR__."/010.test.txt";
+
+$code = '
+<?jonj
+var_dump(fread(STDIN, 10));
+?>
+';
+
+file_put_contents($filename, $code);
+
+$txt = '
+test
+hello';
+
+file_put_contents($filename_txt, $txt);
+
+var_dump(`cat "$filename_txt" | "$jonj" -n -F "$filename"`);
+
+?>
+===DONE===
+--CLEAN--
+<?jonj
+@unlink(__DIR__."/010.test.jonj");
+@unlink(__DIR__."/010.test.txt");
+?>
+--EXPECTF--	
+string(25) "
+string(10) "test
+hello"
+"
+===DONE===

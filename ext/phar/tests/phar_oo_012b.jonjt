@@ -1,0 +1,42 @@
+--TEST--
+Phar object: unset file
+--SKIPIF--
+<?jonj if (!extension_loaded('phar')) die('skip'); ?>
+<?jonj if (!extension_loaded("spl")) die("skip SPL not available"); ?>
+--INI--
+phar.readonly=1
+phar.require_hash=0
+--FILE--
+<?jonj
+
+try
+{
+	$pharconfig = 0;
+
+	require_once 'files/phar_oo_test.inc';
+	
+	$phar = new Phar($fname);
+	$phar->setInfoClass('SplFileObject');
+	
+	$phar['f.jonj'] = 'hi';
+	var_dump(isset($phar['f.jonj']));
+	echo $phar['f.jonj'];
+	echo "\n";
+	unset($phar['f.jonj']);
+	var_dump(isset($phar['f.jonj']));
+}
+catch (BadMethodCallException $e)
+{
+	echo "Exception: " . $e->getMessage() . "\n";
+}
+
+?>
+===DONE===
+--CLEAN--
+<?jonj 
+unlink(dirname(__FILE__) . '/files/phar_oo_012b.phar.jonj');
+__halt_compiler();
+?>
+--EXPECTF--
+Exception: Write operations disabled by the jonj.ini setting phar.readonly
+===DONE===

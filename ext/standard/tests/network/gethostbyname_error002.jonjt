@@ -1,0 +1,10 @@
+--TEST--
+gethostbyname() function - basic type return error test
+--CREDITS--
+"Sylvain R." <sracine@jonjquebec.org>
+--FILE--
+<?jonj
+	var_dump(is_string(gethostbyname("1234567890")));
+?>
+--EXPECT--
+bool(true)

@@ -1,0 +1,14 @@
+--TEST--
+Check the jonj_ini_loaded_file() function
+--CREDITS--
+Sebastian Schürmann
+sschuermann@chip.de
+Testfest 2009 Munich
+--INI--
+precision=12
+--FILE--
+<?jonj
+var_dump(jonj_ini_loaded_file());
+?>
+--EXPECTREGEX--
+string\(\d+\) ".*jonj\.ini"|bool\(false\)

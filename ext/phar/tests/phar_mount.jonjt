@@ -1,0 +1,63 @@
+--TEST--
+Phar: Phar::mount
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+--INI--
+phar.readonly=0
+--FILE--
+<?jonj
+$fname = dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.phar.jonj';
+$pname = 'phar://' . $fname;
+$fname2 = dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.phar.tar';
+
+$a = new Phar($fname);
+$a['index.jonj'] = '<?jonj
+Phar::mount("testit", "' . addslashes(__FILE__) . '");
+try {
+Phar::mount("testit", "' . addslashes(__FILE__) . '");
+} catch (Exception $e) {
+echo $e->getMessage() . "\n";
+}
+try {
+Phar::mount("' . addslashes($pname) . '/testit1", "' . addslashes(__FILE__) . '");
+} catch (Exception $e) {
+echo $e->getMessage() . "\n";
+}
+?>';
+$a->setStub('<?jonj
+set_include_path("phar://" . __FILE__);
+include "index.jonj";
+__HALT_COMPILER();');
+Phar::mount($pname . '/testit1', __FILE__);
+include $fname;
+// test copying of a phar with mounted entries
+$b = $a->convertToExecutable(Phar::TAR);
+$b->setStub('<?jonj
+set_include_path("phar://" . __FILE__);
+include "index.jonj";
+__HALT_COMPILER();');
+try {
+include $fname2;
+} catch (Exception $e) {
+echo $e->getMessage(),"\n";
+}
+try {
+Phar::mount($pname . '/oops', '/home/oops/../../etc/passwd:');
+} catch (Exception $e) {
+echo $e->getMessage(),"\n";
+}
+Phar::mount($pname . '/testit2', $pname . '/testit1');
+echo substr($a['testit2']->getContent(),0, 50),"\n";
+?>
+===DONE===
+--CLEAN--
+<?jonj unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.phar.jonj'); ?>
+<?jonj unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.phar.tar'); ?>
+--EXPECTF--
+Mounting of testit to %sphar_mount.jonj within phar %sphar_mount.phar.jonj failed
+Can only mount internal paths within a phar archive, use a relative path instead of "phar://%sphar_mount.phar.jonj/testit1"
+Mounting of testit to %sphar_mount.jonj within phar %sphar_mount.phar.tar failed
+Mounting of /oops to /home/oops/../../etc/passwd: within phar %sphar_mount.phar.jonj failed
+<?jonj
+$fname = dirname(__FILE__) . '/' . basename(
+===DONE===

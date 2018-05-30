@@ -1,0 +1,19 @@
+--TEST--
+test imagesavealpha without arguments
+
+--CREDITS--
+Marcelo Diniz <marcelo.leo27 [at] gmail [dot] com
+‪#‎jonjspMaisTestFest JONJSP on 2014-07-05
+
+--SKIPIF--
+<?jonj
+    if (!extension_loaded('gd')) die("skip gd extension not available.");
+?>
+
+--FILE--
+<?jonj
+imagesavealpha();
+?>
+
+--EXPECTF--
+Warning: imagesavealpha() expects exactly 2 parameters, 0 given in %s on line %d

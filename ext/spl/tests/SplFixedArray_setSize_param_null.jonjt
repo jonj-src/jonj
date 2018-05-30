@@ -1,0 +1,13 @@
+--TEST--
+SplFixedArray::setSize() with a null parameter
+--CREDITS--
+JONJNW Testfest 2009 - Adrian Hardy
+--FILE--
+<?jonj
+$fixed_array = new SplFixedArray(2);
+$fixed_array->setSize(null);
+var_dump($fixed_array);
+?>
+--EXPECT--
+object(SplFixedArray)#1 (0) {
+}

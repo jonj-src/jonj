@@ -1,0 +1,17 @@
+--TEST--
+Phar front controller mime type override, Phar::JONJ
+--INI--
+default_charset=UTF-8
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+--ENV--
+SCRIPT_NAME=/frontcontroller16.jonj
+REQUEST_URI=/frontcontroller16.jonj/a.jonjs
+PATH_INFO=/a.jonjs
+--FILE_EXTERNAL--
+files/frontcontroller8.phar
+--EXPECTHEADERS--
+Content-type: text/html; charset=UTF-8
+--EXPECT--
+hio1
+

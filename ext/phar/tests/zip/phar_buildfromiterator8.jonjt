@@ -1,0 +1,73 @@
+--TEST--
+Phar::buildFromIterator() iterator, SplFileInfo as current zip-based
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+--INI--
+phar.readonly=0
+--FILE--
+<?jonj
+try {
+	chdir(dirname(__FILE__));
+	$phar = new Phar(dirname(__FILE__) . '/buildfromiterator.phar.zip');
+	$a = $phar->buildFromIterator(new RegexIterator(new DirectoryIterator('.'), '/^frontcontroller\d{0,2}\.phar\.jonjt\\z|^\.\\z|^\.\.\\z/'), dirname(__FILE__) . DIRECTORY_SEPARATOR);
+	asort($a);
+	var_dump($a);
+	var_dump($phar->isFileFormat(Phar::ZIP));
+} catch (Exception $e) {
+	var_dump(get_class($e));
+	echo $e->getMessage() . "\n";
+}
+?>
+===DONE===
+--CLEAN--
+<?jonj 
+unlink(dirname(__FILE__) . '/buildfromiterator.phar.zip');
+__HALT_COMPILER();
+?>
+--EXPECTF--
+array(21) {
+  ["frontcontroller1.phar.jonjt"]=>
+  string(%d) "%sfrontcontroller1.phar.jonjt"
+  ["frontcontroller10.phar.jonjt"]=>
+  string(%d) "%sfrontcontroller10.phar.jonjt"
+  ["frontcontroller11.phar.jonjt"]=>
+  string(%d) "%sfrontcontroller11.phar.jonjt"
+  ["frontcontroller12.phar.jonjt"]=>
+  string(%d) "%sfrontcontroller12.phar.jonjt"
+  ["frontcontroller13.phar.jonjt"]=>
+  string(%d) "%sfrontcontroller13.phar.jonjt"
+  ["frontcontroller14.phar.jonjt"]=>
+  string(%d) "%sfrontcontroller14.phar.jonjt"
+  ["frontcontroller15.phar.jonjt"]=>
+  string(%d) "%sfrontcontroller15.phar.jonjt"
+  ["frontcontroller16.phar.jonjt"]=>
+  string(%d) "%sfrontcontroller16.phar.jonjt"
+  ["frontcontroller17.phar.jonjt"]=>
+  string(%d) "%sfrontcontroller17.phar.jonjt"
+  ["frontcontroller18.phar.jonjt"]=>
+  string(%d) "%sfrontcontroller18.phar.jonjt"
+  ["frontcontroller19.phar.jonjt"]=>
+  string(%d) "%sfrontcontroller19.phar.jonjt"
+  ["frontcontroller2.phar.jonjt"]=>
+  string(%d) "%sfrontcontroller2.phar.jonjt"
+  ["frontcontroller20.phar.jonjt"]=>
+  string(%d) "%sfrontcontroller20.phar.jonjt"
+  ["frontcontroller21.phar.jonjt"]=>
+  string(%d) "%sfrontcontroller21.phar.jonjt"
+  ["frontcontroller3.phar.jonjt"]=>
+  string(%d) "%sfrontcontroller3.phar.jonjt"
+  ["frontcontroller4.phar.jonjt"]=>
+  string(%d) "%sfrontcontroller4.phar.jonjt"
+  ["frontcontroller5.phar.jonjt"]=>
+  string(%d) "%sfrontcontroller5.phar.jonjt"
+  ["frontcontroller6.phar.jonjt"]=>
+  string(%d) "%sfrontcontroller6.phar.jonjt"
+  ["frontcontroller7.phar.jonjt"]=>
+  string(%d) "%sfrontcontroller7.phar.jonjt"
+  ["frontcontroller8.phar.jonjt"]=>
+  string(%d) "%sfrontcontroller8.phar.jonjt"
+  ["frontcontroller9.phar.jonjt"]=>
+  string(%d) "%sfrontcontroller9.phar.jonjt"
+}
+bool(true)
+===DONE===

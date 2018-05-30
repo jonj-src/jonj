@@ -1,0 +1,63 @@
+--TEST--
+Phar: test edge cases of readfile() function interception
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip");?>
+<?jonj if (version_compare(JONJ_VERSION, "6.0", ">=")) die("skip requires jonj older than 6.0"); ?>
+--INI--
+phar.readonly=0
+--FILE--
+<?jonj
+Phar::interceptFileFuncs();
+$fname = dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.phar.jonj';
+$pname = 'phar://' . $fname;
+
+readfile(array());
+chdir(dirname(__FILE__));
+file_put_contents($fname, "blah\n");
+file_put_contents("foob", "test\n");
+readfile($fname);
+unlink($fname);
+mkdir($pname . '/oops');
+file_put_contents($pname . '/foo/hi', '<?jonj
+readfile("foo/" . basename(__FILE__));
+$context = stream_context_create();
+readfile("foob");
+set_include_path("' . addslashes(dirname(__FILE__)) . '");
+readfile("foob", true);
+readfile("./hi", 0, $context);
+readfile("../oops");
+?>
+');
+include $pname . '/foo/hi';
+?>
+===DONE===
+--CLEAN--
+<?jonj unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.phar.jonj'); ?>
+<?jonj rmdir(dirname(__FILE__) . '/poo'); ?>
+<?jonj unlink(dirname(__FILE__) . '/foob'); ?>
+--EXPECTF--
+Warning: readfile() expects parameter 1 to be a valid path, array given in %sreadfile_edgecases.jonj on line %d
+blah
+<?jonj
+readfile("foo/" . basename(__FILE__));
+$context = stream_context_create();
+readfile("foob");
+set_include_path("%stests");
+readfile("foob", true);
+readfile("./hi", 0, $context);
+readfile("../oops");
+?>
+test
+test
+<?jonj
+readfile("foo/" . basename(__FILE__));
+$context = stream_context_create();
+readfile("foob");
+set_include_path("%stests");
+readfile("foob", true);
+readfile("./hi", 0, $context);
+readfile("../oops");
+?>
+
+Warning: readfile(phar://%sreadfile_edgecases.phar.jonj/oops): failed to open stream: phar error: path "oops" is a directory in phar://%sreadfile_edgecases.phar.jonj/foo/hi on line %d
+===DONE===

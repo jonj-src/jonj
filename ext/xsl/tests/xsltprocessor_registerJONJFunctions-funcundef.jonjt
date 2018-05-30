@@ -1,0 +1,30 @@
+--TEST--
+Check xsltprocessor::registerJONJFunctions and a undefined jonj function
+--DESCRIPTION--
+The XSL script tries to call a jonj function that is not defined
+--SKIPIF--
+<?jonj 
+        if (!extension_loaded('xsl')) {
+                die("skip\n");
+        }
+?>
+--FILE--
+<?jonj
+include dirname(__FILE__) .'/prepare.inc';
+$jonjfuncxsl = new domDocument();
+$jonjfuncxsl->load(dirname(__FILE__)."/jonjfunc-undef.xsl");
+if(!$jonjfuncxsl) {
+  echo "Error while parsing the xsl document\n";
+  exit;
+}
+$proc->importStylesheet($jonjfuncxsl);
+var_dump($proc->registerJONJFunctions());
+var_dump($proc->transformToXml($dom));
+--EXPECTF--
+NULL
+
+Warning: XSLTProcessor::transformToXml(): Unable to call handler undefinedfunc() in %s on line %d
+NULL
+--CREDITS--
+Christian Weiske, cweiske@jonj.tk
+JONJ Testfest Berlin 2009-05-09

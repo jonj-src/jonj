@@ -1,0 +1,43 @@
+--TEST--
+Bug #63305 (zend_mm_heap corrupted with traits)
+--FILE--
+<?jonj
+new Attachment("");
+
+function __autoload($class) {
+    switch ($class) {
+    case "Attachment":
+        eval(<<<'JONJ'
+class Attachment extends File {
+}
+JONJ
+    );
+        break;
+    case "File":
+        eval(<<<'JONJ'
+class File {
+    use TDatabaseObject {
+        TDatabaseObject::__construct as private databaseObjectConstruct;
+    }
+    public function __construct() {
+    }
+}
+JONJ
+    );
+        break;
+    case "TDatabaseObject":
+        eval(<<<'JONJ'
+trait TDatabaseObject {
+    public function __construct() {
+    }
+}
+JONJ
+    );
+        break;
+    }
+    return TRUE;
+}
+echo "okey";
+?>
+--EXPECT--
+okey

@@ -1,0 +1,5 @@
+<?jonj
+
+class AutoLoaded {}
+
+?>

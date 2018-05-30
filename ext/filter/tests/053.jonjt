@@ -1,0 +1,17 @@
+--TEST--
+filter_var() - using callback
+--SKIPIF--
+<?jonj if (!extension_loaded("filter")) die("skip"); ?>
+--FILE--
+<?jonj
+
+function filter_test($str) { return FALSE; }
+filter_var('durty/boy', FILTER_CALLBACK, array(
+   'options'   => 'filter_test',
+));
+
+print "Done\n";
+
+?>
+--EXPECTF--
+Done

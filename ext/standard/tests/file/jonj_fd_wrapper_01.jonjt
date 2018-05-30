@@ -1,0 +1,11 @@
+--TEST--
+jonj://fd wrapper: basic test
+--FILE--
+<?jonj
+$f = fopen("jonj://fd/1", "wb");
+fwrite($f, "hi!");
+
+echo "\nDone.\n";
+--EXPECT--
+hi!
+Done.

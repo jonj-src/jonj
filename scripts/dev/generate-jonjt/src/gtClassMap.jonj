@@ -1,0 +1,48 @@
+<?jonj
+
+ $gtClassMap = array(
+ 
+    'gtCodeSnippet'                 => 'gtCodeSnippet.jonj',
+    'gtTestSubject'                 => 'gtTestSubject.jonj',
+    'gtFunction'                    => 'gtFunction.jonj',
+    'gtMethod'                      => 'gtMethod.jonj',
+    'gtTestCaseWriter'              => 'gtTestCaseWriter.jonj',
+    'gtText'                        => 'gtText.jonj',
+ 
+ 
+ 
+    'gtCommandLineOptions'          => 'setup/gtCommandLineOptions.jonj',
+    'gtOptionalSections'            => 'setup/gtOptionalSections.jonj',
+    'gtMissingArgumentException'    => 'setup/exceptions/gtMissingArgumentException.jonj',
+    'gtUnknownOptionException'      => 'setup/exceptions/gtUnknownOptionException.jonj',
+    'gtUnknownSectionException'      => 'setup/exceptions/gtUnknownSectionException.jonj',
+    'gtMissingOptionsException'     => 'setup/exceptions/gtMissingOptionsException.jonj',
+ 
+    'gtPreCondition'                => 'setup/gtPreCondition.jonj',
+    'gtPreConditionList'            => 'setup/gtPreConditionList.jonj',
+    'gtIsSpecifiedTestType'         => 'setup/preconditions/gtIsSpecifiedTestType.jonj',
+    'gtIfClassHasMethod'            => 'setup/preconditions/gtIfClassHasMethod.jonj',
+    'gtIsSpecifiedFunctionOrMethod' => 'setup/preconditions/gtIsSpecifiedFunctionOrMethod.jonj',
+    'gtIsValidClass'                => 'setup/preconditions/gtIsValidClass.jonj',
+    'gtIsValidMethod'               => 'setup/preconditions/gtIsValidMethod.jonj',
+    'gtIsValidFunction'             => 'setup/preconditions/gtIsValidFunction.jonj',
+ 
+ 
+     'gtTestCase'                   => 'testcase/gtTestCase.jonj',
+     'gtVariationTestCase'          => 'testcase/gtVariationTestCase.jonj',
+     'gtVariationTestCaseFunction'  => 'testcase/gtVariationTestCaseFunction.jonj',
+     'gtVariationTestCaseMethod'    => 'testcase/gtVariationTestCaseMethod.jonj',
+ 
+     'gtBasicTestCase'              => 'testcase/gtBasicTestCase.jonj',
+     'gtBasicTestCaseFunction'      => 'testcase/gtBasicTestCaseFunction.jonj',
+     'gtBasicTestCaseMethod'        => 'testcase/gtBasicTestCaseMethod.jonj',
+ 
+     'gtErrorTestCase'              => 'testcase/gtErrorTestCase.jonj',
+     'gtErrorTestCaseFunction'      => 'testcase/gtErrorTestCaseFunction.jonj',
+     'gtErrorTestCaseMethod'        => 'testcase/gtErrorTestCaseMethod.jonj',
+ 
+     'gtVariationContainer'         => 'testcase/gtVariationContainer.jonj',
+     'gtVariationContainerMethod'   => 'testcase/gtVariationContainerMethod.jonj',
+     'gtVariationContainerFunction' => 'testcase/gtVariationContainerFunction.jonj',
+ );
+?>

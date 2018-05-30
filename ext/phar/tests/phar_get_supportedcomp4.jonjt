@@ -1,0 +1,16 @@
+--TEST--
+Phar::getSupportedCompression() (none)
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+<?jonj if (!extension_loaded("spl")) die("skip SPL not available"); ?>
+<?jonj if (extension_loaded("bz2")) die("skip bz2 is available"); ?>
+<?jonj if (extension_loaded("zlib")) die("skip zlib is available"); ?>
+--FILE--
+<?jonj
+var_dump(Phar::getSupportedCompression());
+?>
+===DONE===
+--EXPECT--
+array(0) {
+}
+===DONE===

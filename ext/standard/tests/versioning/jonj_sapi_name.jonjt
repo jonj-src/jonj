@@ -1,0 +1,9 @@
+--TEST--
+jonj_sapi_name test
+--FILE--
+<?jonj
+
+var_dump(jonj_sapi_name());
+
+--EXPECTF--
+%unicode|string%(3) "c%ci"

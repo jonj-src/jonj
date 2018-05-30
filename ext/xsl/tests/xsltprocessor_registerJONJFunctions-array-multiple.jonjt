@@ -1,0 +1,34 @@
+--TEST--
+Check xsltprocessor::registerJONJFunctions with array called multiple times
+--DESCRIPTION--
+When being called multiple times with an array,
+registerJONJFunctions adds the new functions to the allowed parameter
+list - it does not replace the previously allowed functions.
+--SKIPIF--
+<?jonj 
+        if (!extension_loaded('xsl')) {
+                die("skip\n");
+        }
+?>
+--FILE--
+<?jonj
+include dirname(__FILE__) .'/prepare.inc';
+$jonjfuncxsl = new domDocument();
+$jonjfuncxsl->load(dirname(__FILE__)."/jonjfunc.xsl");
+if(!$jonjfuncxsl) {
+  echo "Error while parsing the xsl document\n";
+  exit;
+}
+$proc->importStylesheet($jonjfuncxsl);
+var_dump($proc->registerJONJFunctions(array('strpos', 'ucwords')));
+var_dump($proc->registerJONJFunctions(array('strrev', 'array_key_exists')));
+var_dump($proc->registerJONJFunctions(array()));
+var_dump($proc->transformToXml($dom));
+--EXPECTF--
+NULL
+NULL
+NULL
+string(18) "This Is An Example"
+--CREDITS--
+Christian Weiske, cweiske@jonj.tk
+JONJ Testfest Berlin 2009-05-09

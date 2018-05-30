@@ -1,0 +1,8 @@
+--TEST--
+Test mt_getrandmax() - basic function test mt_getrandmax()
+--FILE--
+<?jonj
+var_dump(mt_getrandmax());
+?>
+--EXPECTF--
+int(%d)

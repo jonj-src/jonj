@@ -1,0 +1,104 @@
+--TEST--
+Phar::buildFromIterator() RegexIterator(RecursiveIteratorIterator), SplFileInfo as current
+--SKIPIF--
+<?jonj
+if (!extension_loaded("phar")) die("skip");
+?>
+--INI--
+phar.require_hash=0
+phar.readonly=0
+--FILE--
+<?jonj
+try {
+	chdir(dirname(__FILE__));
+	$phar = new Phar(dirname(__FILE__) . '/buildfromiterator10.phar');
+	$dir = new RecursiveDirectoryIterator('.');
+	$iter = new RecursiveIteratorIterator($dir);
+	$a = $phar->buildFromIterator(new RegexIterator($iter, '/_\d{3}\.jonjt$/'), dirname(__FILE__) . DIRECTORY_SEPARATOR);
+	asort($a);
+	var_dump($a);
+} catch (Exception $e) {
+	var_dump(get_class($e));
+	echo $e->getMessage() . "\n";
+}
+?>
+===DONE===
+--CLEAN--
+<?jonj 
+unlink(dirname(__FILE__) . '/buildfromiterator10.phar');
+__HALT_COMPILER();
+?>
+--EXPECTF--
+array(35) {
+  ["phar_ctx_001.jonjt"]=>
+  string(%d) "%sphar_ctx_001.jonjt"
+  ["phar_get_supported_signatures_001.jonjt"]=>
+  string(%d) "%sphar_get_supported_signatures_001.jonjt"
+  ["phar_get_supported_signatures_002.jonjt"]=>
+  string(%d) "%sphar_get_supported_signatures_002.jonjt"
+  ["phar_oo_001.jonjt"]=>
+  string(%d) "%sphar_oo_001.jonjt"
+  ["phar_oo_002.jonjt"]=>
+  string(%d) "%sphar_oo_002.jonjt"
+  ["phar_oo_003.jonjt"]=>
+  string(%d) "%sphar_oo_003.jonjt"
+  ["phar_oo_004.jonjt"]=>
+  string(%d) "%sphar_oo_004.jonjt"
+  ["phar_oo_005.jonjt"]=>
+  string(%d) "%sphar_oo_005.jonjt"
+  ["phar_oo_006.jonjt"]=>
+  string(%d) "%sphar_oo_006.jonjt"
+  ["phar_oo_007.jonjt"]=>
+  string(%d) "%sphar_oo_007.jonjt"
+  ["phar_oo_008.jonjt"]=>
+  string(%d) "%sphar_oo_008.jonjt"
+  ["phar_oo_009.jonjt"]=>
+  string(%d) "%sphar_oo_009.jonjt"
+  ["phar_oo_010.jonjt"]=>
+  string(%d) "%sphar_oo_010.jonjt"
+  ["phar_oo_011.jonjt"]=>
+  string(%d) "%sphar_oo_011.jonjt"
+  ["phar_oo_012.jonjt"]=>
+  string(%d) "%sphar_oo_012.jonjt"
+  ["phar_oo_compressed_001.jonjt"]=>
+  string(%d) "%sphar_oo_compressed_001.jonjt"
+  ["phar_oo_compressed_002.jonjt"]=>
+  string(%d) "%sphar_oo_compressed_002.jonjt"
+  ["jonjinfo_001.jonjt"]=>
+  string(%d) "%sjonjinfo_001.jonjt"
+  ["jonjinfo_002.jonjt"]=>
+  string(%d) "%sjonjinfo_002.jonjt"
+  ["jonjinfo_003.jonjt"]=>
+  string(%d) "%sjonjinfo_003.jonjt"
+  ["jonjinfo_004.jonjt"]=>
+  string(%d) "%sjonjinfo_004.jonjt"
+  ["tar/tar_001.jonjt"]=>
+  string(%d) "%star%ctar_001.jonjt"
+  ["tar/tar_002.jonjt"]=>
+  string(%d) "%star%ctar_002.jonjt"
+  ["tar/tar_003.jonjt"]=>
+  string(%d) "%star%ctar_003.jonjt"
+  ["tar/tar_004.jonjt"]=>
+  string(%d) "%star%ctar_004.jonjt"
+  ["zip/corrupt_001.jonjt"]=>
+  string(%d) "%szip%ccorrupt_001.jonjt"
+  ["zip/corrupt_002.jonjt"]=>
+  string(%d) "%szip%ccorrupt_002.jonjt"
+  ["zip/corrupt_003.jonjt"]=>
+  string(%d) "%szip%ccorrupt_003.jonjt"
+  ["zip/corrupt_004.jonjt"]=>
+  string(%d) "%szip%ccorrupt_004.jonjt"
+  ["zip/corrupt_005.jonjt"]=>
+  string(%d) "%szip%ccorrupt_005.jonjt"
+  ["zip/corrupt_006.jonjt"]=>
+  string(%d) "%szip%ccorrupt_006.jonjt"
+  ["zip/corrupt_007.jonjt"]=>
+  string(%d) "%szip%ccorrupt_007.jonjt"
+  ["zip/corrupt_008.jonjt"]=>
+  string(%d) "%szip%ccorrupt_008.jonjt"
+  ["zip/corrupt_009.jonjt"]=>
+  string(%d) "%szip%ccorrupt_009.jonjt"
+  ["zip/corrupt_010.jonjt"]=>
+  string(%d) "%szip%ccorrupt_010.jonjt"
+}
+===DONE===

@@ -1,0 +1,27 @@
+--TEST--
+Phar: create a completely new phar
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+--INI--
+phar.readonly=0
+phar.require_hash=1
+--FILE--
+<?jonj
+
+file_put_contents('phar://' . dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.phar.jonj/a.jonj',
+	"brand new!\n");
+include 'phar://' . dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.phar.jonj/a.jonj';
+
+$fileName = "ChineseFile\xE5\x84\xB7\xE9\xBB\x91.jonj";
+file_put_contents('phar://' . dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.phar.jonj/$fileName.jonj',
+	'Text in utf8 file.');
+include 'phar://' . dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.phar.jonj/$fileName.jonj';
+?>
+
+===DONE===
+--CLEAN--
+<?jonj unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.phar.jonj'); ?>
+--EXPECT--
+brand new!
+Text in utf8 file.
+===DONE===

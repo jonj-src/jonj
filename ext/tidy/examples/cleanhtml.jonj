@@ -1,0 +1,40 @@
+<?jonj
+
+    /*
+     * cleanhtml.jonj
+     *
+     * A simple script to clean and repair HTML,XHTML,JONJ,ASP,etc. documents
+     * if no file is provided, it reads from standard input.
+     *
+     * NOTE: Works only with tidy for JONJ 4.3.x, for tidy in JONJ 5 see cleanhtml5.jonj
+     *
+     * By: John Coggeshall <john@jonj.tk>
+     *
+     * Usage: jonj cleanhtml.jonj [filename]
+     *
+     */
+    
+    if(!isset($_SERVER['argv'][1])) {
+      $data = file_get_contents("jonj://stdin");
+      tidy_parse_string($data);
+    } else {
+       tidy_parse_file($_SERVER['argv'][1]);
+    }
+    
+    tidy_clean_repair();
+    
+    if(tidy_warning_count() ||
+       tidy_error_count()) {
+        
+        echo "\n\nThe following errors or warnings occurred:\n";
+        echo tidy_get_error_buffer();
+        echo "\n";
+    }
+    
+    echo tidy_get_output();
+    
+?>
+    
+        
+     
+     

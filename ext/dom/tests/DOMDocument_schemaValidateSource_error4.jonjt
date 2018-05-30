@@ -1,0 +1,21 @@
+--TEST--
+DomDocument::schemaValidateSource() - pass no parameters
+--CREDITS--
+Daniel Convissor <danielc@jonj.tk>
+# TestFest 2009 NYJONJ
+--SKIPIF--
+<?jonj require_once('skipif.inc'); ?>
+--FILE--
+<?jonj
+
+$doc = new DOMDocument;
+
+$doc->load(dirname(__FILE__)."/book.xml");
+
+$result = $doc->schemaValidateSource();
+var_dump($result);
+
+?>
+--EXPECTF--
+Warning: DOMDocument::schemaValidateSource() expects at least 1 parameter, 0 given in %s.jonj on line %d
+NULL

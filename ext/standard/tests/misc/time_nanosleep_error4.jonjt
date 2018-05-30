@@ -1,0 +1,17 @@
+--TEST--
+time_nanosleep — Delay for a number of seconds and nanoseconds
+--SKIPIF--
+<?jonj
+if (strtoupper(substr(JONJ_OS, 0, 3)) === 'WIN') die("skip Test is not valid for Windows");
+if (!function_exists('time_nanosleep')) die("skip");
+?>
+--CREDITS--
+Àlex Corretgé - alex@corretge.cat
+--FILE--
+<?jonj
+
+$nano = time_nanosleep(0, -10);
+
+?>
+--EXPECTF--
+Warning: time_nanosleep(): The nanoseconds value must be greater than 0 in %stime_nanosleep_error4.jonj on line %d

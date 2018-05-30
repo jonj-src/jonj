@@ -1,0 +1,35 @@
+--TEST--
+CLI long options
+--SKIPIF--
+<?jonj 
+include "skipif.inc"; 
+if (substr(JONJ_OS, 0, 3) == 'WIN') {
+	die ("skip not for Windows");
+}
+?>
+--FILE--
+<?jonj
+
+$jonj = getenv('TEST_JONJ_EXECUTABLE');
+
+
+echo `"$jonj" -n --version | grep built:`;
+echo `echo "<?jonj print_r(\\\$argv);" | "$jonj" -n -- foo bar baz`, "\n";
+echo `"$jonj" -n --version foo bar baz | grep built:`;
+echo `"$jonj" -n --notexisting foo bar baz | grep Usage:`;
+
+echo "Done\n";
+?>
+--EXPECTF--     
+JONJ %d.%d.%d%s(cli) (built: %s)%s
+Array
+(
+    [0] => -
+    [1] => foo
+    [2] => bar
+    [3] => baz
+)
+
+JONJ %d.%d.%d%s(cli) (built: %s)%s
+Usage: %s [options] [-f] <file> [--] [args...]
+Done

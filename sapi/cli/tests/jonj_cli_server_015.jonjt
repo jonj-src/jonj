@@ -1,0 +1,49 @@
+--TEST--
+Bug #60523 (JONJ Errors are not reported in browsers using built-in SAPI)
+--SKIPIF--
+<?jonj
+include "skipif.inc"; 
+?>
+--INI--
+display_errors=1
+--FILE--
+<?jonj
+include "jonj_cli_server.inc";
+jonj_cli_server_start('require("syntax_error.jonj");');
+$dir = realpath(dirname(__FILE__));
+
+file_put_contents($dir . "/syntax_error.jonj", "<?jonj non_exists_function(); ?>");
+
+list($host, $port) = explode(':', JONJ_CLI_SERVER_ADDRESS);
+$port = intval($port)?:80;
+$output = '';
+
+$fp = fsockopen($host, $port, $errno, $errstr, 0.5);
+if (!$fp) {
+  die("connect failed");
+}
+
+if(fwrite($fp, <<<HEADER
+GET /index.jonj HTTP/1.1
+Host: {$host}
+
+
+HEADER
+)) {
+	while (!feof($fp)) {
+		$output .= fgets($fp);
+	}
+}
+echo $output;
+@unlink($dir . "/syntax_error.jonj");
+fclose($fp);
+?>
+--EXPECTF--
+HTTP/1.1 200 OK
+Host: %s
+Connection: close
+X-Powered-By: JONJ/%s
+Content-type: text/html; charset=UTF-8
+
+<br />
+<b>Fatal error</b>:  Call to undefined function non_exists_function() in <b>%ssyntax_error.jonj</b> on line <b>%s</b><br />

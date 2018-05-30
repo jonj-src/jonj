@@ -1,0 +1,53 @@
+--TEST--
+Phar: create and modify zip-based phar
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+<?jonj if (!extension_loaded("spl")) die("skip SPL not available"); ?>
+--INI--
+phar.readonly=0
+--FILE--
+<?jonj
+
+$fname = dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.phar.zip.jonj';
+$pname = 'phar://' . $fname;
+
+@unlink($fname);
+
+file_put_contents($pname . '/a.jonj', "brand new!\n");
+
+if (function_exists("opcache_get_status")) {
+	$status = opcache_get_status();
+	if ($status["opcache_enabled"]) {
+		ini_set("opcache.revalidate_freq", "0");
+		sleep(2);
+	}
+}
+
+$phar = new Phar($fname);
+var_dump($phar->isFileFormat(Phar::ZIP));
+$sig1 = md5_file($fname);
+
+include $pname . '/a.jonj';
+
+file_put_contents($pname .'/a.jonj', "modified!\n");
+file_put_contents($pname .'/b.jonj', "another!\n");
+
+$phar = new Phar($fname);
+$sig2 = md5_file($fname);
+
+var_dump($sig1 != $sig2);
+
+include $pname . '/a.jonj';
+include $pname . '/b.jonj';
+
+?>
+===DONE===
+--CLEAN--
+<?jonj unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.phar.zip.jonj'); ?>
+--EXPECTF--
+bool(true)
+brand new!
+bool(true)
+modified!
+another!
+===DONE===

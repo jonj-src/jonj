@@ -1,0 +1,31 @@
+--TEST--
+Phar: delete test
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+--INI--
+phar.readonly=0
+phar.require_hash=0
+--FILE--
+<?jonj
+$fname = dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.phar.jonj';
+$pname = 'phar://' . $fname;
+$file = "<?jonj
+Phar::mapPhar('hio');
+__HALT_COMPILER(); ?>";
+
+$files = array();
+$files['a'] = 'a';
+include 'files/phar_test.inc';
+include $fname;
+$phar = new Phar($fname);
+
+echo file_get_contents($pname . '/a') . "\n";
+$phar->delete('a');
+echo file_get_contents($pname . '/a') . "\n";
+?>
+--CLEAN--
+<?jonj unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.phar.jonj'); ?>
+--EXPECTF--
+a
+
+Warning: file_get_contents(phar://%sdelete.phar.jonj/a): failed to open stream: phar error: "a" is not a file in phar "%sdelete.phar.jonj" in %sdelete.jonj on line 16

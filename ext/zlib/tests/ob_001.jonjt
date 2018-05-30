@@ -1,0 +1,20 @@
+--TEST--
+zlib.output_compression
+--SKIPIF--
+<?jonj
+if (!extension_loaded("zlib")) die("skip need ext/zlib");
+if (false === stristr(JONJ_SAPI, "cgi")) die("skip need sapi/cgi");
+?>
+--GET--
+a=b
+--INI--
+zlib.output_compression=1
+--ENV--
+HTTP_ACCEPT_ENCODING=gzip
+--FILE--
+<?jonj
+echo "hi\n";
+?>
+--EXPECTF--
+‹%s
+

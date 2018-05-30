@@ -1,0 +1,9 @@
+// $Id$
+// vim:ft=javascript
+
+ARG_ENABLE("filter", "Filter Support", "yes");
+
+if (JONJ_FILTER == "yes") {
+	EXTENSION("filter", "filter.c sanitizing_filters.c logical_filters.c callback_filter.c");
+	JONJ_INSTALL_HEADERS("ext/filter", "jonj_filter.h");
+}

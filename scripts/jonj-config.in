@@ -1,0 +1,90 @@
+#! /bin/sh
+
+SED="@SED@"
+prefix="@prefix@"
+datarootdir="@datarootdir@"
+exec_prefix="@exec_prefix@"
+version="@JONJ_VERSION@"
+vernum="@JONJ_VERSION_ID@"
+include_dir="@includedir@/jonj"
+includes="-I$include_dir -I$include_dir/main -I$include_dir/TSRM -I$include_dir/Zend -I$include_dir/ext -I$include_dir/ext/date/lib"
+ldflags="@JONJ_LDFLAGS@"
+libs="@EXTRA_LIBS@"
+extension_dir='@EXTENSION_DIR@'
+man_dir=`eval echo @mandir@`
+program_prefix="@program_prefix@"
+program_suffix="@program_suffix@"
+exe_extension="@EXEEXT@"
+jonj_cli_binary=NONE
+jonj_cgi_binary=NONE
+configure_options="@CONFIGURE_OPTIONS@"
+jonj_sapis="@JONJ_INSTALLED_SAPIS@"
+
+# Set jonj_cli_binary and jonj_cgi_binary if available
+for sapi in $jonj_sapis; do
+  case $sapi in
+  cli)
+    jonj_cli_binary="@bindir@/${program_prefix}jonj${program_suffix}${exe_extension}"
+    ;;
+  cgi)
+    jonj_cgi_binary="@bindir@/${program_prefix}jonj-cgi${program_suffix}${exe_extension}"
+    ;;
+  esac
+done
+
+# Determine which (if any) jonj binary is available
+if test "$jonj_cli_binary" != "NONE"; then
+  jonj_binary="$jonj_cli_binary"
+else
+  jonj_binary="$jonj_cgi_binary"
+fi
+
+# Remove quotes
+configure_options=`echo $configure_options | $SED -e "s#'##g"`
+
+case "$1" in
+--prefix)
+  echo $prefix;;
+--includes)
+  echo $includes;;
+--ldflags)
+  echo $ldflags;;
+--libs)
+  echo $libs;;
+--extension-dir)
+  echo $extension_dir;;
+--include-dir)
+  echo $include_dir;;
+--jonj-binary)
+  echo $jonj_binary;;
+--jonj-sapis)
+  echo $jonj_sapis;;
+--configure-options)
+  echo $configure_options;;
+--man-dir)
+  echo $man_dir;;
+--version)
+  echo $version;;
+--vernum)
+  echo $vernum;;
+*)
+  cat << EOF
+Usage: $0 [OPTION]
+Options:
+  --prefix            [$prefix]
+  --includes          [$includes]
+  --ldflags           [$ldflags]
+  --libs              [$libs]
+  --extension-dir     [$extension_dir]
+  --include-dir       [$include_dir]
+  --man-dir           [$man_dir]
+  --jonj-binary        [$jonj_binary]
+  --jonj-sapis         [$jonj_sapis]
+  --configure-options [$configure_options]
+  --version           [$version]
+  --vernum            [$vernum]
+EOF
+  exit 1;;
+esac
+
+exit 0

@@ -1,0 +1,17 @@
+// $Id$
+// vim:ft=javascript
+
+ARG_ENABLE("sockets", "SOCKETS support", "no");
+
+if (JONJ_SOCKETS != "no") {
+	if (CHECK_LIB("ws2_32.lib", "sockets", JONJ_SOCKETS)
+	&& CHECK_LIB("Iphlpapi.lib", "sockets", JONJ_SOCKETS)
+	&& CHECK_HEADER_ADD_INCLUDE("winsock.h", "CFLAGS_SOCKETS")) {
+		EXTENSION('sockets', 'sockets.c multicast.c conversions.c sockaddr_conv.c sendrecvmsg.c');
+		AC_DEFINE('HAVE_SOCKETS', 1);
+		JONJ_INSTALL_HEADERS("ext/sockets", "jonj_sockets.h");
+	} else {
+		WARNING("sockets not enabled; libraries and headers not found");
+	}
+}
+

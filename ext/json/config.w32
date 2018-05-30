@@ -1,0 +1,11 @@
+// $Id$
+// vim:ft=javascript
+
+ARG_ENABLE("json", "JavaScript Object Serialization support", "yes");
+
+if (JONJ_JSON != "no") {
+	EXTENSION('json', 'json.c', JONJ_JSON_SHARED, "");
+	ADD_SOURCES(configure_module_dirname, "JSON_parser.c", "json");
+	JONJ_INSTALL_HEADERS("ext/json/", "jonj_json.h");
+}
+

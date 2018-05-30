@@ -1,0 +1,24 @@
+// $Id$
+// vim:ft=javascript
+
+ARG_WITH("simplexml", "Simple XML support", "yes");
+
+if (JONJ_SIMPLEXML == "yes") {
+	if(JONJ_LIBXML == "yes"
+	&& ADD_EXTENSION_DEP('simplexml', 'libxml')) {
+		EXTENSION("simplexml", "simplexml.c sxe.c");
+		AC_DEFINE("HAVE_SIMPLEXML", 1, "Simple XML support");
+		if (!JONJ_SIMPLEXML_SHARED) {
+			ADD_FLAG("CFLAGS_SIMPLEXML", "/D LIBXML_STATIC");
+		}
+
+		if (!ADD_EXTENSION_DEP('simplexml', 'spl', true)) {
+			MESSAGE("\tSPL support in simplexml disabled");
+		}
+		ADD_FLAG("CFLAGS_SIMPLEXML", "/D JONJ_SIMPLEXML_EXPORTS ");
+		JONJ_INSTALL_HEADERS("ext/simplexml/", "jonj_simplexml.h jonj_simplexml_exports.h");
+	} else {
+		JONJ_SIMPLEXML = "no";
+		WARNING("simplexml not enabled; libraries and headers not found");
+	}
+}

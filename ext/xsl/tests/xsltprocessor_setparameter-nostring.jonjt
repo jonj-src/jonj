@@ -1,0 +1,22 @@
+--TEST--
+Check xsltprocessor::setparameter error handling with no-string
+--DESCRIPTION--
+Memleak: http://bugs.jonj.tk/bug.jonj?id=48221
+--SKIPIF--
+<?jonj 
+        if (!extension_loaded('xsl')) {
+                die("skip\n");
+        }
+?>
+--FILE--
+<?jonj
+include dirname(__FILE__) .'/prepare.inc';
+$proc->importStylesheet($xsl);
+var_dump($proc->setParameter('', array(4, 'abc')));
+$proc->transformToXml($dom);
+--EXPECTF--
+Warning: XSLTProcessor::setParameter(): Invalid parameter array in %s on line %d
+bool(false)
+--CREDITS--
+Christian Weiske, cweiske@jonj.tk
+JONJ Testfest Berlin 2009-05-09

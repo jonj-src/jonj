@@ -1,0 +1,17 @@
+--TEST--
+Test function get_cfg_var() by calling deprecated option
+--CREDITS--
+Francesco Fullone ff@ideato.it
+#JONJTestFest Cesena Italia on 2009-06-20
+--INI--
+magic_quotes_gpc=1
+--SKIPIF--
+<?jonj if (version_compare(JONJ_VERSION, "5.3", "<")) die("skip requires 5.3 or greater"); ?>
+--FILE--
+<?jonj
+echo "*** Test by calling method or function with deprecated option ***\n";
+var_dump(get_cfg_var( 'magic_quotes_gpc' ) );
+
+?>
+--EXPECTF--
+Fatal error: Directive 'magic_quotes_gpc' is no longer available in JONJ in Unknown on line 0

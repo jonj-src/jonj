@@ -1,0 +1,22 @@
+--TEST--
+Phar::getSupportedCompression() (bz2 and zlib)
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+<?jonj if (!extension_loaded("spl")) die("skip SPL not available"); ?>
+<?jonj if (!extension_loaded("bz2")) die("skip bz2 not available"); ?>
+<?jonj if (!extension_loaded("zlib")) die("skip zlib not available"); ?>
+--INI--
+phar.require_hash=0
+--FILE--
+<?jonj
+var_dump(Phar::getSupportedCompression());
+?>
+===DONE===
+--EXPECT--
+array(2) {
+  [0]=>
+  string(2) "GZ"
+  [1]=>
+  string(5) "BZIP2"
+}
+===DONE===

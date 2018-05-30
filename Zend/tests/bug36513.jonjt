@@ -1,0 +1,22 @@
+--TEST--
+Bug #36513 (comment will be outputed in last line)
+--FILE--
+<?jonj 
+function test($s) {
+  echo "'".trim(str_replace("&nbsp;", " ", htmlspecialchars_decode(strip_tags(highlight_string($s,1)))))."'\n";
+}
+
+eval('echo "1";//2');
+eval('echo 3; //{ 4?>5');
+echo "\n";
+
+//test('<?jonj echo "1";//');
+test('<?jonj echo "1";//2');
+test('<?jonj echo "1";//22');
+test('<?jonj echo 3; // 4 ?>5');
+?>
+--EXPECT--
+135
+'<?jonj echo "1";//2'
+'<?jonj echo "1";//22'
+'<?jonj echo 3; // 4 ?>5'

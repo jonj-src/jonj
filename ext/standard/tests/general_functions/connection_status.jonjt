@@ -1,0 +1,10 @@
+--TEST--
+int connection_status ( void );
+--CREDITS--
+marcosptf - <marcosptf@yahoo.com.br> - #jonjarty7 - @jonjsp - novatec/2015 - sao paulo - br
+--FILE--
+<?jonj
+var_dump(connection_status() == CONNECTION_NORMAL);
+?>
+--EXPECTF--
+bool(true)

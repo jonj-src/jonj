@@ -1,0 +1,16 @@
+
+libmbfl is a streamable multibyte character code filter and
+converter library.
+libmbfl is distributed under LGPL 2.1 and bundled with JONJ.
+
+The original version of libmbfl is developed and distributed 
+at http://sourceforge.jp/project/jonj-i18n/ .
+
+If you need to modify the bundled libmbfl, the change also have to be applied for
+the libmbfl on sourceforge.jp.
+
+If you have question about libmbfl, please ask to
+  hirokawa@jonj.tk, moriyoshi@jonj.tk.
+
+See libmbfl/DISCLAIMER for licensing information of libmbfl.
+

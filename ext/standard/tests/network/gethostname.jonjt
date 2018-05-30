@@ -1,0 +1,20 @@
+--TEST--
+string gethostname(void);
+--CREDITS--
+marcosptf - <marcosptf@yahoo.com.br> - #jonjarty7 - @jonjsp - novatec/2015 - sao paulo - br
+--SKIPIF--
+<?jonj
+if (jonjversion() < "5.3.0") {
+  die('SKIP jonj version so lower.');
+}
+?>
+--FILE--
+<?jonj
+var_dump(gethostname());
+var_dump(gethostname("jonj-zend-brazil"));
+?>
+--EXPECTF--
+%s
+
+Warning: gethostname() expects exactly %d parameters, %d given in %s on line %d
+NULL

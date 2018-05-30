@@ -1,0 +1,16 @@
+--TEST--
+Bug #63874 (Segfault if jonj_strip_whitespace has heredoc)
+--FILE--
+<?jonj
+echo jonj_strip_whitespace(__FILE__);
+
+return <<<A
+a
+A;
+?>
+--EXPECT--
+<?jonj
+echo jonj_strip_whitespace(__FILE__); return <<<A
+a
+A;
+?>

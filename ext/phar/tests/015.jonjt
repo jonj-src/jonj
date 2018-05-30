@@ -1,0 +1,23 @@
+--TEST--
+Phar::mapPhar valid file (gzipped)
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+<?jonj if (!extension_loaded("zlib")) die("skip zlib not present"); ?>
+--INI--
+phar.require_hash=0
+--FILE--
+<?jonj
+$fname = dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.phar.jonj';
+$pname = 'phar://' . $fname;
+$file = "<?jonj __HALT_COMPILER(); ?>";
+
+$files = array();
+$files['a'] = array('cont'=>'a','comp'=>chr(75) . chr(4) . chr(0) /* 'a' gzdeflated */, 'flags'=>0x00001000);
+include 'files/phar_test.inc';
+
+echo file_get_contents($pname .'/a');
+?>
+--CLEAN--
+<?jonj unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.phar.jonj'); ?>
+--EXPECT--
+a

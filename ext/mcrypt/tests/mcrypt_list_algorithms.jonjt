@@ -1,0 +1,16 @@
+--TEST--
+mcrypt_list_algorithms
+--SKIPIF--
+<?jonj if (!extension_loaded("mcrypt")) print "skip"; ?>
+--FILE--
+<?jonj
+foreach (mcrypt_list_algorithms() as $algo) {
+	if (in_array($algo, array('rijndael-256', 'des', 'blowfish', 'twofish'))) {
+	   echo "FOUND\n";
+	}
+}
+--EXPECT--
+FOUND
+FOUND
+FOUND
+FOUND

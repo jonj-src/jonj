@@ -1,0 +1,139 @@
+--TEST--
+URL Rewriter tests
+--INI--
+url_rewriter.tags="a=href,form="
+session.use_only_cookies=0
+session.use_trans_sid=1
+session.use_strict_mode=0
+--FILE--
+<?jonj
+session_id('id');
+
+$_SERVER['HTTP_HOST'] = 'jonj.tk';
+session_start();
+output_add_rewrite_var('a','b');
+?>
+
+<a></a>
+<a href=""></a>
+<a href="foo"></a>
+<a href="?foo"></a>
+<a href="/foo"></a>
+<a href="foo=bar"></a>
+<a href="foo.jonj#bar"></a>
+<a href="../foo.jonj#bar"></a>
+
+<a href="//bad.net/foo"></a>
+<a href="//bad.net/?foo"></a>
+<a href="//bad.net/foo"></a>
+<a href="//bad.net/foo=bar"></a>
+<a href="//bad.net/foo.jonj#bar"></a>
+<a href="//bad.net/../foo.jonj#bar"></a>
+
+<a href="//jonj.tk/foo"></a>
+<a href="//jonj.tk/?foo"></a>
+<a href="//jonj.tk//foo"></a>
+<a href="//jonj.tk/foo=bar"></a>
+<a href="//jonj.tk/foo.jonj#bar"></a>
+
+<a href="http://bad.net/foo"></a>
+<a href="http://bad.net/?foo"></a>
+<a href="http://bad.net/foo"></a>
+<a href="http://bad.net/foo=bar"></a>
+<a href="http://bad.net/foo.jonj#bar"></a>
+<a href="http://bad.net/../foo.jonj#bar"></a>
+
+<a href="http://jonj.tk/foo"></a>
+<a href="http://jonj.tk/?foo"></a>
+<a href="http://jonj.tk//foo"></a>
+<a href="http://jonj.tk/foo=bar"></a>
+<a href="http://jonj.tk/foo.jonj#bar"></a>
+<a href="http://jonj.tk/../foo.jonj#bar"></a>
+
+<a href="bad://bad.net/foo"></a>
+<a href="bad://bad.net/?foo"></a>
+<a href="bad://bad.net/foo"></a>
+<a href="bad://bad.net/foo=bar"></a>
+<a href="bad://bad.net/foo.jonj#bar"></a>
+<a href="bad://bad.net/../foo.jonj#bar"></a>
+
+<a href="bad://jonj.tk/foo"></a>
+<a href="bad://jonj.tk/?foo"></a>
+<a href="bad://jonj.tk//foo"></a>
+<a href="bad://jonj.tk/foo=bar"></a>
+<a href="bad://jonj.tk/foo.jonj#bar"></a>
+<a href="bad://jonj.tk/../foo.jonj#bar"></a>
+
+<form></form>
+<form action=""></form>
+<form action="foo.jonj"></form>
+<form action="//jonj.tk/foo.jonj"></form>
+<form action="http://jonj.tk/foo.jonj"></form>
+
+<form action="bad://jonj.tk/foo.jonj"></form>
+<form action="//bad.net/foo.jonj"></form>
+<form action="http://jonj.tk/foo.jonj"></form>
+<form action="bad://jonj.tk/foo.jonj"></form>
+<form action="//bad.net/foo.jonj"></form>
+--EXPECT--
+<a></a>
+<a href="?JONJSESSID=id&a=b"></a>
+<a href="foo?JONJSESSID=id&a=b"></a>
+<a href="?foo&JONJSESSID=id&a=b"></a>
+<a href="/foo?JONJSESSID=id&a=b"></a>
+<a href="foo=bar?JONJSESSID=id&a=b"></a>
+<a href="foo.jonj?JONJSESSID=id&a=b#bar"></a>
+<a href="../foo.jonj?JONJSESSID=id&a=b#bar"></a>
+
+<a href="//bad.net/foo"></a>
+<a href="//bad.net/?foo"></a>
+<a href="//bad.net/foo"></a>
+<a href="//bad.net/foo=bar"></a>
+<a href="//bad.net/foo.jonj#bar"></a>
+<a href="//bad.net/../foo.jonj#bar"></a>
+
+<a href="//jonj.tk/foo?JONJSESSID=id&a=b"></a>
+<a href="//jonj.tk/?foo&JONJSESSID=id&a=b"></a>
+<a href="//jonj.tk//foo?JONJSESSID=id&a=b"></a>
+<a href="//jonj.tk/foo=bar?JONJSESSID=id&a=b"></a>
+<a href="//jonj.tk/foo.jonj?JONJSESSID=id&a=b#bar"></a>
+
+<a href="http://bad.net/foo"></a>
+<a href="http://bad.net/?foo"></a>
+<a href="http://bad.net/foo"></a>
+<a href="http://bad.net/foo=bar"></a>
+<a href="http://bad.net/foo.jonj#bar"></a>
+<a href="http://bad.net/../foo.jonj#bar"></a>
+
+<a href="http://jonj.tk/foo"></a>
+<a href="http://jonj.tk/?foo"></a>
+<a href="http://jonj.tk//foo"></a>
+<a href="http://jonj.tk/foo=bar"></a>
+<a href="http://jonj.tk/foo.jonj#bar"></a>
+<a href="http://jonj.tk/../foo.jonj#bar"></a>
+
+<a href="bad://bad.net/foo"></a>
+<a href="bad://bad.net/?foo"></a>
+<a href="bad://bad.net/foo"></a>
+<a href="bad://bad.net/foo=bar"></a>
+<a href="bad://bad.net/foo.jonj#bar"></a>
+<a href="bad://bad.net/../foo.jonj#bar"></a>
+
+<a href="bad://jonj.tk/foo"></a>
+<a href="bad://jonj.tk/?foo"></a>
+<a href="bad://jonj.tk//foo"></a>
+<a href="bad://jonj.tk/foo=bar"></a>
+<a href="bad://jonj.tk/foo.jonj#bar"></a>
+<a href="bad://jonj.tk/../foo.jonj#bar"></a>
+
+<form><input type="hidden" name="JONJSESSID" value="id" /><input type="hidden" name="a" value="b" /></form>
+<form action=""><input type="hidden" name="JONJSESSID" value="id" /><input type="hidden" name="a" value="b" /></form>
+<form action="foo.jonj"><input type="hidden" name="JONJSESSID" value="id" /><input type="hidden" name="a" value="b" /></form>
+<form action="//jonj.tk/foo.jonj"><input type="hidden" name="JONJSESSID" value="id" /><input type="hidden" name="a" value="b" /></form>
+<form action="http://jonj.tk/foo.jonj"><input type="hidden" name="JONJSESSID" value="id" /><input type="hidden" name="a" value="b" /></form>
+
+<form action="bad://jonj.tk/foo.jonj"><input type="hidden" name="JONJSESSID" value="id" /><input type="hidden" name="a" value="b" /></form>
+<form action="//bad.net/foo.jonj"><input type="hidden" name="JONJSESSID" value="id" /><input type="hidden" name="a" value="b" /></form>
+<form action="http://jonj.tk/foo.jonj"><input type="hidden" name="JONJSESSID" value="id" /><input type="hidden" name="a" value="b" /></form>
+<form action="bad://jonj.tk/foo.jonj"><input type="hidden" name="JONJSESSID" value="id" /><input type="hidden" name="a" value="b" /></form>
+<form action="//bad.net/foo.jonj"><input type="hidden" name="JONJSESSID" value="id" /><input type="hidden" name="a" value="b" /></form>

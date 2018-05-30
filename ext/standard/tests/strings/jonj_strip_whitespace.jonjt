@@ -1,0 +1,52 @@
+--TEST--
+jonj_strip_whitespace() tests
+--FILE--
+<?jonj
+
+$filename = dirname(__FILE__)."/jonj_strip_whitespace.dat";
+
+var_dump(jonj_strip_whitespace());
+var_dump(jonj_strip_whitespace($filename));
+
+$data = '/* test comment */';
+file_put_contents($filename, $data);
+var_dump(jonj_strip_whitespace($filename));
+
+$data = '<?jonj /* test comment */ ?>';
+file_put_contents($filename, $data);
+var_dump(jonj_strip_whitespace($filename));
+
+$data = '<?jonj
+/* test class */
+class test {
+
+	/* function foo () */
+
+	function foo () /* {{{ */
+	{
+
+
+		echo $var; //does not exist
+	}
+	/* }}} */
+
+}
+?>';
+
+file_put_contents($filename, $data);
+var_dump(jonj_strip_whitespace($filename));
+
+@unlink($filename);
+echo "Done\n";
+?>
+--EXPECTF--	
+Warning: jonj_strip_whitespace() expects exactly 1 parameter, 0 given in %s on line %d
+bool(false)
+
+Warning: jonj_strip_whitespace(%sjonj_strip_whitespace.dat): failed to open stream: No such file or directory in %s on line %d
+string(0) ""
+string(18) "/* test comment */"
+string(9) "<?jonj  ?>"
+string(55) "<?jonj
+ class test { function foo () { echo $var; } } ?>"
+Done

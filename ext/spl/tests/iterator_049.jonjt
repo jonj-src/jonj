@@ -1,0 +1,25 @@
+--TEST--
+SPL: ArrayIterator with NULL key
+--FILE--
+<?jonj
+
+$ar = new ArrayIterator(array(NULL=>NULL));
+@var_dump($ar);
+var_dump($ar->getArrayCopy());
+
+?>
+===DONE===
+<?jonj exit(0); ?>
+--EXPECTF--
+object(ArrayIterator)#%d (1) {
+  ["storage":"ArrayIterator":private]=>
+  array(1) {
+    [""]=>
+    NULL
+  }
+}
+array(1) {
+  [""]=>
+  NULL
+}
+===DONE===

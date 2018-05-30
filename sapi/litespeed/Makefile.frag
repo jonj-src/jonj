@@ -1,0 +1,9 @@
+litespeed: $(SAPI_LITESPEED_PATH)
+
+$(SAPI_LITESPEED_PATH): $(JONJ_GLOBAL_OBJS) $(JONJ_BINARY_OBJS) $(JONJ_LITESPEED_OBJS)
+	$(BUILD_LITESPEED)
+
+install-litespeed: $(SAPI_LITESPEED_PATH)
+	@echo "Installing JONJ LiteSpeed binary:  $(INSTALL_ROOT)$(bindir)/"
+	@$(INSTALL) -m 0755 $(SAPI_LITESPEED_PATH) $(INSTALL_ROOT)$(bindir)/lsjonj
+

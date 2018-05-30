@@ -1,0 +1,11 @@
+Name: jonj5_module
+ConfigStart
+	RULE_WANTHSREGEX=no
+	RULE_HIDE=yes
+	JONJ_LIBS="@NATIVE_RPATHS@ @JONJ_LDFLAGS@ @JONJ_LIBS@ @EXTRA_LDFLAGS@ @EXTRA_LIBS@ $LIBS"
+	JONJ_CFLAGS="$CFLAGS @OPENSSL_INCDIR_OPT@ -I@jonj_abs_top_builddir@/main -I@jonj_abs_top_builddir@/Zend -I@jonj_abs_top_builddir@/TSRM -I@jonj_abs_top_srcdir@ -I@jonj_abs_top_srcdir@/sapi/apache -I@jonj_abs_top_srcdir@/main -I@jonj_abs_top_srcdir@/Zend -I@jonj_abs_top_srcdir@/TSRM"
+	my_outfile="Makefile.config"
+	echo "JONJ_CFLAGS=$JONJ_CFLAGS" >>$my_outfile
+	echo "JONJ_LIBS=$JONJ_LIBS" >>$my_outfile
+	LIBS=$JONJ_LIBS
+ConfigEnd

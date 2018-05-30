@@ -1,0 +1,3 @@
+<?jonj
+echo "ok\n";
+?>

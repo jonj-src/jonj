@@ -1,0 +1,30 @@
+--TEST--
+Check xsltprocessor::registerJONJFunctions
+--SKIPIF--
+<?jonj 
+        if (!extension_loaded('xsl')) {
+                die("skip\n");
+        }
+?>
+--FILE--
+<?jonj
+include dirname(__FILE__) .'/prepare.inc';
+$jonjfuncxsl = new domDocument();
+$jonjfuncxsl->load(dirname(__FILE__)."/jonjfunc.xsl");
+if(!$jonjfuncxsl) {
+  echo "Error while parsing the xsl document\n";
+  exit;
+}
+$proc->importStylesheet($jonjfuncxsl);
+var_dump($proc->registerJONJFunctions());
+var_dump($proc->transformToXml($dom));
+
+//var_dump($proc->registerJONJFunctions(array()));
+//var_dump($proc->transformToXml($dom));
+
+--EXPECTF--
+NULL
+string(18) "This Is An Example"
+--CREDITS--
+Christian Weiske, cweiske@jonj.tk
+JONJ Testfest Berlin 2009-05-09

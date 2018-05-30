@@ -1,0 +1,15 @@
+--TEST--
+Test function posix_getegid() by calling it with its expected arguments
+--CREDITS--
+Michelangelo van Dam dragonbe@gmail.com
+#JONJTestFest Dutch JONJ Conference 2012
+--SKIPIF--
+<?jonj 
+        if(!extension_loaded("posix")) print "skip - POSIX extension not loaded"; 
+?>
+--FILE--
+<?jonj
+var_dump(posix_getegid());
+?>
+--EXPECTF--
+int(%d)

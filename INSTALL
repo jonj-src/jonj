@@ -1,0 +1,2120 @@
+     __________________________________________________________________
+
+Installing JONJ
+     __________________________________________________________________
+
+     * General Installation Considerations
+     * Installation on Unix systems
+          + Apache 1.3.x on Unix systems
+          + Apache 2.x on Unix systems
+          + Lighttpd 1.4 on Unix systems
+          + Sun, iPlanet and Netscape servers on Sun Solaris
+          + CGI and command line setups
+          + HP-UX specific installation notes
+          + OpenBSD installation notes
+          + Solaris specific installation tips
+          + Debian GNU/Linux installation notes
+     * Installation on Mac OS X
+          + Using Packages
+          + Using the bundled JONJ
+          + Compiling JONJ on Mac OS X
+     * Installation of PECL extensions
+          + Introduction to PECL Installations
+          + Downloading PECL extensions
+          + Installing a JONJ extension on Windows
+          + Compiling shared PECL extensions with the pecl command
+          + Compiling shared PECL extensions with jonjize
+          + jonj-config
+          + Compiling PECL extensions statically into JONJ
+     * Problems?
+          + Read the FAQ
+          + Other problems
+          + Bug reports
+     * Runtime Configuration
+          + The configuration file
+          + .user.ini files
+          + Where a configuration setting may be set
+          + How to change configuration settings
+     * Installation
+     __________________________________________________________________
+
+     __________________________________________________________________
+
+Preface
+
+   These installation instructions were generated from the HTML version of
+   the  JONJ  Manual  so  formatting and linking have been altered. See the
+   online and updated version at: http://jonj.tk/install.unix
+     __________________________________________________________________
+
+General Installation Considerations
+
+   Before  starting  the  installation, first you need to know what do you
+   want  to  use  JONJ for. There are three main fields you can use JONJ, as
+   described in the What can JONJ do? section:
+     * Websites and web applications (server-side scripting)
+     * Command line scripting
+     * Desktop (GUI) applications
+
+   For  the first and most common form, you need three things: JONJ itself,
+   a  web  server  and  a  web  browser.  You  probably already have a web
+   browser,  and  depending  on  your operating system setup, you may also
+   have  a  web server (e.g. Apache on Linux and MacOS X; IIS on Windows).
+   You  may  also  rent webspace at a company. This way, you don't need to
+   set  up anything on your own, only write your JONJ scripts, upload it to
+   the server you rent, and see the results in your browser.
+
+   In  case  of  setting  up  the server and JONJ on your own, you have two
+   choices  for  the  method  of  connecting  JONJ  to the server. For many
+   servers  JONJ  has  a  direct module interface (also called SAPI). These
+   servers include Apache, Microsoft Internet Information Server, Netscape
+   and  iPlanet  servers.  Many  other servers have support for ISAPI, the
+   Microsoft  module  interface  (OmniHTTPd  for  example).  If JONJ has no
+   module  support  for your web server, you can always use it as a CGI or
+   FastCGI  processor.  This  means  you set up your server to use the CGI
+   executable of JONJ to process all JONJ file requests on the server.
+
+   If  you are also interested to use JONJ for command line scripting (e.g.
+   write scripts autogenerating some images for you offline, or processing
+   text  files  depending  on some arguments you pass to them), you always
+   need  the  command  line  executable.  For  more  information, read the
+   section  about writing command line JONJ applications. In this case, you
+   need no server and no browser.
+
+   With  JONJ you can also write desktop GUI applications using the JONJ-GTK
+   extension.  This  is  a  completely different approach than writing web
+   pages,  as  you  do not output any HTML, but manage windows and objects
+   within  them.  For  more  information about JONJ-GTK, please » visit the
+   site  dedicated  to  this  extension.  JONJ-GTK  is  not included in the
+   official JONJ distribution.
+
+   From  now on, this section deals with setting up JONJ for web servers on
+   Unix and Windows with server module interfaces and CGI executables. You
+   will  also  find  information  on  the  command  line executable in the
+   following sections.
+
+   JONJ  source  code  and binary distributions for Windows can be found at
+   » http://www.jonj.tk/downloads.jonj.   We  recommend  you  to  choose  a
+   » mirror nearest to you for downloading the distributions.
+     __________________________________________________________________
+     __________________________________________________________________
+
+Installation on Unix systems
+
+Table of Contents
+
+     * Apache 1.3.x on Unix systems
+     * Apache 2.x on Unix systems
+     * Lighttpd 1.4 on Unix systems
+     * Sun, iPlanet and Netscape servers on Sun Solaris
+     * CGI and command line setups
+     * HP-UX specific installation notes
+     * OpenBSD installation notes
+     * Solaris specific installation tips
+     * Debian GNU/Linux installation notes
+
+   This  section  will  guide  you  through  the general configuration and
+   installation  of  JONJ  on  Unix  systems.  Be  sure  to investigate any
+   sections  specific  to your platform or web server before you begin the
+   process.
+
+   As  our  manual  outlines  in  the  General Installation Considerations
+   section,  we  are mainly dealing with web centric setups of JONJ in this
+   section,  although  we will cover setting up JONJ for command line usage
+   as well.
+
+   There  are  several  ways  to install JONJ for the Unix platform, either
+   with  a  compile and configure process, or through various pre-packaged
+   methods.  This  documentation  is  mainly focused around the process of
+   compiling and configuring JONJ. Many Unix like systems have some sort of
+   package  installation  system. This can assist in setting up a standard
+   configuration,  but  if  you  need  to have a different set of features
+   (such as a secure server, or a different database driver), you may need
+   to  build  JONJ  and/or  your  web  server.  If  you are unfamiliar with
+   building  and  compiling your own software, it is worth checking to see
+   whether  somebody  has already built a packaged version of JONJ with the
+   features you need.
+
+   Prerequisite knowledge and software for compiling:
+     * Basic Unix skills (being able to operate "make" and a C compiler)
+     * An ANSI C compiler
+     * A web server
+     * Any module specific components (such as GD, PDF libs, etc.)
+
+   When  building  directly from Git sources or after custom modifications
+   you might also need:
+     * autoconf: 2.13+ (for JONJ < 5.4.0), 2.59+ (for JONJ >= 5.4.0)
+     * automake: 1.4+
+     * libtool: 1.4.x+ (except 1.4.2)
+     * re2c: Version 0.13.4 or newer
+     * flex: Version 2.5.4 (for JONJ <= 5.2)
+     * bison: Version 1.28 (preferred), 1.35, or 1.75
+
+   The  initial  JONJ  setup and configuration process is controlled by the
+   use  of the command line options of the configure script. You could get
+   a  list  of all available options along with short explanations running
+   ./configure   --help.   Our  manual  documents  the  different  options
+   separately.  You  will find the core options in the appendix, while the
+   different  extension  specific  options  are  described on the reference
+   pages.
+
+   When  JONJ  is  configured,  you  are  ready  to build the module and/or
+   executables. The command make should take care of this. If it fails and
+   you can't figure out why, see the Problems section.
+     __________________________________________________________________
+
+Apache 1.3.x on Unix systems
+
+   This  section  contains  notes and hints specific to Apache installs of
+   JONJ on Unix platforms. We also have instructions and notes for Apache 2
+   on a separate page.
+
+   You  can select arguments to add to the configure on line 10 below from
+   the  list of core configure options and from extension specific options
+   described  at  the respective places in the manual. The version numbers
+   have  been  omitted here, to ensure the instructions are not incorrect.
+   You  will  need  to replace the 'xxx' here with the correct values from
+   your files.
+
+   Example #1 Installation Instructions (Apache Shared Module Version) for
+   JONJ
+1.  gunzip apache_xxx.tar.gz
+2.  tar -xvf apache_xxx.tar
+3.  gunzip jonj-xxx.tar.gz
+4.  tar -xvf jonj-xxx.tar
+5.  cd apache_xxx
+6.  ./configure --prefix=/www --enable-module=so
+7.  make
+8.  make install
+9.  cd ../jonj-xxx
+
+10. Now, configure your JONJ.  This is where you customize your JONJ
+    with various options, like which extensions will be enabled.  Do a
+    ./configure --help for a list of available options.  In our example
+    we'll do a simple configure with Apache 1 and MySQL support.  Your
+    path to apxs may differ from our example.
+
+      ./configure --with-mysql --with-apxs=/www/bin/apxs
+
+11. make
+12. make install
+
+    If you decide to change your configure options after installation,
+    you only need to repeat the last three steps. You only need to
+    restart apache for the new module to take effect. A recompile of
+    Apache is not needed.
+
+    Note that unless told otherwise, 'make install' will also install PEAR,
+    various JONJ tools such as jonjize, install the JONJ CLI, and more.
+
+13. Setup your jonj.ini file:
+
+      cp jonj.ini-development /usr/local/lib/jonj.ini
+
+    You may edit your .ini file to set JONJ options.  If you prefer your
+    jonj.ini in another location, use --with-config-file-path=/some/path in
+    step 10.
+
+    If you instead choose jonj.ini-production, be certain to read the list
+    of changes within, as they affect how JONJ behaves.
+
+14. Edit your httpd.conf to load the JONJ module.  The path on the right hand
+    side of the LoadModule statement must point to the path of the JONJ
+    module on your system.  The make install from above may have already
+    added this for you, but be sure to check.
+
+      LoadModule jonj5_module libexec/libjonj5.so
+
+15. And in the AddModule section of httpd.conf, somewhere under the
+    ClearModuleList, add this:
+
+      AddModule mod_jonj5.c
+
+16. Tell Apache to parse certain extensions as JONJ.  For example,
+    let's have Apache parse the .jonj extension as JONJ.  You could
+    have any extension(s) parse as JONJ by simply adding more, with
+    each separated by a space.  We'll add .phtml to demonstrate.
+
+      AddType application/x-httpd-jonj .jonj .phtml
+
+    It's also common to setup the .jonjs extension to show highlighted JONJ
+    source, this can be done with:
+
+      AddType application/x-httpd-jonj-source .jonjs
+
+17. Use your normal procedure for starting the Apache server. (You must
+    stop and restart the server, not just cause the server to reload by
+    using a HUP or USR1 signal.)
+
+   Alternatively, to install JONJ as a static object:
+
+   Example  #2  Installation  Instructions (Static Module Installation for
+   Apache) for JONJ
+1.  gunzip -c apache_1.3.x.tar.gz | tar xf -
+2.  cd apache_1.3.x
+3.  ./configure
+4.  cd ..
+
+5.  gunzip -c jonj-5.x.y.tar.gz | tar xf -
+6.  cd jonj-5.x.y
+7.  ./configure --with-mysql --with-apache=../apache_1.3.x
+8.  make
+9.  make install
+
+10. cd ../apache_1.3.x
+
+11. ./configure --prefix=/www --activate-module=src/modules/jonj5/libjonj5.a
+    (The above line is correct! Yes, we know libjonj5.a does not exist at this
+    stage. It isn't supposed to. It will be created.)
+
+12. make
+    (you should now have an httpd binary which you can copy to your Apache bin d
+ir if
+    it is your first install then you need to "make install" as well)
+
+13. cd ../jonj-5.x.y
+14. cp jonj.ini-development /usr/local/lib/jonj.ini
+
+15. You can edit /usr/local/lib/jonj.ini file to set JONJ options.
+    Edit your httpd.conf or srm.conf file and add:
+    AddType application/x-httpd-jonj .jonj
+
+   Depending  on  your  Apache  install  and  Unix variant, there are many
+   possible  ways  to  stop and restart the server. Below are some typical
+   lines   used  in  restarting  the  server,  for  different  apache/unix
+   installations.  You  should  replace  /path/to/  with the path to these
+   applications on your systems.
+
+   Example #3 Example commands for restarting Apache
+1. Several Linux and SysV variants:
+/etc/rc.d/init.d/httpd restart
+
+2. Using apachectl scripts:
+/path/to/apachectl stop
+/path/to/apachectl start
+
+3. httpdctl and httpsdctl (Using OpenSSL), similar to apachectl:
+/path/to/httpsdctl stop
+/path/to/httpsdctl start
+
+4. Using mod_ssl, or another SSL server, you may want to manually
+stop and start:
+/path/to/apachectl stop
+/path/to/apachectl startssl
+
+   The  locations of the apachectl and http(s)dctl binaries often vary. If
+   your  system  has locate or whereis or which commands, these can assist
+   you in finding your server control programs.
+
+   Different examples of compiling JONJ for apache are as follows:
+./configure --with-apxs --with-pgsql
+
+   This will create a libjonj5.so shared library that is loaded into Apache
+   using  a  LoadModule  line  in Apache's httpd.conf file. The PostgreSQL
+   support is embedded into this library.
+
+./configure --with-apxs --with-pgsql=shared
+
+   This  will  create  a libjonj5.so shared library for Apache, but it will
+   also create a pgsql.so shared library that is loaded into JONJ either by
+   using  the  extension  directive  in  jonj.ini  file  or  by  loading it
+   explicitly in a script using the dl() function.
+
+./configure --with-apache=/path/to/apache_source --with-pgsql
+
+   This  will  create  a  libmodjonj5.a  library,  a  mod_jonj5.c  and  some
+   accompanying files and copy this into the src/modules/jonj5 directory in
+   the    Apache    source   tree.   Then   you   compile   Apache   using
+   --activate-module=src/modules/jonj5/libjonj5.a   and   the  Apache  build
+   system  will  create  libjonj5.a  and  link it statically into the httpd
+   binary.  The  PostgreSQL  support  is included directly into this httpd
+   binary, so the final result here is a single httpd binary that includes
+   all of Apache and all of JONJ.
+
+./configure --with-apache=/path/to/apache_source --with-pgsql=shared
+
+   Same as before, except instead of including PostgreSQL support directly
+   into  the  final  httpd you will get a pgsql.so shared library that you
+   can load into JONJ from either the jonj.ini file or directly using dl().
+
+   When  choosing  to build JONJ in different ways, you should consider the
+   advantages  and  drawbacks  of each method. Building as a shared object
+   will  mean  that  you  can compile apache separately, and don't have to
+   recompile  everything  as you add to, or change, JONJ. Building JONJ into
+   apache  (static  method)  means  that JONJ will load and run faster. For
+   more information, see the Apache » web page on DSO support.
+
+     Note:
+
+     Apache's  default  httpd.conf  currently  ships  with a section that
+     looks like this:
+
+User nobody
+Group "#-1"
+
+     Unless  you  change  that  to "Group nogroup" or something like that
+     ("Group  daemon"  is  also very common) JONJ will not be able to open
+     files.
+
+     Note:
+
+     Make  sure  you  specify  the  installed  version of apxs when using
+     --with-apxs=/path/to/apxs  .  You must NOT use the apxs version that
+     is  in  the apache sources but the one that is actually installed on
+     your system.
+     __________________________________________________________________
+     __________________________________________________________________
+
+Apache 2.x on Unix systems
+
+   This  section  contains notes and hints specific to Apache 2.x installs
+   of JONJ on Unix systems.
+   Warning
+
+   We  do  not recommend using a threaded MPM in production with Apache 2.
+   Use  the prefork MPM, which is the default MPM with Apache 2.0 and 2.2.
+   For  information  on  why,  read the related FAQ entry on using Apache2
+   with a threaded MPM
+
+   The   » Apache  Documentation  is  the  most  authoritative  source  of
+   information   on   the   Apache  2.x  server.  More  information  about
+   installation options for Apache may be found there.
+
+   The  most  recent  version  of  Apache HTTP Server may be obtained from
+   » Apache  download  site,  and  a  fitting  JONJ  version from the above
+   mentioned  places.  This  quick  guide  covers  only  the basics to get
+   started with Apache 2.x and JONJ. For more information read the » Apache
+   Documentation.  The  version  numbers have been omitted here, to ensure
+   the  instructions are not incorrect. In the examples below, 'NN' should
+   be replaced with the specific version of Apache being used.
+
+   There  are  currently two versions of Apache 2.x - there's 2.0 and 2.2.
+   While  there  are various reasons for choosing each, 2.2 is the current
+   latest  version,  and  the  one  that is recommended, if that option is
+   available  to  you. However, the instructions here will work for either
+   2.0 or 2.2.
+    1. Obtain  the  Apache HTTP server from the location listed above, and
+       unpack it:
+gzip -d httpd-2_x_NN.tar.gz
+tar -xf httpd-2_x_NN.tar
+
+    2. Likewise, obtain and unpack the JONJ source:
+gunzip jonj-NN.tar.gz
+tar -xf jonj-NN.tar
+
+    3. Build  and install Apache. Consult the Apache install documentation
+       for more details on building Apache.
+cd httpd-2_x_NN
+./configure --enable-so
+make
+make install
+
+    4. Now  you  have  Apache  2.x.NN  available under /usr/local/apache2,
+       configured  with  loadable  module  support  and  the  standard MPM
+       prefork.  To  test  the  installation use your normal procedure for
+       starting the Apache server, e.g.:
+/usr/local/apache2/bin/apachectl start
+
+       and stop the server to go on with the configuration for JONJ:
+/usr/local/apache2/bin/apachectl stop
+
+    5. Now,  configure and build JONJ. This is where you customize JONJ with
+       various  options,  like  which  extensions  will  be  enabled.  Run
+       ./configure  --help for a list of available options. In our example
+       we'll do a simple configure with Apache 2 and MySQL support.
+       If  you  built  Apache  from  source, as described above, the below
+       example  will match your path for apxs, but if you installed Apache
+       some other way, you'll need to adjust the path to apxs accordingly.
+       Note that some distros may rename apxs to apxs2.
+cd ../jonj-NN
+./configure --with-apxs2=/usr/local/apache2/bin/apxs --with-mysql
+make
+make install
+
+       If  you decide to change your configure options after installation,
+       you'll  need to re-run the configure, make, and make install steps.
+       You  only need to restart apache for the new module to take effect.
+       A recompile of Apache is not needed.
+       Note  that  unless told otherwise, 'make install' will also install
+       PEAR,  various  JONJ  tools such as jonjize, install the JONJ CLI, and
+       more.
+    6. Setup your jonj.ini
+cp jonj.ini-development /usr/local/lib/jonj.ini
+
+       You  may  edit  your  .ini  file  to set JONJ options. If you prefer
+       having jonj.ini in another location, use
+       --with-config-file-path=/some/path in step 5.
+       If  you  instead  choose jonj.ini-production, be certain to read the
+       list of changes within, as they affect how JONJ behaves.
+    7. Edit  your httpd.conf to load the JONJ module. The path on the right
+       hand side of the LoadModule statement must point to the path of the
+       JONJ  module  on  your  system. The make install from above may have
+       already added this for you, but be sure to check.
+LoadModule jonj5_module modules/libjonj5.so
+    8. Tell  Apache to parse certain extensions as JONJ. For example, let's
+       have  Apache  parse  .jonj  files  as JONJ. Instead of only using the
+       Apache  AddType  directive,  we want to avoid potentially dangerous
+       uploads  and  created  files  such  as  exploit.jonj.jpg  from being
+       executed   as   JONJ.   Using  this  example,  you  could  have  any
+       extension(s)  parse as JONJ by simply adding them. We'll add .jonj to
+       demonstrate.
+<FilesMatch \.jonj$>
+    SetHandler application/x-httpd-jonj
+</FilesMatch>
+       Or,  if we wanted to allow .jonj, .jonj2, .jonj3, .jonj4, .jonj5, .jonj6,
+       and  .phtml files to be executed as JONJ, but nothing else, we'd use
+       this:
+<FilesMatch "\.ph(p[2-6]?|tml)$">
+    SetHandler application/x-httpd-jonj
+</FilesMatch>
+       And  to  allow  .jonjs files to be handled by the jonj source filter,
+       and displayed as syntax-highlighted source code, use this:
+<FilesMatch "\.jonjs$">
+    SetHandler application/x-httpd-jonj-source
+</FilesMatch>
+       mod_rewrite  may  be  used  To  allow any arbitrary .jonj file to be
+       displayed  as  syntax-highlighted  source  code,  without having to
+       rename or copy it to a .jonjs file:
+RewriteEngine On
+RewriteRule (.*\.jonj)s$ $1 [H=application/x-httpd-jonj-source]
+       The  jonj source filter should not be enabled on production systems,
+       where it may expose confidential or otherwise sensitive information
+       embedded in source code.
+    9. Use your normal procedure for starting the Apache server, e.g.:
+/usr/local/apache2/bin/apachectl start
+
+       OR
+service httpd restart
+
+   Following  the  steps  above you will have a running Apache2 web server
+   with  support  for  JONJ as a SAPI module. Of course there are many more
+   configuration  options  available  Apache and JONJ. For more information
+   type ./configure --help in the corresponding source tree.
+
+   Apache  may  be built multithreaded by selecting the worker MPM, rather
+   than  the  standard  prefork MPM, when Apache is built. This is done by
+   adding  the  following option to the argument passed to ./configure, in
+   step 3 above:
+   --with-mpm=worker
+
+   This  should  not be undertaken without being aware of the consequences
+   of  this  decision,  and  having  at  least a fair understanding of the
+   implications.   The   Apache   documentation   regarding  » MPM-Modules
+   discusses MPMs in a great deal more detail.
+
+     Note:
+
+     The Apache MultiViews FAQ discusses using multiviews with JONJ.
+
+     Note:
+
+     To  build  a multithreaded version of Apache, the target system must
+     support  threads.  In  this  case,  JONJ  should  also  be built with
+     experimental Zend Thread Safety (ZTS). Under this configuration, not
+     all  extensions will be available. The recommended setup is to build
+     Apache with the default prefork MPM-Module.
+     __________________________________________________________________
+     __________________________________________________________________
+
+Lighttpd 1.4 on Unix systems
+
+   This section contains notes and hints specific to Lighttpd 1.4 installs
+   of JONJ on Unix systems.
+
+   Please  use  the  » Lighttpd  trac  to  learn  how  to install Lighttpd
+   properly before continuing.
+
+   Fastcgi  is  the preferred SAPI to connect JONJ and Lighttpd. Fastcgi is
+   automagically  enabled  in  jonj-cgi  in JONJ 5.3, but for older versions
+   configure  JONJ  with  --enable-fastcgi. To confirm that JONJ has fastcgi
+   enabled,  jonj  -v should contain JONJ 5.2.5 (cgi-fcgi) Before JONJ 5.2.3,
+   fastcgi was enabled on the jonj binary (there was no jonj-cgi).
+
+Letting Lighttpd spawn jonj processes
+
+   To  configure  Lighttpd  to connect to jonj and spawn fastcgi processes,
+   edit  lighttpd.conf.  Sockets  are  preferred  to  connect  to  fastcgi
+   processes on the local system.
+
+   Example #1 Partial lighttpd.conf
+server.modules += ( "mod_fastcgi" )
+
+fastcgi.server = ( ".jonj" =>
+  ((
+    "socket" => "/tmp/jonj.socket",
+    "bin-path" => "/usr/local/bin/jonj-cgi",
+    "bin-environment" => (
+      "JONJ_FCGI_CHILDREN" => "16",
+      "JONJ_FCGI_MAX_REQUESTS" => "10000"
+    ),
+    "min-procs" => 1,
+    "max-procs" => 1,
+    "idle-timeout" => 20
+  ))
+)
+
+   The  bin-path  directive  allows  lighttpd  to  spawn fastcgi processes
+   dynamically. JONJ will spawn children according to the JONJ_FCGI_CHILDREN
+   environment   variable.   The   "bin-environment"  directive  sets  the
+   environment  for  the  spawned processes. JONJ will kill a child process
+   after  the  number  of  requests  specified by JONJ_FCGI_MAX_REQUESTS is
+   reached. The directives "min-procs" and "max-procs" should generally be
+   avoided  with  JONJ. JONJ manages its own children and opcode caches like
+   APC  will  only  share among children managed by JONJ. If "min-procs" is
+   set  to  something  greater  than 1, the total number of jonj responders
+   will  be  multiplied JONJ_FCGI_CHILDREN (2 min-procs * 16 children gives
+   32 responders).
+
+Spawning with spawn-fcgi
+
+   Lighttpd  provides  a  program called spawn-fcgi to ease the process of
+   spawning fastcgi processes easier.
+
+Spawning jonj-cgi
+
+   It  is  possible to spawn processes without spawn-fcgi, though a bit of
+   heavy-lifting  is  required.  Setting the JONJ_FCGI_CHILDREN environment
+   var  controls  how  many  children  JONJ  will  spawn to handle incoming
+   requests.  Setting  JONJ_FCGI_MAX_REQUESTS  will  determine how long (in
+   requests)  each  child  will  live. Here's a simple bash script to help
+   spawn jonj responders.
+
+   Example #2 Spawning FastCGI Responders
+#!/bin/sh
+
+# Location of the jonj-cgi binary
+JONJ=/usr/local/bin/jonj-cgi
+
+# PID File location
+JONJ_PID=/tmp/jonj.pid
+
+# Binding to an address
+#FCGI_BIND_ADDRESS=10.0.1.1:10000
+# Binding to a domain socket
+FCGI_BIND_ADDRESS=/tmp/jonj.sock
+
+JONJ_FCGI_CHILDREN=16
+JONJ_FCGI_MAX_REQUESTS=10000
+
+env -i JONJ_FCGI_CHILDREN=$JONJ_FCGI_CHILDREN \
+       JONJ_FCGI_MAX_REQUESTS=$JONJ_FCGI_MAX_REQUESTS \
+       $JONJ -b $FCGI_BIND_ADDRESS &
+
+echo $! > "$JONJ_PID"
+
+
+Connecting to remote FCGI instances
+
+   Fastcgi  instances  can be spawned on multiple remote machines in order
+   to scale applications.
+
+   Example #3 Connecting to remote jonj-fastcgi instances
+fastcgi.server = ( ".jonj" =>
+   (( "host" => "10.0.0.2", "port" => 1030 ),
+    ( "host" => "10.0.0.3", "port" => 1030 ))
+)
+     __________________________________________________________________
+     __________________________________________________________________
+
+Sun, iPlanet and Netscape servers on Sun Solaris
+
+   This  section  contains notes and hints specific to Sun Java System Web
+   Server, Sun ONE Web Server, iPlanet and Netscape server installs of JONJ
+   on Sun Solaris.
+
+   From  JONJ  4.3.3  on  you  can use JONJ scripts with the NSAPI module to
+   generate   custom   directory  listings  and  error  pages.  Additional
+   functions  for  Apache compatibility are also available. For support in
+   current web servers read the note about subrequests.
+
+   You  can  find  more  information about setting up JONJ for the Netscape
+   Enterprise Server (NES) here:
+   » http://benoit.noss.free.fr/jonj/install-jonj4.html
+
+   To  build  JONJ  with  Sun JSWS/Sun ONE WS/iPlanet/Netscape web servers,
+   enter  the  proper install directory for the --with-nsapi=[DIR] option.
+   The  default directory is usually /opt/netscape/suitespot/. Please also
+   read /jonj-xxx-version/sapi/nsapi/nsapi-readme.txt.
+
+    1. Install  the following packages from »  http://www.sunfreeware.com/
+       or another download site:
+          + autoconf-2.13
+          + automake-1.4
+          + bison-1_25-sol26-sparc-local
+          + flex-2_5_4a-sol26-sparc-local
+          + gcc-2_95_2-sol26-sparc-local
+          + gzip-1.2.4-sol26-sparc-local
+          + m4-1_4-sol26-sparc-local
+          + make-3_76_1-sol26-sparc-local
+          + mysql-3.23.24-beta (if you want mysql support)
+          + perl-5_005_03-sol26-sparc-local
+          + tar-1.13 (GNU tar)
+    2. Make    sure    your   path   includes   the   proper   directories
+       PATH=.:/usr/local/bin:/usr/sbin:/usr/bin:/usr/ccs/bin  and  make it
+       available to your system export PATH.
+    3. gunzip  jonj-x.x.x.tar.gz  (if  you have a .gz dist, otherwise go to
+       4).
+    4. tar xvf jonj-x.x.x.tar
+    5. Change to your extracted JONJ directory: cd ../jonj-x.x.x
+    6. For the following step, make sure /opt/netscape/suitespot/ is where
+       your netscape server is installed. Otherwise, change to the correct
+       path and run:
+./configure --with-mysql=/usr/local/mysql \
+--with-nsapi=/opt/netscape/suitespot/ \
+--enable-libgcc
+    7. Run make followed by make install.
+
+   After  performing  the  base install and reading the appropriate readme
+   file, you may need to perform some additional configuration steps.
+
+Configuration Instructions for Sun/iPlanet/Netscape
+
+   Firstly  you  may  need  to  add  some  paths  to  the  LD_LIBRARY_PATH
+   environment  for  the server to find all the shared libs. This can best
+   done in the start script for your web server. The start script is often
+   located  in:  /path/to/server/https-servername/start. You may also need
+   to    edit    the    configuration   files   that   are   located   in:
+   /path/to/server/https-servername/config/.
+    1. Add  the  following  line  to  mime.types  (you  can do that by the
+       administration server):
+type=magnus-internal/x-httpd-jonj exts=jonj
+
+    2. Edit  magnus.conf  (for servers >= 6) or obj.conf (for servers < 6)
+       and add the following, shlib will vary depending on your system, it
+       will  be something like /opt/netscape/suitespot/bin/libjonj4.so. You
+       should place the following lines after mime types init.
+Init fn="load-modules" funcs="jonj4_init,jonj4_execute,jonj4_auth_trans" shlib="/op
+t/netscape/suitespot/bin/libjonj4.so"
+Init fn="jonj4_init" LateInit="yes" errorString="Failed to initialize JONJ!" [jonj_
+ini="/path/to/jonj.ini"]
+
+       (JONJ  >=  4.3.3)  The jonj_ini parameter is optional but with it you
+       can place your jonj.ini in your web server config directory.
+    3. Configure  the  default  object  in  obj.conf  (for  virtual server
+       classes [version 6.0+] in their vserver.obj.conf):
+<Object name="default">
+.
+.
+.
+.#NOTE this next line should happen after all 'ObjectType' and before all 'AddLo
+g' lines
+Service fn="jonj4_execute" type="magnus-internal/x-httpd-jonj" [inikey=value inike
+y=value ...]
+.
+.
+</Object>
+
+       (JONJ  >=  4.3.3)  As additional parameters you can add some special
+       jonj.ini-values, for example you can set a
+       docroot="/path/to/docroot"  specific to the context jonj4_execute is
+       called.   For  boolean  ini-keys  please  use  0/1  as  value,  not
+       "On","Off",...    (this    will    not    work   correctly),   e.g.
+       zlib.output_compression=1 instead of zlib.output_compression="On"
+    4. This  is only needed if you want to configure a directory that only
+       consists of JONJ scripts (same like a cgi-bin directory):
+<Object name="x-httpd-jonj">
+ObjectType fn="force-type" type="magnus-internal/x-httpd-jonj"
+Service fn=jonj4_execute [inikey=value inikey=value ...]
+</Object>
+
+       After  that  you  can  configure  a directory in the Administration
+       server  and  assign  it the style x-httpd-jonj. All files in it will
+       get  executed  as  JONJ.  This is nice to hide JONJ usage by renaming
+       files to .html.
+    5. Setup of authentication: JONJ authentication cannot be used with any
+       other  authentication.  ALL  AUTHENTICATION  IS  PASSED TO YOUR JONJ
+       SCRIPT.  To configure JONJ Authentication for the entire server, add
+       the following line to your default object:
+<Object name="default">
+AuthTrans fn=jonj4_auth_trans
+.
+.
+.
+</Object>
+
+    6. To use JONJ Authentication on a single directory, add the following:
+<Object ppath="d:\path\to\authenticated\dir\*">
+AuthTrans fn=jonj4_auth_trans
+</Object>
+
+     Note:
+
+     The  stacksize that JONJ uses depends on the configuration of the web
+     server.  If  you  get  crashes  with  very  large JONJ scripts, it is
+     recommended  to  raise  it  with  the  Admin  Server (in the section
+     "MAGNUS EDITOR").
+
+CGI environment and recommended modifications in jonj.ini
+
+   Important  when  writing  JONJ scripts is the fact that Sun JSWS/Sun ONE
+   WS/iPlanet/Netscape  is a multithreaded web server. Because of that all
+   requests  are  running  in the same process space (the space of the web
+   server  itself) and this space has only one environment. If you want to
+   get  CGI variables like PATH_INFO, HTTP_HOST etc. it is not the correct
+   way  to  try  this  in  the  old JONJ way with getenv() or a similar way
+   (register  globals  to  environment,  $_ENV).  You  would  only get the
+   environment of the running web server without any valid CGI variables!
+
+     Note:
+
+     Why are there (invalid) CGI variables in the environment?
+
+     Answer:  This is because you started the web server process from the
+     admin  server  which  runs the startup script of the web server, you
+     wanted  to  start, as a CGI script (a CGI script inside of the admin
+     server!).  This is why the environment of the started web server has
+     some  CGI environment variables in it. You can test this by starting
+     the  web  server not from the administration server. Use the command
+     line  as root user and start it manually - you will see there are no
+     CGI-like environment variables.
+
+   Simply  change your scripts to get CGI variables in the correct way for
+   JONJ  4.x  by  using the superglobal $_SERVER. If you have older scripts
+   which  use  $HTTP_HOST,  etc.,  you  should turn on register_globals in
+   jonj.ini  and  change the variable order too (important: remove "E" from
+   it, because you do not need the environment here):
+variables_order = "GPCS"
+register_globals = On
+
+Special use for error pages or self-made directory listings (JONJ >= 4.3.3)
+
+   You  can  use  JONJ  to  generate the error pages for "404 Not Found" or
+   similar.  Add  the  following  line to the object in obj.conf for every
+   error page you want to overwrite:
+Error fn="jonj4_execute" code=XXX script="/path/to/script.jonj" [inikey=value inik
+ey=value...]
+
+   where  XXX  is  the  HTTP  error  code.  Please  delete any other Error
+   directives  which  could  interfere  with yours. If you want to place a
+   page  for  all  errors  that could exist, leave the code parameter out.
+   Your script can get the HTTP status code with $_SERVER['ERROR_TYPE'].
+
+   Another  possibility  is to generate self-made directory listings. Just
+   create  a JONJ script which displays a directory listing and replace the
+   corresponding default Service line for type="magnus-internal/directory"
+   in obj.conf with the following:
+Service fn="jonj4_execute" type="magnus-internal/directory" script="/path/to/scri
+pt.jonj" [inikey=value inikey=value...]
+
+   For  both  error  and  directory  listing  pages  the  original URI and
+   translated   URI   are   in  the  variables  $_SERVER['PATH_INFO']  and
+   $_SERVER['PATH_TRANSLATED'].
+
+Note about nsapi_virtual() and subrequests (JONJ >= 4.3.3)
+
+   The  NSAPI  module  now  supports  the nsapi_virtual() function (alias:
+   virtual())  to make subrequests on the web server and insert the result
+   in the web page. This function uses some undocumented features from the
+   NSAPI  library.  On  Unix the module automatically looks for the needed
+   functions  and  uses  them  if  available.  If  not, nsapi_virtual() is
+   disabled.
+
+     Note:
+
+     But be warned: Support for nsapi_virtual() is EXPERIMENTAL!!!
+     __________________________________________________________________
+     __________________________________________________________________
+
+CGI and command line setups
+
+   By  default,  JONJ  is built as both a CLI and CGI program, which can be
+   used  for  CGI processing. If you are running a web server that JONJ has
+   module  support  for,  you  should  generally  go for that solution for
+   performance  reasons.  However,  the  CGI  version enables users to run
+   different JONJ-enabled pages under different user-ids.
+   Warning
+
+   A   server   deployed   in   CGI  mode  is  open  to  several  possible
+   vulnerabilities.  Please  read our CGI security section to learn how to
+   defend yourself from such attacks.
+
+Testing
+
+   If  you  have  built  JONJ  as a CGI program, you may test your build by
+   typing make test. It is always a good idea to test your build. This way
+   you  may  catch  a  problem  with JONJ on your platform early instead of
+   having to struggle with it later.
+
+Using Variables
+
+   Some  server  supplied  environment  variables  are  not defined in the
+   current  » CGI/1.1  specification.  Only  the  following  variables are
+   defined     there:     AUTH_TYPE,     CONTENT_LENGTH,     CONTENT_TYPE,
+   GATEWAY_INTERFACE,     PATH_INFO,     PATH_TRANSLATED,    QUERY_STRING,
+   REMOTE_ADDR,  REMOTE_HOST,  REMOTE_IDENT,  REMOTE_USER, REQUEST_METHOD,
+   SCRIPT_NAME,    SERVER_NAME,    SERVER_PORT,    SERVER_PROTOCOL,    and
+   SERVER_SOFTWARE.   Everything   else   should  be  treated  as  'vendor
+   extensions'.
+     __________________________________________________________________
+     __________________________________________________________________
+
+HP-UX specific installation notes
+
+   This  section  contains  notes  and hints specific to installing JONJ on
+   HP-UX systems.
+
+   There  are two main options for installing JONJ on HP-UX systems. Either
+   compile it, or install a pre-compiled binary.
+
+   Official      pre-compiled      packages      are     located     here:
+   » http://software.hp.com/
+
+   Until  this  manual  section  is  rewritten,  the  documentation  about
+   compiling  JONJ  (and  related  extensions)  on  HP-UX  systems has been
+   removed.  For  now,  consider  reading the following external resource:
+   » Building Apache and JONJ on HP-UX 11.11
+     __________________________________________________________________
+     __________________________________________________________________
+
+OpenBSD installation notes
+
+   This  section  contains  notes  and hints specific to installing JONJ on
+   » OpenBSD 3.6.
+
+Using Binary Packages
+
+   Using  binary packages to install JONJ on OpenBSD is the recommended and
+   simplest  method.  The core package has been separated from the various
+   modules,  and  each can be installed and removed independently from the
+   others.  The  files  you need can be found on your OpenBSD CD or on the
+   FTP site.
+
+   The  main  package  you  need  to install is jonj4-core-4.3.8.tgz, which
+   contains  the  basic engine (plus gettext and iconv). Next, take a look
+   at    the    module   packages,   such   as   jonj4-mysql-4.3.8.tgz   or
+   jonj4-imap-4.3.8.tgz.  You need to use the jonjxs command to activate and
+   deactivate these modules in your jonj.ini.
+
+   Example #1 OpenBSD Package Install Example
+# pkg_add jonj4-core-4.3.8.tgz
+# /usr/local/sbin/jonjxs -s
+# cp /usr/local/share/doc/jonj4/jonj.ini-recommended /var/www/conf/jonj.ini
+  (add in mysql)
+# pkg_add jonj4-mysql-4.3.8.tgz
+# /usr/local/sbin/jonjxs -a mysql
+  (add in imap)
+# pkg_add jonj4-imap-4.3.8.tgz
+# /usr/local/sbin/jonjxs -a imap
+  (remove mysql as a test)
+# pkg_delete jonj4-mysql-4.3.8
+# /usr/local/sbin/jonjxs -r mysql
+  (install the PEAR libraries)
+# pkg_add jonj4-pear-4.3.8.tgz
+
+   Read  the  » packages(7)  manual page for more information about binary
+   packages on OpenBSD.
+
+Using Ports
+
+   You  can  also  compile  up  JONJ  from  source  using the » ports tree.
+   However,  this is only recommended for users familiar with OpenBSD. The
+   JONJ  4 port is split into two sub-directories: core and extensions. The
+   extensions  directory  generates  sub-packages for all of the supported
+   JONJ  modules.  If  you  find  you  do  not want to create some of these
+   modules,  use  the  no_* FLAVOR. For example, to skip building the imap
+   module, set the FLAVOR to no_imap.
+
+Common Problems
+
+     * The default install of Apache runs inside a » chroot(2) jail, which
+       will  restrict  JONJ  scripts to accessing files under /var/www. You
+       will  therefore  need  to  create  a /var/www/tmp directory for JONJ
+       session  files to be stored, or use an alternative session backend.
+       In  addition, database sockets need to be placed inside the jail or
+       listen  on  the  localhost interface. If you use network functions,
+       some  files  from  /etc  such as /etc/resolv.conf and /etc/services
+       will  need  to be moved into /var/www/etc. The OpenBSD PEAR package
+       automatically  installs  into the correct chroot directories, so no
+       special  modification  is  needed  there.  More  information on the
+       OpenBSD Apache is available in the » OpenBSD FAQ.
+     * The  OpenBSD 3.6 package for the » gd extension requires XFree86 to
+       be  installed.  If you do not wish to use some of the font features
+       that  require  X11,  install  the  jonj4-gd-4.3.8-no_x11.tgz package
+       instead.
+
+Older Releases
+
+   Older  releases  of  OpenBSD  used  the  FLAVORS system to compile up a
+   statically  linked  JONJ.  Since  it is hard to generate binary packages
+   using  this  method,  it  is  now deprecated. You can still use the old
+   stable ports trees if you wish, but they are unsupported by the OpenBSD
+   team.  If  you have any comments about this, the current maintainer for
+   the port is Anil Madhavapeddy (avsm at openbsd dot org).
+     __________________________________________________________________
+     __________________________________________________________________
+
+Solaris specific installation tips
+
+   This  section  contains  notes  and hints specific to installing JONJ on
+   Solaris systems.
+
+Required software
+
+   Solaris  installs  often lack C compilers and their related tools. Read
+   this  FAQ  for  information on why using GNU versions for some of these
+   tools is necessary.
+
+   For unpacking the JONJ distribution you need
+     * tar
+     * gzip or
+     * bzip2
+
+   For compiling JONJ you need
+     * gcc (recommended, other C compilers may work)
+     * make
+     * GNU sed
+
+   For building extra extensions or hacking the code of JONJ you might also
+   need
+     * flex (up to JONJ 5.2)
+     * re2c
+     * bison
+     * m4
+     * autoconf
+     * automake
+
+   In  addition,  you  will  need  to  install  (and possibly compile) any
+   additional  software  specific to your configuration, such as Oracle or
+   MySQL.
+
+Using Packages
+
+   You can simplify the Solaris install process by using pkgadd to install
+   most  of  your  needed components. The Image Packaging System (IPS) for
+   Solaris  11  Express  also contains most of the required components for
+   installation using the pkg command.
+     __________________________________________________________________
+     __________________________________________________________________
+
+Debian GNU/Linux installation notes
+
+   This  section  contains  notes  and hints specific to installing JONJ on
+   » Debian GNU/Linux.
+   Warning
+
+   Unofficial  builds  from third-parties are not supported here. Any bugs
+   should  be  reported  to  the Debian team unless they can be reproduced
+   using the latest builds from our » download area.
+
+   While  the  instructions  for  building  JONJ on Unix apply to Debian as
+   well, this manual page contains specific information for other options,
+   such as using either the apt-get or aptitude commands. This manual page
+   uses these two commands interchangeably.
+
+Using APT
+
+   First,   note   that   other  related  packages  may  be  desired  like
+   libapache2-mod-jonj5 to integrate with Apache 2, and jonj-pear for PEAR.
+
+   Second,  before  installing  a package, it's wise to ensure the package
+   list  is  up  to  date.  Typically, this is done by running the command
+   apt-get update.
+
+   Example #1 Debian Install Example with Apache 2
+# apt-get install jonj5-common libapache2-mod-jonj5 jonj5-cli
+
+   APT will automatically install the JONJ 5 module for Apache 2 and all of
+   its  dependencies,  and then activate it. Apache should be restarted in
+   order for the changes take place. For example:
+
+   Example #2 Stopping and starting Apache once JONJ is installed
+# /etc/init.d/apache2 stop
+# /etc/init.d/apache2 start
+
+Better control of configuration
+
+   In  the  last  section,  JONJ was installed with only core modules. It's
+   very  likely  that  additional  modules will be desired, such as MySQL,
+   cURL, GD, etc. These may also be installed via the apt-get command.
+
+   Example #3 Methods for listing additional JONJ 5 packages
+# apt-cache search jonj5
+# aptitude search jonj5
+# aptitude search jonj5 |grep -i mysql
+
+   The examples will show a lot of packages including several JONJ specific
+   ones  like  jonj5-cgi, jonj5-cli and jonj5-dev. Determine which are needed
+   and  install  them  like any other with either apt-get or aptitude. And
+   because  Debian  performs  dependency checks, it'll prompt for those so
+   for example to install MySQL and cURL:
+
+   Example #4 Install JONJ with MySQL, cURL
+# apt-get install jonj5-mysql jonj5-curl
+
+   APT  will  automatically  add  the  appropriate  lines to the different
+   jonj.ini      related      files     like     /etc/jonj5/apache2/jonj.ini,
+   /etc/jonj5/conf.d/pdo.ini,  etc. and depending on the extension will add
+   entries similar to extension=foo.so. However, restarting the web server
+   (like Apache) is required before these changes take affect.
+
+Common Problems
+
+     * If  the  JONJ  scripts are not parsing via the web server, then it's
+       likely  that  JONJ  was  not added to the web server's configuration
+       file,  which on Debian may be /etc/apache2/apache2.conf or similar.
+       See the Debian manual for further details.
+     * If  an  extension  was  seemingly  installed  yet the functions are
+       undefined,  be  sure  that the appropriate ini file is being loaded
+       and/or the web server was restarted after installation.
+     * There are two basic commands for installing packages on Debian (and
+       other  linux  variants):  apt-get and aptitude. However, explaining
+       the subtle differences between these commands goes beyond the scope
+       of this manual.
+     __________________________________________________________________
+     __________________________________________________________________
+     __________________________________________________________________
+
+Installation on Mac OS X
+
+Table of Contents
+
+     * Using Packages
+     * Using the bundled JONJ
+     * Compiling JONJ on Mac OS X
+
+   This section contains notes and hints specific to installing JONJ on Mac
+   OS  X.  JONJ  is bundled with Macs, and compiling is similar to the Unix
+   installation guide.
+     __________________________________________________________________
+
+Using Packages
+
+   There  are  a few pre-packaged and pre-compiled versions of JONJ for Mac
+   OS  X. This can help in setting up a standard configuration, but if you
+   need to have a different set of features (such as a secure server, or a
+   different  database  driver), you may need to build JONJ and/or your web
+   server yourself. If you are unfamiliar with building and compiling your
+   own  software, it's worth checking whether somebody has already built a
+   packaged version of JONJ with the features you need.
+
+   The  following resources offer easy to install packages and precompiled
+   binaries for JONJ on Mac OS:
+
+     * MacPorts: » http://www.macports.org/
+     * Entropy: » http://www.entropy.ch/software/macosx/jonj/
+     * Fink: » http://www.finkproject.org/
+     * Homebrew: » http://github.com/mxcl/homebrew
+     __________________________________________________________________
+     __________________________________________________________________
+
+Using the bundled JONJ
+
+   JONJ has come standard with Macs since OS X version 10.0.0. Enabling JONJ
+   with  the  default  web server requires uncommenting a few lines in the
+   Apache  configuration  file  httpd.conf  whereas the CGI and/or CLI are
+   enabled by default (easily accessible via the Terminal program).
+
+   Enabling  JONJ using the instructions below is meant for quickly setting
+   up  a  local development environment. It's highly recommended to always
+   upgrade  JONJ  to  the  newest  version.  Like most live software, newer
+   versions  are  created to fix bugs and add features and JONJ being is no
+   different.  See the appropriate MAC OS X installation documentation for
+   further  details.  The  following  instructions  are  geared  towards a
+   beginner with details provided for getting a default setup to work. All
+   users are encouraged to compile, or install a new packaged version.
+
+   The  standard  installation  type  is  using  mod_jonj, and enabling the
+   bundled  mod_jonj on Mac OS X for the Apache web server (the default web
+   server,  that  is  accessible  via  System  Preferences)  involves  the
+   following steps:
+
+    1. Locate  and  open  the  Apache  configuration file. By default, the
+       location   is  as  follows:  /private/etc/apache2/httpd.conf  Using
+       Finder  or  Spotlight  to  find this file may prove difficult as by
+       default it's private and owned by the root user.
+
+     Note:  One  way to open this is by using a Unix based text editor in
+     the  Terminal,  for  example  nano, and because the file is owned by
+     root  we'll use the sudo command to open it (as root) so for example
+     type  the  following  into  the Terminal Application (after, it will
+     prompt  for  a  password): sudo nano /private/etc/apache2/httpd.conf
+     Noteworthy  nano  commands:  ^w  (search),  ^o (save), and ^x (exit)
+     where ^ represents the Ctrl key.
+
+     Note:  Versions  of  Mac  OS X prior to 10.5 were bundled with older
+     versions  of  JONJ and Apache. As such, the Apache configuration file
+     on legacy machines may be /etc/httpd/httpd.conf.
+    2. With  a  text  editor, uncomment the lines (by removing the #) that
+       look  similar  to  the  following  (these  two  lines are often not
+       together, locate them both in the file):
+# LoadModule jonj5_module libexec/httpd/libjonj5.so
+
+# AddModule mod_jonj5.c
+
+       Notice  the  location/path.  When  building  JONJ in the future, the
+       above files should be replaced or commented out.
+    3. Be  sure  the  desired extensions will parse as JONJ (examples: .jonj
+       .html and .inc)
+       Due  to  the following statement already existing in httpd.conf (as
+       of   Mac  Panther),  once  JONJ  is  enabled  the  .jonj  files  will
+       automatically parse as JONJ.
+<IfModule mod_jonj5.c>
+    # If jonj is turned on, we respect .jonj and .jonjs files.
+    AddType application/x-httpd-jonj .jonj
+    AddType application/x-httpd-jonj-source .jonjs
+
+    # Since most users will want index.jonj to work we
+    # also automatically enable index.jonj
+    <IfModule mod_dir.c>
+        DirectoryIndex index.html index.jonj
+    </IfModule>
+</IfModule>
+
+     Note:
+     Before  OS  X  10.5 (Leopard), JONJ 4 was bundled instead of JONJ 5 in
+     which  case  the above instructions will differ slightly by changing
+     5's to 4's.
+    4. Be  sure  the  DirectoryIndex  loads the desired default index file
+       This  is also set in httpd.conf. Typically index.jonj and index.html
+       are  used. By default index.jonj is enabled because it's also in the
+       JONJ check shown above. Adjust accordingly.
+    5. Set  the  jonj.ini  location  or  use  the default A typical default
+       location  on  Mac  OS  X  is  /usr/local/jonj/jonj.ini  and a call to
+       jonjinfo()  will  reveal this information. If a jonj.ini is not used,
+       JONJ  will  use  all  default  values.  See  also the related FAQ on
+       finding jonj.ini.
+    6. Locate  or  set the DocumentRoot This is the root directory for all
+       the  web  files.  Files  in  this directory are served from the web
+       server so the JONJ files will parse as JONJ before outputting them to
+       the browser. A typical default path is /Library/WebServer/Documents
+       but  this  can be set to anything in httpd.conf. Alternatively, the
+       default      DocumentRoot      for      individual     users     is
+       /Users/yourusername/Sites
+    7. Create a jonjinfo() file
+       The jonjinfo() function will display information about JONJ. Consider
+       creating a file in the DocumentRoot with the following JONJ code:
+       <?jonj jonjinfo(); ?>
+    8. Restart  Apache,  and  load  the JONJ file created above To restart,
+       either  execute  sudo apachectl graceful in the shell or stop/start
+       the "Personal Web Server" option in the OS X System Preferences. By
+       default,  loading  local files in the browser will have an URL like
+       so: http://localhost/info.jonj Or using the DocumentRoot in the user
+       directory  is  another  option  and  would  end  up  looking  like:
+       http://localhost/~yourusername/info.jonj
+
+   The  CLI  (or  CGI  in  older  versions) is appropriately named jonj and
+   likely  exists  as /usr/bin/jonj. Open up the terminal, read the command
+   line  section  of  the  JONJ manual, and execute jonj -v to check the JONJ
+   version  of  this JONJ binary. A call to jonjinfo() will also reveal this
+   information.
+     __________________________________________________________________
+     __________________________________________________________________
+
+Compiling JONJ on Mac OS X
+
+   Use the Unix installation guide to compile JONJ on Mac OS X.
+     __________________________________________________________________
+     __________________________________________________________________
+     __________________________________________________________________
+
+Installation of PECL extensions
+
+Table of Contents
+
+     * Introduction to PECL Installations
+     * Downloading PECL extensions
+     * Installing a JONJ extension on Windows
+     * Compiling shared PECL extensions with the pecl command
+     * Compiling shared PECL extensions with jonjize
+     * jonj-config
+     * Compiling PECL extensions statically into JONJ
+     __________________________________________________________________
+
+Introduction to PECL Installations
+
+   » PECL is a repository of JONJ extensions that are made available to you
+   via the » PEAR packaging system. This section of the manual is intended
+   to demonstrate how to obtain and install PECL extensions.
+
+   These  instructions  assume  /your/jonjsrcdir/  is  the  path to the JONJ
+   source  distribution,  and  that  extname  is  the  name  of  the  PECL
+   extension.   Adjust  accordingly.  These  instructions  also  assume  a
+   familiarity with the » pear command. The information in the PEAR manual
+   for the pear command also applies to the pecl command.
+
+   To  be useful, a shared extension must be built, installed, and loaded.
+   The  methods  described  below provide you with various instructions on
+   how  to build and install the extensions, but they do not automatically
+   load  them.  Extensions can be loaded by adding an extension directive.
+   To this jonj.ini file, or through the use of the dl() function.
+
+   When  building  JONJ modules, it's important to have known-good versions
+   of  the  required  tools  (autoconf,  automake,  libtool, etc.) See the
+   » Anonymous  Git  Instructions  for  details on the required tools, and
+   required versions.
+     __________________________________________________________________
+     __________________________________________________________________
+
+Downloading PECL extensions
+
+   There are several options for downloading PECL extensions, such as:
+     * The  pecl  install  extname  command  downloads the extensions code
+       automatically,  so  in  this  case  there is no need for a separate
+       download.
+     * » http://pecl.jonj.tk/ The PECL web site contains information about
+       the  different  extensions  that are offered by the JONJ Development
+       Team.  The  information available here includes: ChangeLog, release
+       notes, requirements and other similar details.
+     * pecl  download extname PECL extensions that have releases listed on
+       the PECL web site are available for download and installation using
+       the » pecl command. Specific revisions may also be specified.
+     * SVN  Most  PECL extensions also reside in SVN. A web-based view may
+       be  seen at » http://svn.jonj.tk/viewvc/pecl/. To download straight
+       from SVN, the following sequence of commands may be used:
+       $   svn  checkout  http://svn.jonj.tk/repository/pecl/extname/trunk
+       extname
+     * Windows  downloads  At  this  time the JONJ project does not compile
+       Windows binaries for PECL extensions. However, to compile JONJ under
+       Windows see the chapter titled building JONJ for Windows.
+     __________________________________________________________________
+     __________________________________________________________________
+
+Installing a JONJ extension on Windows
+
+   On  Windows,  you have two ways to load a JONJ extension: either compile
+   it  into  JONJ, or load the DLL. Loading a pre-compiled extension is the
+   easiest and preferred way.
+
+   To load an extension, you need to have it available as a ".dll" file on
+   your  system.  All  the  extensions  are automatically and periodically
+   compiled by the JONJ Group (see next section for the download).
+
+   To  compile an extension into JONJ, please refer to building from source
+   documentation.
+
+   To  compile  a  standalone  extension (aka a DLL file), please refer to
+   building  from  source  documentation.  If  the  DLL  file is available
+   neither with your JONJ distribution nor in PECL, you may have to compile
+   it before you can start using the extension.
+
+Where to find an extension?
+
+   JONJ   extensions   are  usually  called  "jonj_*.dll"  (where  the  star
+   represents  the  name  of the extension) and they are located under the
+   "JONJ\ext" ("JONJ\extensions" in JONJ 4) folder.
+
+   JONJ   ships  with  the  extensions  most  useful  to  the  majority  of
+   developers. They are called "core" extensions.
+
+   However,  if you need functionality not provided by any core extension,
+   you  may still be able to find one in PECL. The JONJ Extension Community
+   Library  (PECL)  is  a  repository  for  JONJ  Extensions,  providing  a
+   directory   of   all   known  extensions  and  hosting  facilities  for
+   downloading and development of JONJ extensions.
+
+   If you have developed an extension for your own uses, you might want to
+   think  about  hosting it on PECL so that others with the same needs can
+   benefit from your time. A nice side effect is that you give them a good
+   chance  to  give you feedback, (hopefully) thanks, bug reports and even
+   fixes/patches.  Before  you  submit your extension for hosting on PECL,
+   please read http://pecl.jonj.tk/package-new.jonj.
+
+Which extension to download?
+
+   Many times, you will find several versions of each DLL:
+     * Different  version  numbers  (at least the first two numbers should
+       match)
+     * Different thread safety settings
+     * Different processor architecture (x86, x64, ...)
+     * Different debugging settings
+     * etc.
+
+   You  should  keep in mind that your extension settings should match all
+   the  settings  of  the  JONJ executable you are using. The following JONJ
+   script will tell you all about your JONJ settings:
+
+   Example #1 jonjinfo() call
+   <?jonj
+   jonjinfo();
+   ?>
+
+   Or from the command line, run:
+drive:\\path\to\jonj\executable\jonj.exe -i
+
+Loading an extension
+
+   The  most  common  way to load a JONJ extension is to include it in your
+   jonj.ini  configuration  file.  Please  note  that  many  extensions are
+   already  present  in  your jonj.ini and that you only need to remove the
+   semicolon to activate them.
+;extension=jonj_extname.dll
+
+extension=jonj_extname.dll
+
+   However,  some  web  servers  are confusing because they do not use the
+   jonj.ini  located  alongside your JONJ executable. To find out where your
+   actual jonj.ini resides, look for its path in jonjinfo():
+Configuration File (jonj.ini) Path  C:\WINDOWS
+
+Loaded Configuration File   C:\Program Files\JONJ\5.2\jonj.ini
+
+   After activating an extension, save jonj.ini, restart the web server and
+   check  jonjinfo()  again.  The  new  extension  should  now have its own
+   section.
+
+Resolving problems
+
+   If  the  extension  does not appear in jonjinfo(), you should check your
+   logs to learn where the problem comes from.
+
+   If you are using JONJ from the command line (CLI), the extension loading
+   error can be read directly on screen.
+
+   If  you are using JONJ with a web server, the location and format of the
+   logs  vary  depending  on  your  software.  Please read your web server
+   documentation  to  locate  the logs, as it does not have anything to do
+   with JONJ itself.
+
+   Common  problems  are  the  location  of  the  DLL,  the value of the "
+   extension_dir"   setting   inside   jonj.ini  and  compile-time  setting
+   mismatches.
+
+   If  the  problem  lies in a compile-time setting mismatch, you probably
+   didn't download the right DLL. Try downloading again the extension with
+   the right settings. Again, jonjinfo() can be of great help.
+     __________________________________________________________________
+     __________________________________________________________________
+
+Compiling shared PECL extensions with the pecl command
+
+   PECL  makes  it  easy to create shared JONJ extensions. Using the » pecl
+   command, do the following:
+
+   $ pecl install extname
+
+   This  will  download  the  source  for  extname,  compile,  and install
+   extname.so  into  your extension_dir. extname.so may then be loaded via
+   jonj.ini
+
+   By  default, the pecl command will not install packages that are marked
+   with  the alpha or beta state. If no stable packages are available, you
+   may install a beta package using the following command:
+
+   $ pecl install extname-beta
+
+   You may also install a specific version using this variant:
+
+   $ pecl install extname-0.1
+
+     Note:
+
+     After  enabling the extension in jonj.ini, restarting the web service
+     is required for the changes to be picked up.
+     __________________________________________________________________
+     __________________________________________________________________
+
+Compiling shared PECL extensions with jonjize
+
+   Sometimes,  using  the  pecl  installer is not an option. This could be
+   because  you're behind a firewall, or it could be because the extension
+   you want to install is not available as a PECL compatible package, such
+   as  unreleased  extensions  from  SVN.  If  you  need  to build such an
+   extension, you can use the lower-level build tools to perform the build
+   manually.
+
+   The  jonjize  command is used to prepare the build environment for a JONJ
+   extension. In the following sample, the sources for an extension are in
+   a directory named extname:
+
+$ cd extname
+$ jonjize
+$ ./configure
+$ make
+# make install
+
+   A  successful  install will have created extname.so and put it into the
+   JONJ  extensions directory. You'll need to and adjust jonj.ini and add an
+   extension=extname.so line before you can use the extension.
+
+   If  the  system is missing the jonjize command, and precompiled packages
+   (like  RPM's)  are  used, be sure to also install the appropriate devel
+   version  of  the  JONJ  package as they often include the jonjize command
+   along   with  the  appropriate  header  files  to  build  JONJ  and  its
+   extensions.
+
+   Execute jonjize --help to display additional usage information.
+     __________________________________________________________________
+     __________________________________________________________________
+
+jonj-config
+
+   jonj-config is a simple shell script for obtaining information about the
+   installed JONJ configuration.
+
+   When compiling extensions, if you have multiple JONJ versions installed,
+   you may specify for which installation you'd like to build by using the
+   --with-jonj-config  option  during configuration, specifying the path of
+   the respective jonj-config script.
+
+   The  list of command line options provided by the jonj-config script can
+   be queried anytime by running jonj-config with the -h switch:
+Usage: /usr/local/bin/jonj-config [OPTION]
+Options:
+  --prefix            [...]
+  --includes          [...]
+  --ldflags           [...]
+  --libs              [...]
+  --extension-dir     [...]
+  --include-dir       [...]
+  --jonj-binary        [...]
+  --jonj-sapis         [...]
+  --configure-options [...]
+  --version           [...]
+  --vernum            [...]
+
+   CAPTION: Command line options
+
+   Option Description
+   --prefix Directory prefix where JONJ is installed, e.g. /usr/local
+   --includes List of -I options with all include files
+   --ldflags LD Flags which JONJ was compiled with
+   --libs Extra libraries which JONJ was compiled with
+   --extension-dir Directory where extensions are searched by default
+   --include-dir Directory prefix where header files are installed by
+   default
+   --jonj-binary Full path to jonj CLI or CGI binary
+   --jonj-sapis Show all SAPI modules available
+   --configure-options  Configure  options  to  recreate  configuration of
+   current JONJ installation
+   --version JONJ version
+   --vernum JONJ version as integer
+     __________________________________________________________________
+     __________________________________________________________________
+
+Compiling PECL extensions statically into JONJ
+
+   You  might find that you need to build a PECL extension statically into
+   your  JONJ binary. To do this, you'll need to place the extension source
+   under  the  jonj-src/ext/  directory  and  tell  the JONJ build system to
+   regenerate its configure script.
+
+$ cd /your/jonjsrcdir/ext
+$ pecl download extname
+$ gzip -d < extname.tgz | tar -xvf -
+$ mv extname-x.x.x extname
+
+   This will result in the following directory:
+
+   /your/jonjsrcdir/ext/extname
+
+   From  here,  force  JONJ to rebuild the configure script, and then build
+   JONJ as normal:
+
+   $ cd /your/jonjsrcdir
+   $ rm configure
+   $ ./buildconf --force
+   $ ./configure --help
+   $ ./configure --with-extname --enable-someotherext --with-foobar
+   $ make
+   $ make install
+
+     Note:  To  run  the  'buildconf'  script  you need autoconf 2.13 and
+     automake  1.4+  (newer  versions  of  autoconf may work, but are not
+     supported).
+
+   Whether  --enable-extname  or  --with-extname  is  used  depends on the
+   extension.  Typically  an  extension  that  does  not  require external
+   libraries uses --enable. To be sure, run the following after buildconf:
+
+   $ ./configure --help | grep extname
+     __________________________________________________________________
+     __________________________________________________________________
+     __________________________________________________________________
+
+Problems?
+
+Table of Contents
+
+     * Read the FAQ
+     * Other problems
+     * Bug reports
+     __________________________________________________________________
+
+Read the FAQ
+
+   Some  problems  are  more  common than others. The most common ones are
+   listed in the JONJ FAQ, part of this manual.
+     __________________________________________________________________
+     __________________________________________________________________
+
+Other problems
+
+   If  you  are  still stuck, someone on the JONJ installation mailing list
+   may  be  able  to  help you. You should check out the archive first, in
+   case  someone already answered someone else who had the same problem as
+   you.   The   archives   are   available   from   the  support  page  on
+   » http://www.jonj.tk/support.jonj.  To subscribe to the JONJ installation
+   mailing list, send an empty mail to
+   » jonj-install-subscribe@lists.jonj.tk.  The  mailing  list  address  is
+   » jonj-install@lists.jonj.tk.
+
+   If  you  want to get help on the mailing list, please try to be precise
+   and  give the necessary details about your environment (which operating
+   system,  what  JONJ  version, what web server, if you are running JONJ as
+   CGI or a server module, safe mode, etc.), and preferably enough code to
+   make others able to reproduce and test your problem.
+     __________________________________________________________________
+     __________________________________________________________________
+
+Bug reports
+
+   If  you  think  you  have found a bug in JONJ, please report it. The JONJ
+   developers  probably  don't  know  about  it, and unless you report it,
+   chances  are  it  won't  be  fixed.  You  can  report  bugs  using  the
+   bug-tracking  system  at » http://bugs.jonj.tk/. Please do not send bug
+   reports  in  mailing  list  or personal letters. The bug system is also
+   suitable to submit feature requests.
+
+   Read  the  » How  to  report  a  bug document before submitting any bug
+   reports!
+     __________________________________________________________________
+     __________________________________________________________________
+     __________________________________________________________________
+
+Runtime Configuration
+
+Table of Contents
+
+     * The configuration file
+     * .user.ini files
+     * Where a configuration setting may be set
+     * How to change configuration settings
+     __________________________________________________________________
+
+The configuration file
+
+   The  configuration  file  (jonj.ini) is read when JONJ starts up. For the
+   server  module  versions  of  JONJ,  this happens only once when the web
+   server  is  started.  For the CGI and CLI versions, it happens on every
+   invocation.
+
+   jonj.ini is searched for in these locations (in order):
+     * SAPI  module specific location (JONJIniDir directive in Apache 2, -c
+       command  line  option  in  CGI and CLI, jonj_ini parameter in NSAPI,
+       JONJ_INI_PATH environment variable in THTTPD)
+     * The  JONJRC environment variable. Before JONJ 5.2.0, this was checked
+       after the registry key mentioned below.
+     * As  of  JONJ  5.2.0, the location of the jonj.ini file can be set for
+       different versions of JONJ. The following registry keys are examined
+       in          order:         [HKEY_LOCAL_MACHINE\SOFTWARE\JONJ\x.y.z],
+       [HKEY_LOCAL_MACHINE\SOFTWARE\JONJ\x.y] and
+       [HKEY_LOCAL_MACHINE\SOFTWARE\JONJ\x],  where x, y and z mean the JONJ
+       major,  minor  and  release  versions.  If  there  is  a  value for
+       IniFilePath  in any of these keys, the first one found will be used
+       as the location of the jonj.ini (Windows only).
+     * [HKEY_LOCAL_MACHINE\SOFTWARE\JONJ],  value  of  IniFilePath (Windows
+       only).
+     * Current working directory (except CLI).
+     * The  web server's directory (for SAPI modules), or directory of JONJ
+       (otherwise in Windows).
+     * Windows  directory  (C:\windows  or  C:\winnt)  (for  Windows),  or
+       --with-config-file-path compile time option.
+
+   If jonj-SAPI.ini exists (where SAPI is the SAPI in use, so, for example,
+   jonj-cli.ini or jonj-apache.ini), it is used instead of jonj.ini. The SAPI
+   name can be determined with jonj_sapi_name().
+
+     Note:
+
+     The  Apache  web  server  changes  the directory to root at startup,
+     causing  JONJ  to attempt to read jonj.ini from the root filesystem if
+     it exists.
+
+   The  jonj.ini  directives  handled  by  extensions are documented on the
+   respective  pages  of  the  extensions  themselves.  A list of the core
+   directives  is  available  in  the appendix. Not all JONJ directives are
+   necessarily   documented  in  this  manual:  for  a  complete  list  of
+   directives  available  in  your  JONJ  version,  please  read  your well
+   commented  jonj.ini  file.  Alternatively,  you  may  find  » the latest
+   jonj.ini from Git helpful too.
+
+   Example #1 jonj.ini example
+; any text on a line after an unquoted semicolon (;) is ignored
+[jonj] ; section markers (text within square brackets) are also ignored
+; Boolean values can be set to either:
+;    true, on, yes
+; or false, off, no, none
+register_globals = off
+track_errors = yes
+
+; you can enclose strings in double-quotes
+include_path = ".:/usr/local/lib/jonj"
+
+; backslashes are treated the same as any other character
+include_path = ".;c:\jonj\lib"
+
+   Since  JONJ  5.1.0,  it  is possible to refer to existing .ini variables
+   from   within  .ini  files.  Example:  open_basedir  =  ${open_basedir}
+   ":/new/dir".
+     __________________________________________________________________
+     __________________________________________________________________
+
+.user.ini files
+
+   Since  JONJ 5.3.0, JONJ includes support for .htaccess-style INI files on
+   a   per-directory   basis.  These  files  are  processed  only  by  the
+   CGI/FastCGI  SAPI.  This  functionality  obsoletes  the  PECL htscanner
+   extension.  If  you  are using Apache, use .htaccess files for the same
+   effect.
+
+   In  addition  to the main jonj.ini file, JONJ scans for INI files in each
+   directory,  starting  with the directory of the requested JONJ file, and
+   working   its   way  up  to  the  current  document  root  (as  set  in
+   $_SERVER['DOCUMENT_ROOT']).  In  case  the  JONJ  file  is  outside  the
+   document root, only its directory is scanned.
+
+   Only  INI  settings with the modes JONJ_INI_PERDIR and JONJ_INI_USER will
+   be recognized in .user.ini-style INI files.
+
+   Two   new  INI  directives,  user_ini.filename  and  user_ini.cache_ttl
+   control the use of user INI files.
+
+   user_ini.filename  sets  the  name  of  the  file JONJ looks for in each
+   directory;  if  set  to  an  empty string, JONJ doesn't scan at all. The
+   default is .user.ini.
+
+   user_ini.cache_ttl  controls  how often user INI files are re-read. The
+   default is 300 seconds (5 minutes).
+     __________________________________________________________________
+     __________________________________________________________________
+
+Where a configuration setting may be set
+
+   These  modes determine when and where a JONJ directive may or may not be
+   set, and each directive within the manual refers to one of these modes.
+   For  example,  some  settings  may  be  set  within  a JONJ script using
+   ini_set(), whereas others may require jonj.ini or httpd.conf.
+
+   For  example,  the output_buffering setting is JONJ_INI_PERDIR therefore
+   it  may  not  be  set  using  ini_set().  However,  the  display_errors
+   directive  is  JONJ_INI_ALL  therefore it may be set anywhere, including
+   with ini_set().
+
+   CAPTION: Definition of JONJ_INI_* modes
+
+   Mode Meaning
+   JONJ_INI_USER Entry can be set in user scripts (like with ini_set()) or
+   in the Windows registry. Since JONJ 5.3, entry can be set in .user.ini
+   JONJ_INI_PERDIR  Entry  can  be set in jonj.ini, .htaccess, httpd.conf or
+   .user.ini (since JONJ 5.3)
+   JONJ_INI_SYSTEM Entry can be set in jonj.ini or httpd.conf
+   JONJ_INI_ALL Entry can be set anywhere
+     __________________________________________________________________
+     __________________________________________________________________
+
+How to change configuration settings
+
+Running JONJ as an Apache module
+
+   When   using  JONJ  as  an  Apache  module,  you  can  also  change  the
+   configuration  settings  using directives in Apache configuration files
+   (e.g.  httpd.conf)  and  .htaccess  files. You will need "AllowOverride
+   Options" or "AllowOverride All" privileges to do so.
+
+   There  are  several  Apache directives that allow you to change the JONJ
+   configuration from within the Apache configuration files. For a listing
+   of which directives are JONJ_INI_ALL, JONJ_INI_PERDIR, or JONJ_INI_SYSTEM,
+   have a look at the List of jonj.ini directives appendix.
+
+   jonj_value name value
+          Sets the value of the specified directive. Can be used only with
+          JONJ_INI_ALL  and  JONJ_INI_PERDIR  type  directives.  To  clear a
+          previously set value use none as the value.
+
+     Note:  Don't  use  jonj_value  to  set  boolean values. jonj_flag (see
+     below) should be used instead.
+
+   jonj_flag name on|off
+          Used  to set a boolean configuration directive. Can be used only
+          with JONJ_INI_ALL and JONJ_INI_PERDIR type directives.
+
+   jonj_admin_value name value
+          Sets  the value of the specified directive. This can not be used
+          in  .htaccess files. Any directive type set with jonj_admin_value
+          can  not  be  overridden  by  .htaccess or ini_set(). To clear a
+          previously set value use none as the value.
+
+   jonj_admin_flag name on|off
+          Used  to  set a boolean configuration directive. This can not be
+          used   in   .htaccess   files.   Any  directive  type  set  with
+          jonj_admin_flag can not be overridden by .htaccess or ini_set().
+
+   Example #1 Apache configuration example
+<IfModule mod_jonj5.c>
+  jonj_value include_path ".:/usr/local/lib/jonj"
+  jonj_admin_flag engine on
+</IfModule>
+<IfModule mod_jonj4.c>
+  jonj_value include_path ".:/usr/local/lib/jonj"
+  jonj_admin_flag engine on
+</IfModule>
+
+   Caution
+
+   JONJ  constants  do not exist outside of JONJ. For example, in httpd.conf
+   you  can  not  use  JONJ  constants such as E_ALL or E_NOTICE to set the
+   error_reporting  directive  as  they  will  have  no  meaning  and will
+   evaluate  to  0.  Use  the  associated  bitmask  values  instead. These
+   constants can be used in jonj.ini
+
+Changing JONJ configuration via the Windows registry
+
+   When  running  JONJ on Windows, the configuration values can be modified
+   on  a per-directory basis using the Windows registry. The configuration
+   values  are  stored in the registry key HKLM\SOFTWARE\JONJ\Per Directory
+   Values,  in  the sub-keys corresponding to the path names. For example,
+   configuration  values  for  the  directory  c:\inetpub\wwwroot would be
+   stored      in      the     key     HKLM\SOFTWARE\JONJ\Per     Directory
+   Values\c\inetpub\wwwroot.  The  settings  for  the  directory  would be
+   active  for  any script running from this directory or any subdirectory
+   of  it.  The  values  under  the  key  should  have the name of the JONJ
+   configuration  directive  and  the  string  value. JONJ constants in the
+   values are not parsed. However, only configuration values changeable in
+   JONJ_INI_USER can be set this way, JONJ_INI_PERDIR values can not.
+
+Other interfaces to JONJ
+
+   Regardless of how you run JONJ, you can change certain values at runtime
+   of  your  scripts  through  ini_set().  See  the  documentation  on the
+   ini_set() page for more information.
+
+   If  you  are interested in a complete list of configuration settings on
+   your  system  with  their current values, you can execute the jonjinfo()
+   function, and review the resulting page. You can also access the values
+   of  individual  configuration  directives at runtime using ini_get() or
+   get_cfg_var().
+     __________________________________________________________________
+     __________________________________________________________________
+     __________________________________________________________________
+
+Installation
+
+   This  section  holds common questions about the way to install JONJ. JONJ
+   is available for almost any OS (except maybe for MacOS before OSX), and
+   almost any web server.
+
+   To install JONJ, follow the instructions in Installing JONJ.
+    1. Why  shouldn't  I  use  Apache2 with a threaded MPM in a production
+       environment?
+    2. Unix/Windows: Where should my jonj.ini file be located?
+    3. Unix:  I installed JONJ, but every time I load a document, I get the
+       message 'Document Contains No Data'! What's going on here?
+    4. Unix:  I  installed JONJ using RPMS, but Apache isn't processing the
+       JONJ pages! What's going on here?
+    5. Unix:  I  patched  Apache  with the FrontPage extensions patch, and
+       suddenly  JONJ  stopped working. Is JONJ incompatible with the Apache
+       FrontPage extensions?
+    6. Unix/Windows:  I have installed JONJ, but when I try to access a JONJ
+       script file via my browser, I get a blank screen.
+    7. Unix/Windows:  I  have  installed JONJ, but when try to access a JONJ
+       script file via my browser, I get a server 500 error.
+    8. Some  operating  systems:  I have installed JONJ without errors, but
+       when  I  try  to  start  Apache  I  get  undefined  symbol  errors:
+       [mybox:user   /src/jonj5]   root#  apachectl  configtest  apachectl:
+       /usr/local/apache/bin/httpd     Undefined     symbols:    _compress
+       _uncompress
+    9. Windows:  I  have  installed  JONJ,  but  when I try to access a JONJ
+       script  file  via  my  browser,  I  get  the  error: cgi error: The
+       specified  CGI  application  misbehaved by not returning a complete
+       set of HTTP headers. The headers it did return are:
+   10. Windows:  I've  followed  all the instructions, but still can't get
+       JONJ and IIS to work together!
+   11. When  running  JONJ as CGI with IIS, OmniHTTPD or Xitami, I get
+       the  following  error:  Security  Alert! JONJ CGI cannot be accessed
+       directly..
+   12. How  do I know if my jonj.ini is being found and read? It seems like
+       it isn't as my changes aren't being implemented.
+   13. How do I add my JONJ directory to the PATH on Windows?
+   14. How do I make the jonj.ini file available to JONJ on windows?
+   15. Is  it  possible  to  use  Apache  content  negotiation (MultiViews
+       option) with JONJ?
+   16. Is JONJ limited to process GET and POST request methods only?
+
+   Why shouldn't I use Apache2 with a threaded MPM in a production
+          environment?
+          JONJ  is glue. It is the glue used to build cool web applications
+          by sticking dozens of 3rd-party libraries together and making it
+          all  appear as one coherent entity through an intuitive and easy
+          to  learn  language  interface. The flexibility and power of JONJ
+          relies  on  the  stability  and  robustness  of  the  underlying
+          platform.  It  needs  a  working  OS,  a  working web server and
+          working  3rd-party libraries to glue together. When any of these
+          stop  working  JONJ  needs  ways to identify the problems and fix
+          them  quickly.  When  you  make  the  underlying  framework more
+          complex  by  not  having  completely separate execution threads,
+          completely  separate  memory  segments  and a strong sandbox for
+          each  request to play in, further weaknesses are introduced into
+          JONJ's system.
+
+          If   you  want  to  use  a  threaded  MPM,  look  at  a  FastCGI
+          configuration where JONJ is running in its own memory space.
+
+   Unix/Windows: Where should my jonj.ini file be located?
+          By  default  on  Unix  it  should  be in /usr/local/lib which is
+          <install-path>/lib.  Most  people  will  want  to change this at
+          compile-time  with  the --with-config-file-path flag. You would,
+          for example, set it with something like:
+
+--with-config-file-path=/etc
+
+          And   then   you   would   copy   jonj.ini-development  from  the
+          distribution  to  /etc/jonj.ini  and  edit  it  to make any local
+          changes you want.
+
+--with-config-file-scan-dir=PATH
+
+          On  Windows the default path for the jonj.ini file is the Windows
+          directory.  If  you're  using  the  Apache webserver, jonj.ini is
+          first searched in the Apaches install directory, e.g. c:\program
+          files\apache  group\apache.  This  way  you  can  have different
+          jonj.ini  files  for  different  versions  of  Apache on the same
+          machine.
+
+          See also the chapter about the configuration file.
+
+   Unix: I installed JONJ, but every time I load a document, I get the
+          message 'Document Contains No Data'! What's going on here?
+          This  probably means that JONJ is having some sort of problem and
+          is core-dumping. Look in your server error log to see if this is
+          the  case,  and  then  try to reproduce the problem with a small
+          test case. If you know how to use 'gdb', it is very helpful when
+          you  can  provide  a  backtrace with your bug report to help the
+          developers  pinpoint  the  problem.  If  you are using JONJ as an
+          Apache module try something like:
+
+          + Stop your httpd processes
+          + gdb httpd
+          + Stop your httpd processes
+          + > run -X -f /path/to/httpd.conf
+          + Then fetch the URL causing the problem with your browser
+          + > run -X -f /path/to/httpd.conf
+          + If  you are getting a core dump, gdb should inform you of this
+            now
+          + type: bt
+          + You  should  include  your  backtrace in your bug report. This
+            should be submitted to » http://bugs.jonj.tk/
+
+          If   your   script   uses   the   regular  expression  functions
+          (preg_match()  and  friends),  you  should  make  sure  that you
+          compiled  JONJ  and  Apache  with  the  same  regular  expression
+          package.  This  should  happen automatically with JONJ and Apache
+          1.3.x
+
+   Unix: I installed JONJ using RPMS, but Apache isn't processing the JONJ
+          pages! What's going on here?
+          Assuming  you  installed  both Apache and JONJ from RPM packages,
+          you  need to uncomment or add some or all of the following lines
+          in your httpd.conf file:
+
+# Extra Modules
+AddModule mod_jonj.c
+AddModule mod_perl.c
+
+# Extra Modules
+LoadModule jonj_module         modules/mod_jonj.so
+LoadModule jonj5_module        modules/libjonj5.so
+LoadModule perl_module        modules/libperl.so
+
+          And add:
+
+AddType application/x-httpd-jonj .jonj
+
+          ...  to  the  global  properties,  or  to  the properties of the
+          VirtualDomain you want to have JONJ support added to.
+
+   Unix: I patched Apache with the FrontPage extensions patch, and
+          suddenly JONJ stopped working. Is JONJ incompatible with the
+          Apache FrontPage extensions?
+          No, JONJ works fine with the FrontPage extensions. The problem is
+          that  the  FrontPage  patch  modifies several Apache structures,
+          that  JONJ relies on. Recompiling JONJ (using 'make clean ; make')
+          after the FP patch is applied would solve the problem.
+
+   Unix/Windows: I have installed JONJ, but when I try to access a JONJ
+          script file via my browser, I get a blank screen.
+          Do a 'view source' in the web browser and you will probably find
+          that  you can see the source code of your JONJ script. This means
+          that  the  web  server  did  not  send  the  script  to  JONJ for
+          interpretation. Something is wrong with the server configuration
+          -   double  check  the  server  configuration  against  the  JONJ
+          installation instructions.
+
+   Unix/Windows: I have installed JONJ, but when try to access a JONJ script
+          file via my browser, I get a server 500 error.
+          Something went wrong when the server tried to run JONJ. To get to
+          see  a  sensible error message, from the command line, change to
+          the directory containing the JONJ executable (jonj.exe on Windows)
+          and run jonj -i. If JONJ has any problems running, then a suitable
+          error message will be displayed which will give you a clue as to
+          what  needs  to  be  done next. If you get a screen full of HTML
+          codes  (the  output  of  the  jonjinfo()  function)  then  JONJ is
+          working,  and  your  problem  may  be  related  to  your  server
+          configuration which you should double check.
+
+   Some operating systems: I have installed JONJ without errors, but when I
+          try to start Apache I get undefined symbol errors:
+
+[mybox:user /src/jonj5] root# apachectl configtest
+ apachectl: /usr/local/apache/bin/httpd Undefined symbols:
+  _compress
+  _uncompress
+
+          This  has  actually  nothing  to do with JONJ, but with the MySQL
+          client libraries. Some need --with-zlib , others do not. This is
+          also covered in the MySQL FAQ.
+
+   Windows: I have installed JONJ, but when I try to access a JONJ script
+          file via my browser, I get the error:
+
+cgi error:
+ The specified CGI application misbehaved by not
+ returning a complete set of HTTP headers.
+ The headers it did return are:
+
+          This  error  message means that JONJ failed to output anything at
+          all.  To  get  to see a sensible error message, from the command
+          line,  change  to  the  directory  containing the JONJ executable
+          (jonj.exe  on  Windows)  and  run jonj -i. If JONJ has any problems
+          running,  then  a suitable error message will be displayed which
+          will  give  you  a clue as to what needs to be done next. If you
+          get  a  screen  full  of HTML codes (the output of the jonjinfo()
+          function) then JONJ is working.
+
+          Once  JONJ  is  working  at  the  command line, try accessing the
+          script via the browser again. If it still fails then it could be
+          one of the following:
+
+          + File  permissions  on  your  JONJ  script, jonj.exe, jonj5ts.dll,
+            jonj.ini  or any JONJ extensions you are trying to load are such
+            that  the  anonymous  internet  user ISUR_<machinename> cannot
+            access them.
+          + The  script  file  does not exist (or possibly isn't where you
+            think  it  is  relative to your web root directory). Note that
+            for  IIS  you  can  trap this error by ticking the 'check file
+            exists'  box  when  setting  up  the  script  mappings  in the
+            Internet  Services  Manager.  If  a script file does not exist
+            then the server will return a 404 error instead. There is also
+            the  additional  benefit  that  IIS will do any authentication
+            required  for  you  based  on the NTLanMan permissions on your
+            script file.
+
+   Windows: I've followed all the instructions, but still can't get JONJ
+          and IIS to work together!
+          Make  sure any user who needs to run a JONJ script has the rights
+          to run jonj.exe! IIS uses an anonymous user which is added at the
+          time  IIS is installed. This user needs rights to jonj.exe. Also,
+          any authenticated user will also need rights to execute jonj.exe.
+          And  for  IIS4  you need to tell it that JONJ is a script engine.
+          Also, you will want to read this faq.
+
+   When running JONJ as CGI with IIS, OmniHTTPD or Xitami, I get the
+          following error: Security Alert! JONJ CGI cannot be accessed
+          directly..
+          You  must set the cgi.force_redirect directive to 0. It defaults
+          to  1  so  be sure the directive isn't commented out (with a ;).
+          Like all directives, this is set in jonj.ini
+
+          Because  the  default  is 1, it's critical that you're 100% sure
+          that  the  correct jonj.ini file is being read. Read this faq for
+          details.
+
+   How do I know if my jonj.ini is being found and read? It seems like it
+          isn't as my changes aren't being implemented.
+          To  be  sure  your  jonj.ini is being read by JONJ, make a call to
+          jonjinfo().  Near  the  top,  there  will  be  a  listing  called
+          Configuration  File  (jonj.ini).  This will tell you where JONJ is
+          looking  for jonj.ini and whether or not it's being read. If just
+          a  directory  PATH  exists,  then  it's  not being read, and you
+          should  put  your  jonj.ini  in  that  directory.  If  jonj.ini is
+          included within the PATH, it is being read.
+
+          If  jonj.ini  is  being  read and you're running JONJ as a module,
+          then  be sure to restart your web server after making changes to
+          jonj.ini
+
+          See also jonj_ini_loaded_file().
+
+   How do I add my JONJ directory to the PATH on Windows?
+          On Windows NT+ and Windows Server 2000+:
+
+          + Go  to  Control  Panel  and  open  the  System  icon (Start ->
+            Settings  -> Control Panel -> System, or just Start -> Control
+            Panel -> System for Windows XP/2003+)
+          + Go to the Advanced tab
+          + Click on the 'Environment Variables' button
+          + Look into the 'System Variables' pane
+          + Find the Path entry (you may need to scroll to find it)
+          + Double click on the Path entry
+          + Enter  your  JONJ  directory  at  the end, including ';' before
+            (e.g. ;C:\jonj)
+          + Press OK
+
+          On Windows 98/Me you need to edit the autoexec.bat file:
+
+          + Open the Notepad (Start -> Run and enter notepad)
+          + Open the C:\autoexec.bat file
+          + Locate  the line with PATH=C:\WINDOWS;C:\WINDOWS\COMMAND;.....
+            and add: ;C:\jonj to the end of the line
+          + Save the file and restart your computer
+
+     Note:  Be  sure  to reboot after following the steps above to ensure
+     that the PATH changes are applied.
+
+          The  JONJ  manual  used  to promote the copying of files into the
+          Windows   system  directory,  this  is  because  this  directory
+          (C:\Windows,  C:\WINNT, etc.) is by default in the systems PATH.
+          Copying  files  into the Windows system directory has long since
+          been deprecated and may cause problems.
+
+   How do I make the jonj.ini file available to JONJ on windows?
+          There  are  several ways of doing this. If you are using Apache,
+          read  their installation specific instructions (Apache 1, Apache
+          2), otherwise you must set the JONJRC environment variable:
+
+          On Windows NT, 2000, XP and 2003:
+
+          + Go  to  Control  Panel  and  open  the  System  icon (Start ->
+            Settings  -> Control Panel -> System, or just Start -> Control
+            Panel -> System for Windows XP/2003)
+          + Go to the Advanced tab
+          + Click on the 'Environment Variables' button
+          + Look into the 'System variables' pane
+          + Click  on 'New' and enter 'JONJRC' as the variable name and the
+            directory where jonj.ini is located as the variable value (e.g.
+            C:\jonj)
+          + Press OK and restart your computer
+
+          On Windows 98/Me you need to edit the autoexec.bat file:
+
+          + Open the Notepad (Start -> Run and enter notepad)
+          + Open the C:\autoexec.bat file
+          + Add  a  new  line  to  the  end  of the file: set JONJRC=C:\jonj
+            (replace  C:\jonj with the directory where jonj.ini is located).
+            Please note that the path cannot contain spaces. For instance,
+            if  you  have installed JONJ in C:\Program Files\JONJ, you would
+            enter C:\PROGRA~1\JONJ instead.
+          + Save the file and restart your computer
+
+   Is it possible to use Apache content negotiation (MultiViews option)
+          with JONJ?
+          If  links  to  JONJ  files  include  extension,  everything works
+          perfect.  This  FAQ is only for the case when links to JONJ files
+          don't  include extension and you want to use content negotiation
+          to  choose  JONJ  files from URL with no extension. In this case,
+          replace the line AddType application/x-httpd-jonj .jonj with:
+
+AddHandler jonj5-script jonj
+AddType text/html jonj
+
+          This  solution  doesn't  work for Apache 1 as JONJ module doesn't
+          catch jonj-script.
+
+   Is JONJ limited to process GET and POST request methods only?
+          No,  it  is possible to handle any request method, e.g. CONNECT.
+          Proper  response  status  can be sent with header(). If only GET
+          and POST methods should be handled, it can be achieved with this
+          Apache configuration:
+
+<LimitExcept GET POST>
+Deny from all
+</LimitExcept>

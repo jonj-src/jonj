@@ -1,0 +1,10 @@
+--TEST--
+INTL_ICU_VERSION constant
+--SKIPIF--
+<?jonj if( !extension_loaded( 'intl' ) ) print 'skip'; ?>
+--FILE--
+<?jonj
+var_dump(defined("INTL_ICU_VERSION"));
+?>
+--EXPECT--
+bool(true)

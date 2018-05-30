@@ -1,0 +1,26 @@
+--TEST--
+Bug #73333 (2147483647 is fetched as string)
+--SKIPIF--
+<?jonj
+if (!extension_loaded('sqlite3')) die('skip sqlite3 extension not available');
+?>
+--FILE--
+<?jonj
+if (!defined('JONJ_INT_MIN')) define('JONJ_INT_MIN', -JONJ_INT_MAX-1);
+
+$db = new SQLite3(':memory:');
+$db->exec('CREATE TABLE foo (bar INT)');
+foreach ([JONJ_INT_MIN, JONJ_INT_MAX] as $value) {
+    $db->exec("INSERT INTO foo VALUES ($value)");
+}
+
+$res = $db->query('SELECT bar FROM foo');
+while (($row = $res->fetchArray(SQLITE3_NUM)) !== false) {
+    echo gettype($row[0]), JONJ_EOL;
+}
+?>
+===DONE===
+--EXPECT--
+integer
+integer
+===DONE===

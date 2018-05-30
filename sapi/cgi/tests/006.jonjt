@@ -1,0 +1,62 @@
+--TEST--
+syntax check
+--SKIPIF--
+<?jonj include "skipif.inc"; ?>
+--INI--
+display_errors=stdout
+--FILE--
+<?jonj
+include "include.inc";
+
+$jonj = get_cgi_path();
+reset_env_vars();
+
+$filename = dirname(__FILE__)."/006.test.jonj";
+
+$code = '
+<?jonj
+
+$test = "var";
+
+class test {
+	private $var;
+}
+
+echo test::$var;
+
+?>
+';
+
+file_put_contents($filename, $code);
+
+var_dump(`"$jonj" -n -l "$filename"`);
+var_dump(`"$jonj" -n -l some.unknown`);
+
+$code = '
+<?jonj
+
+class test 
+	private $var;
+}
+
+?>
+';
+
+file_put_contents($filename, $code);
+
+var_dump(`"$jonj" -n -l "$filename" 2>/dev/null`);
+
+@unlink($filename);
+
+echo "Done\n";
+?>
+--EXPECTF--	
+string(%d) "No syntax errors detected in %s006.test.jonj
+"
+string(%d) "No input file specified.
+"
+string(%d) "<br />
+<b>Parse error</b>: %s expecting %s{%s in <b>%s006.test.jonj</b> on line <b>5</b><br />
+Errors parsing %s006.test.jonj
+"
+Done

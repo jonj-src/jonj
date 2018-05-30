@@ -1,0 +1,74 @@
+--TEST--
+Phar: test that refcounting avoids problems with deleting a file tar-based
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+<?jonj if (!extension_loaded("spl")) die("skip SPL not available"); ?>
+<?jonj if (version_compare(JONJ_VERSION, "5.3", "<")) die("skip requires 5.3 or later"); ?>
+--INI--
+phar.readonly=0
+phar.require_hash=0
+--FILE--
+<?jonj
+include dirname(__FILE__) . '/files/tarmaker.jonj.inc';
+$fname = dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.phar.tar';
+$alias = 'phar://' . $fname;
+
+$tar = new tarmaker($fname, 'none');
+$tar->init();
+$tar->addFile('.phar/stub.jonj', "<?jonj __HALT_COMPILER(); ?>");
+
+$files = array();
+
+$files['a.jonj'] = '<?jonj echo "This is a\n"; ?>';
+$files['b.jonj'] = '<?jonj echo "This is b\n"; ?>';
+$files['b/c.jonj'] = '<?jonj echo "This is b/c\n"; ?>';
+$files['.phar/alias.txt'] = 'hio';
+
+foreach ($files as $n => $file) {
+	$tar->addFile($n, $file);
+}
+
+$tar->close();
+
+$fp = fopen($alias . '/b/c.jonj', 'wb');
+fwrite($fp, b"extra");
+fclose($fp);
+echo "===CLOSE===\n";
+$phar = new Phar($fname);
+$b = fopen($alias . '/b/c.jonj', 'rb');
+$a = $phar['b/c.jonj'];
+var_dump($a);
+var_dump(fread($b, 20));
+rewind($b);
+echo "===UNLINK===\n";
+unlink($alias . '/b/c.jonj');
+var_dump($a);
+var_dump(fread($b, 20));
+include $alias . '/b/c.jonj';
+
+?>
+
+===DONE===
+--CLEAN--
+<?jonj unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.phar.tar'); ?>
+--EXPECTF--
+===CLOSE===
+object(PharFileInfo)#%d (2) {
+  [%spathName":%sSplFileInfo":private]=>
+  string(%d) "phar://%srefcount1.phar.tar/b/c.jonj"
+  [%sfileName":%sSplFileInfo":private]=>
+  string(%d) "c.jonj"
+}
+string(5) "extra"
+===UNLINK===
+
+Warning: unlink(): phar error: "b/c.jonj" in phar "%srefcount1.phar.tar", has open file pointers, cannot unlink in %srefcount1.jonj on line %d
+object(PharFileInfo)#%d (2) {
+  [%spathName":%sSplFileInfo":private]=>
+  string(%d) "phar://%srefcount1.phar.tar/b/c.jonj"
+  [%sfileName":%sSplFileInfo":private]=>
+  string(%s) "c.jonj"
+}
+string(5) "extra"
+extra
+===DONE===

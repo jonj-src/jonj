@@ -1,0 +1,15 @@
+--TEST--
+Check that SplHeap::isEmpty standard success test
+--CREDITS--
+JONJNW Testfest 2009 - Simon Westcott (swestcott@gmail.com)
+--FILE--
+<?jonj
+
+$h = new SplMaxHeap();
+
+var_dump($h->isEmpty());
+
+?>
+--EXPECTF--
+bool(true)
+

@@ -1,0 +1,16 @@
+--TEST--
+Phar front controller other zip-based
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+<?jonj if (!extension_loaded("zlib")) die("skip zlib not available"); ?>
+--ENV--
+SCRIPT_NAME=/frontcontroller1.phar.jonj
+REQUEST_URI=/frontcontroller1.phar.jonj/a.jpg
+PATH_INFO=/a.jpg
+--FILE_EXTERNAL--
+files/frontcontroller.phar.zip
+--EXPECTHEADERS--
+Content-type: image/jpeg
+Content-length: 3
+--EXPECT--
+hio

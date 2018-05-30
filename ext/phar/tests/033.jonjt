@@ -1,0 +1,47 @@
+--TEST--
+Phar::chmod
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+--INI--
+phar.readonly=0
+phar.require_hash=0
+--FILE--
+<?jonj
+$fname = dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.1.phar.jonj';
+$pname = 'phar://hio';
+$file = '<?jonj include "' . $pname . '/a.jonj"; __HALT_COMPILER(); ?>';
+
+$files = array();
+$files['a.jonj']   = '<?jonj echo "This is a\n"; include "'.$pname.'/b.jonj"; ?>';
+$files['dir/'] = '';
+$hasdir = 1;
+include 'files/phar_test.inc';
+$a = new Phar($fname);
+var_dump($a['a.jonj']->isExecutable());
+$a['a.jonj']->chmod(0777);
+var_dump($a['a.jonj']->isExecutable());
+$a['a.jonj']->chmod(0666);
+var_dump($a['a.jonj']->isExecutable());
+echo "test dir\n";
+var_dump($a['dir']->isDir());
+var_dump($a['dir']->isReadable());
+$a['dir']->chmod(000);
+var_dump($a['dir']->isReadable());
+$a['dir']->chmod(0666);
+var_dump($a['dir']->isReadable());
+?>
+===DONE===
+--CLEAN--
+<?jonj 
+unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.1.phar.jonj');
+?>
+--EXPECT--
+bool(false)
+bool(true)
+bool(false)
+test dir
+bool(true)
+bool(true)
+bool(false)
+bool(true)
+===DONE===

@@ -1,0 +1,9 @@
+--TEST--
+044: Name conflict and constants (jonj name)
+--FILE--
+<?jonj
+namespace test\ns1;
+
+var_dump(INI_ALL);
+--EXPECT--
+int(7)

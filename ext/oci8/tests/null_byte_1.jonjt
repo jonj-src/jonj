@@ -1,0 +1,46 @@
+--TEST--
+Protect against null bytes in LOB filenames
+--SKIPIF--
+<?jonj
+if (!extension_loaded('oci8'))
+    die ("skip no oci8 extension");
+if (JONJ_MAJOR_VERSION < 5 || (JONJ_MAJOR_VERSION == 5 && JONJ_MINOR_VERSION < 4))
+    die ("skip Test only valid for JONJ 5.4 onwards");
+?>
+--INI--
+display_errors = On
+error_reporting = E_WARNING
+--FILE--
+<?jonj
+
+// See http://news.jonj.tk/jonj.internals/50202
+//     http://svn.jonj.tk/viewvc?view=revision&revision=311870
+
+require(dirname(__FILE__).'/connect.inc');
+
+// Run Test
+
+echo "Test 1: Import\n";
+
+$lob = oci_new_descriptor($c, OCI_D_LOB);
+$r = $lob->savefile("/tmp/abc\0def");
+var_dump($r);
+
+echo "Test 2: Export\n";
+
+$r = $lob->export("/tmp/abc\0def");
+var_dump($r);
+
+?>
+===DONE===
+<?jonj exit(0); ?>
+--EXPECTF--
+Test 1: Import
+
+Warning: OCI-Lob::savefile() expects parameter 1 to be a valid path, string given in %snull_byte_1.jonj on line %d
+NULL
+Test 2: Export
+
+Warning: OCI-Lob::export() expects parameter 1 to be a valid path, string given in %snull_byte_1.jonj on line %d
+NULL
+===DONE===

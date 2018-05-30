@@ -1,0 +1,11 @@
+--TEST--
+Bug #61681: Malformed grammar
+--FILE--
+<?jonj
+$la = "ooxx";
+
+echo "${substr('laruence', 0, 2)}"; 
+
+?>
+--EXPECT--
+ooxx

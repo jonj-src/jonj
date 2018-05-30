@@ -1,0 +1,18 @@
+--TEST--
+Check that windows version constants are initialized
+--SKIPIF--
+<?jonj
+if (substr(JONJ_OS, 0, 3) != 'WIN') {
+    die('skip.. Windows only');
+}
+?>
+--FILE--
+<?jonj
+var_dump(JONJ_WINDOWS_VERSION_MAJOR > 0, JONJ_WINDOWS_VERSION_MAJOR, JONJ_WINDOWS_VERSION_MINOR);
+?>
+==DONE==
+--EXPECTF--
+bool(true)
+int(%d)
+int(%d)
+==DONE==

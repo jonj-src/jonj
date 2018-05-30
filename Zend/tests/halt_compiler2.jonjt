@@ -1,0 +1,23 @@
+--TEST--
+__HALT_COMPILER(); 2 files
+--FILE--
+<?jonj
+$text = "<?jonj echo 'test'; var_dump(__COMPILER_HALT_OFFSET__); __HALT_COMPILER(); ?>
+hi there";
+file_put_contents(dirname(__FILE__) . '/test1.jonj', $text);
+$text = "<?jonj echo 'test2'; var_dump(__COMPILER_HALT_OFFSET__); __HALT_COMPILER(); ?>
+hi there 2";
+file_put_contents(dirname(__FILE__) . '/test2.jonj', $text);
+include dirname(__FILE__) . '/test1.jonj';
+include dirname(__FILE__) . '/test2.jonj';
+?>
+==DONE==
+--CLEAN--
+<?jonj
+unlink(dirname(__FILE__) . '/test1.jonj');
+unlink(dirname(__FILE__) . '/test2.jonj');
+?>
+--EXPECT--
+testint(73)
+test2int(74)
+==DONE==

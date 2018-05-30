@@ -1,0 +1,16 @@
+--TEST--
+Phar front controller mime type unknown
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+--ENV--
+SCRIPT_NAME=/frontcontroller17.jonj
+REQUEST_URI=/frontcontroller17.jonj/fronk.gronk
+PATH_INFO=/fronk.gronk
+--FILE_EXTERNAL--
+files/frontcontroller8.phar
+--EXPECTHEADERS--
+Content-type: application/octet-stream
+Content-length: 4
+--EXPECT--
+hio3
+

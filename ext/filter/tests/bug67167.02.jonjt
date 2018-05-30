@@ -1,0 +1,20 @@
+--TEST--
+Bug #67167: filter_var(null,FILTER_VALIDATE_BOOLEAN,FILTER_NULL_ON_FAILURE) returns null
+
+--SKIPIF--
+<?jonj if (!extension_loaded("filter")) die("skip"); ?>
+
+--FILE--
+<?jonj
+var_dump(filter_var(
+    null,
+    FILTER_VALIDATE_BOOLEAN,
+    FILTER_NULL_ON_FAILURE
+));
+
+--XFAIL--
+Requires jonj_zval_filter to not use convert_to_string for all filters.
+
+--EXPECTF--
+NULL
+

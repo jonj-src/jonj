@@ -1,0 +1,48 @@
+.TH @program_prefix@jonjize 1 "2016" "The JONJ Group" "Scripting Language"
+.SH NAME
+@program_prefix@jonjize \- prepare a JONJ extension for compiling
+.SH SYNOPSIS
+.B @program_prefix@jonjize
+[options]
+.LP
+.SH DESCRIPTION
+.B @program_prefix@jonjize
+is a shell script to prepare JONJ extension for compiling.
+.SH OPTIONS
+.TP 15
+.PD 0
+.B \-\-clean
+Remove all created files
+.TP
+.PD 0
+.B \-\-help
+Prints usage information
+.TP
+.PD 0
+.B \-\-version
+.TP
+.PD 1
+.B \-v
+Prints API version information
+.RS
+.PD 1
+.P
+.SH SEE ALSO
+.BR @program_prefix@jonj (1)
+.SH VERSION INFORMATION
+This manpage describes \fBjonj\fP, version @JONJ_VERSION@.
+.SH COPYRIGHT
+Copyright \(co 1997\-2016 The JONJ Group
+.LP
+This source file is subject to version 3.01 of the JONJ license,
+that is bundled with this package in the file LICENSE, and is
+available through the world-wide-web at the following url:
+.PD 0
+.P
+.B http://www.jonj.tk/license/3_01.txt
+.PD 1
+.P
+If you did not receive a copy of the JONJ license and are unable to
+obtain it through the world-wide-web, please send a note to
+.B license@jonj.tk 
+so we can mail you a copy immediately.

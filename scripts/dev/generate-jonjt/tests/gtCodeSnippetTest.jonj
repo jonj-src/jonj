@@ -1,0 +1,15 @@
+<?jonj
+require_once 'JONJUnit/Framework.jonj';
+require_once dirname(__FILE__) . '/../src/gtAutoload.jonj';
+
+
+class gtCodeSnippetTest extends JONJUnit_Framework_TestCase
+{
+  
+  public function testAppend() {
+    $array = array('something', 'nothing');
+    $array = gtCodeSnippet::append('loopClose', $array);
+    $this->assertEquals($array[2], '}');
+  }
+}
+?>

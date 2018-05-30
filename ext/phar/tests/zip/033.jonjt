@@ -1,0 +1,56 @@
+--TEST--
+Phar::chmod zip-based
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+--INI--
+phar.readonly=0
+phar.require_hash=0
+--FILE--
+<?jonj
+
+$fname = dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.phar.zip';
+$fname2 = dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.2.phar.zip';
+$alias = 'phar://hio';
+
+$phar = new Phar($fname);
+$phar['a.jonj'] = '<?jonj echo "This is a\n"; include "'.$alias.'/b.jonj"; ?>';
+$phar->setAlias('hio');
+$phar->addEmptyDir('test');
+$phar->stopBuffering();
+
+try {
+	var_dump($phar['a.jonj']->isExecutable());
+	$phar['a.jonj']->chmod(0777);
+	copy($fname, $fname2);
+	$phar->setAlias('unused');
+	$phar2 = new Phar($fname2);
+	var_dump($phar2['a.jonj']->isExecutable());
+	$phar['a.jonj']->chmod(0666);
+	var_dump($phar['a.jonj']->isExecutable());
+	echo "test dir\n";
+	var_dump($phar['test']->isDir());
+	var_dump($phar['test']->isReadable());
+	$phar['test']->chmod(0000);
+	var_dump($phar['test']->isReadable());
+	$phar['test']->chmod(0666);
+	var_dump($phar['test']->isReadable());
+} catch (Exception $e) {
+	echo $e->getMessage() . "\n";
+}
+?>
+===DONE===
+--CLEAN--
+<?jonj
+unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.phar.zip');
+unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.2.phar.zip');
+?>
+--EXPECT--
+bool(false)
+bool(true)
+bool(false)
+test dir
+bool(true)
+bool(true)
+bool(false)
+bool(true)
+===DONE===

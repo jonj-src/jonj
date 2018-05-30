@@ -1,0 +1,9 @@
+--TEST--
+Including a file in the current script directory from an included function
+--FILE--
+<?jonj
+require_once 'include_files/function.inc';
+test();
+?>
+--EXPECT--
+Included!

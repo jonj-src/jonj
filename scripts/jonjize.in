@@ -1,0 +1,209 @@
+#!/bin/sh
+
+# Variable declaration
+prefix='@prefix@'
+datarootdir='@datarootdir@'
+exec_prefix="`eval echo @exec_prefix@`"
+jonjdir="`eval echo @libdir@`/build"
+includedir="`eval echo @includedir@`/jonj"
+builddir="`pwd`"
+SED="@SED@"
+
+FILES_BUILD="mkdep.awk scan_makefile_in.awk shtool libtool.m4"
+FILES="acinclude.m4 Makefile.global config.sub config.guess ltmain.sh run-tests*.jonj"
+CLEAN_FILES="$FILES *.o *.lo *.la .deps .libs/ build/ modules/ install-sh \
+	mkinstalldirs missing config.nice config.sub config.guess configure configure.in \
+	aclocal.m4 config.h config.h.in conftest* ltmain.sh libtool config.cache autom4te.cache/ \
+	config.log config.status Makefile Makefile.fragments Makefile.objects confdefs.h \
+	run-tests*.jonj tests/*.diff tests/*.exp tests/*.log tests/*.out tests/*.jonj"
+
+# function declaration
+jonjize_usage()
+{
+  echo "Usage: $0 [--clean|--help|--version|-v]"
+}
+
+jonjize_no_configm4()
+{
+  if test $@ -eq 1; then
+    clean=" --clean"
+  fi
+
+  echo "Cannot find config.m4. "
+  echo "Make sure that you run '$0$clean' in the top level source directory of the module"
+  echo 
+}
+
+jonjize_clean()
+{
+  echo "Cleaning.."
+  for i in $CLEAN_FILES; do
+    if test -f "$i"; then
+      rm -f $i
+    elif test -d "$i"; then
+      rm -rf $i
+    fi
+  done
+}
+
+jonjize_check_configm4()
+{
+  if test ! -r config.m4; then
+     jonjize_no_configm4 $@
+    exit 1
+  fi
+
+}
+
+jonjize_get_api_numbers()
+{
+  # extracting API NOs:
+  JONJ_API_VERSION=`grep '#define JONJ_API_VERSION' $includedir/main/jonj.h|$SED 's/#define JONJ_API_VERSION//'`
+  ZEND_MODULE_API_NO=`grep '#define ZEND_MODULE_API_NO' $includedir/Zend/zend_modules.h|$SED 's/#define ZEND_MODULE_API_NO//'`
+  ZEND_EXTENSION_API_NO=`grep '#define ZEND_EXTENSION_API_NO' $includedir/Zend/zend_extensions.h|$SED 's/#define ZEND_EXTENSION_API_NO//'`
+}
+
+jonjize_print_api_numbers()
+{
+  jonjize_get_api_numbers
+  echo "Configuring for:"
+  echo "JONJ Api Version:        "$JONJ_API_VERSION
+  echo "Zend Module Api No:     "$ZEND_MODULE_API_NO
+  echo "Zend Extension Api No:  "$ZEND_EXTENSION_API_NO
+}
+
+jonjize_check_build_files()
+{
+  if test ! -d "$jonjdir"; then
+    cat <<EOF
+Cannot find build files at '$jonjdir'. Please check your JONJ installation.
+
+EOF
+    exit 1
+  fi
+
+  case "$jonjdir" in
+  *\ * | *\	*)
+    cat <<EOF
+Invalid source path '$jonjdir'. Whitespace is not allowed in source path.
+
+EOF
+    exit 1;;
+  esac
+
+  case "$builddir" in
+  *\ * | *\	*)
+    cat <<EOF
+Invalid build path '$builddir'. Whitespace is not allowed in build path.
+
+EOF
+      exit 1;;
+  esac
+}
+
+jonjize_check_shtool()
+{
+  test -x "$builddir/build/shtool" || chmod +x "$builddir/build/shtool"
+
+  if test ! -x "$builddir/build/shtool"; then
+    cat <<EOF
+shtool at '$builddir/build/shtool' does not exist or is not executable. 
+Make sure that the file exists and is executable and then rerun this script. 
+
+EOF
+    exit 1
+  else
+    jonj_shtool=$builddir/build/shtool
+  fi
+}
+
+jonjize_check_autotools()
+{
+  test -z "$JONJ_AUTOCONF" && JONJ_AUTOCONF=autoconf
+  test -z "$JONJ_AUTOHEADER" && JONJ_AUTOHEADER=autoheader
+  
+  if test ! -x "$JONJ_AUTOCONF" && test ! -x "`$jonj_shtool path $JONJ_AUTOCONF`"; then
+    cat <<EOF
+Cannot find autoconf. Please check your autoconf installation and the
+\$JONJ_AUTOCONF environment variable. Then, rerun this script.
+
+EOF
+    exit 1
+  fi
+  if test ! -x "$JONJ_AUTOHEADER" && test ! -x "`$jonj_shtool path $JONJ_AUTOHEADER`"; then
+    cat <<EOF
+Cannot find autoheader. Please check your autoconf installation and the
+\$JONJ_AUTOHEADER environment variable. Then, rerun this script.
+
+EOF
+    exit 1
+  fi
+}
+
+jonjize_copy_files()
+{
+  test -d build || mkdir build
+ 
+  (cd "$jonjdir" && cp $FILES_BUILD "$builddir"/build)
+  (cd "$jonjdir" && cp $FILES "$builddir")
+  (cd "$builddir" && cat acinclude.m4 ./build/libtool.m4 > aclocal.m4)
+}
+
+jonjize_replace_prefix()
+{
+  $SED \
+  -e "s#@prefix@#$prefix#" \
+  < "$jonjdir/jonjize.m4" > configure.in
+}
+
+jonjize_autotools()
+{
+  $JONJ_AUTOCONF   || exit 1
+  $JONJ_AUTOHEADER || exit 1
+}
+
+# Main script
+
+case "$1" in 
+  # Cleanup
+  --clean)
+    jonjize_check_configm4 1
+    jonjize_clean
+    exit 0
+    ;;
+
+  # Usage
+  --help)
+    jonjize_usage
+    exit 0
+    ;;
+
+  # Version
+  --version|-v)
+    jonjize_print_api_numbers
+    exit 0
+  ;;
+
+  # Default
+  *)
+     jonjize_check_configm4 0
+
+     jonjize_check_build_files
+
+     jonjize_print_api_numbers
+
+     jonjize_copy_files
+
+     jonjize_replace_prefix
+
+     touch install-sh mkinstalldirs missing
+
+     jonjize_check_shtool
+
+     jonjize_check_autotools
+
+     jonjize_autotools
+     ;;
+esac
+
+exit 0

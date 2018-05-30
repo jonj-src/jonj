@@ -1,0 +1,26 @@
+--TEST--
+link not working properly on Windows
+--CREDITS--
+Venkat Raman Don
+--SKIPIF--
+<?jonj
+if(substr(JONJ_OS, 0, 3) != 'WIN' ) {
+		die('skip windows only test');
+}
+?>
+--FILE--
+<?jonj
+$filename = __DIR__ . '\\a.jonj';
+$content = '<?jonj echo "Dummy Content.\n" ?>';
+file_put_contents($filename, $content);
+$linkname = __DIR__ . '\\a_link.jonj';
+link("$filename", "$linkname");
+var_dump(file_exists("$linkname"));
+$linkcontent = file_get_contents($linkname);
+var_dump($content == $linkcontent);
+unlink($filename);
+unlink($linkname);
+?>
+--EXPECT--
+bool(true)
+bool(true)

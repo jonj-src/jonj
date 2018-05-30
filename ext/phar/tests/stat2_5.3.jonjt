@@ -1,0 +1,61 @@
+--TEST--
+Phar: test stat function interceptions and is_file/is_link edge cases (JONJ 5.3+)
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip");?>
+<?jonj if (substr(jonjversion(), 0, 3) == '5.2') die("skip JONJ 5.3+ required for this test");?>
+--INI--
+phar.readonly=0
+phar.require_hash=0
+--FILE--
+<?jonj
+Phar::interceptFileFuncs();
+is_file();
+is_link();
+var_dump(is_file(__FILE__));
+
+$fname2 = dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.tar';
+$fname3 = dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.phar.tar';
+copy(dirname(__FILE__) . '/tar/files/links.tar', $fname2);
+$a = new PharData($fname2);
+$b = $a->convertToExecutable(Phar::TAR, Phar::NONE, '.3.phar.tar');
+unset($a);
+Phar::unlinkArchive($fname2);
+$b['foo/stat.jonj'] = '<?jonj
+echo "is_link\n";
+var_dump(is_link("./stat.jonj"),is_file("./stat.jonj"), is_link("./oops"), is_file("./oops"));
+var_dump(is_link("testit/link"), filetype("testit/link"), filetype("testit"), is_file("testit/link"));
+echo "not found\n";
+var_dump(is_link("notfound"));
+echo "dir\n";
+var_dump(is_dir("./bar"), is_file("foo/bar/blah"));
+?>';
+$b->addEmptyDir('foo/bar/blah');
+$b->setStub('<?jonj
+include "phar://" . __FILE__ . "/foo/stat.jonj";
+__HALT_COMPILER();');
+include $fname3;
+?>
+===DONE===
+--CLEAN--
+<?jonj unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.phar.tar'); ?>
+<?jonj unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.tar'); ?>
+--EXPECTF--
+Warning: is_file() expects exactly 1 parameter, 0 given in %sstat2_5.3.jonj on line %d
+
+Warning: is_link() expects exactly 1 parameter, 0 given in %sstat2_5.3.jonj on line %d
+bool(true)
+is_link
+bool(false)
+bool(true)
+bool(false)
+bool(false)
+bool(true)
+string(4) "link"
+string(3) "dir"
+bool(true)
+not found
+bool(false)
+dir
+bool(true)
+bool(false)
+===DONE===

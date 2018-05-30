@@ -1,0 +1,32 @@
+--TEST--
+CLI jonj --ri 
+--SKIPIF--
+<?jonj 
+include "skipif.inc"; 
+if (substr(JONJ_OS, 0, 3) == 'WIN') {
+	die ("skip not for Windows");
+}
+?>
+--FILE--
+<?jonj
+
+$jonj = getenv('TEST_JONJ_EXECUTABLE');
+
+
+echo `"$jonj" -n --ri this_extension_does_not_exist_568537753423`;
+echo `"$jonj" -n --ri standard`;
+
+echo "\nDone\n";
+?>
+--EXPECTF--
+Extension 'this_extension_does_not_exist_568537753423' not present.
+
+standard
+
+%a
+
+Directive => Local Value => Master Value
+%a
+
+Done
+

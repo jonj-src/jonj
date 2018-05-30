@@ -1,0 +1,12 @@
+--TEST--
+Bug #45986 (wrong error message for a non existent file on rename)
+--CREDITS--
+Sebastian Schürmann
+sebs@jonj.tk
+Testfest 2009 Munich 
+--FILE--
+<?jonj
+rename('foo', 'bar');
+?>
+--EXPECTF--
+Warning: %s in %sbug45986.jonj on line 2

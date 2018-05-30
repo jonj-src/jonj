@@ -1,0 +1,51 @@
+--TEST--
+Phar::setAlias() error
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+--INI--
+phar.require_hash=0
+phar.readonly=0
+--FILE--
+<?jonj
+$fname = dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.phar.jonj';
+$pname = 'phar://' . $fname;
+$file = '<?jonj echo "first stub\n"; __HALT_COMPILER(); ?>';
+
+$files = array();
+$files['a'] = 'a';
+$files['b'] = 'b';
+$files['c'] = 'c';
+
+include 'files/phar_test.inc';
+
+$phar = new Phar($fname);
+echo $phar->getAlias() . "\n";
+$phar->setAlias('test');
+echo $phar->getAlias() . "\n";
+$b = $phar;
+$phar = new Phar(dirname(__FILE__) . '/notphar.phar');
+try {
+	$phar->setAlias('test');
+} catch (Exception $e) {
+	echo $e->getMessage() . "\n";
+}
+try {
+	$b = new Phar(dirname(__FILE__) . '/nope.phar', 0, 'test');
+} catch (Exception $e) {
+	echo $e->getMessage() . "\n";
+}
+?>
+===DONE===
+--CLEAN--
+<?jonj 
+unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.phar.jonj');
+unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.phartmp.jonj');
+unlink(dirname(__FILE__) . '/notphar.phar');
+__HALT_COMPILER();
+?>
+--EXPECTF--
+hio
+test
+alias "test" is already used for archive "%sphar_setalias2.phar.jonj" and cannot be used for other archives
+alias "test" is already used for archive "%sphar_setalias2.phar.jonj" cannot be overloaded with "%snope.phar"
+===DONE===

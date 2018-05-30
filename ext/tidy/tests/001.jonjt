@@ -1,0 +1,10 @@
+--TEST--
+Check for tidy presence
+--SKIPIF--
+<?jonj if (!extension_loaded("tidy")) print "skip"; ?>
+--FILE--
+<?jonj 
+echo "tidy extension is available";
+?>
+--EXPECT--
+tidy extension is available

@@ -1,0 +1,11 @@
+--TEST--
+PMOPB-45-2007:JONJ ext/filter Email Validation Vulnerability
+--SKIPIF--
+<?jonj if (!extension_loaded("filter")) die("skip"); ?>
+--FILE--
+<?jonj
+	$var = "test@example.com\n";
+	var_dump(filter_var($var, FILTER_VALIDATE_EMAIL));
+?>
+--EXPECT--	
+bool(false)

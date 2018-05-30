@@ -1,0 +1,19 @@
+ARG_ENABLE('jonjdbg', 'Build jonjdbg', 'no');
+ARG_ENABLE('jonjdbgs', 'Build jonjdbg shared', 'no');
+
+JONJDBG_SOURCES='jonjdbg.c jonjdbg_prompt.c jonjdbg_cmd.c jonjdbg_info.c jonjdbg_help.c jonjdbg_break.c jonjdbg_print.c jonjdbg_bp.c jonjdbg_opcode.c jonjdbg_list.c jonjdbg_utils.c jonjdbg_set.c jonjdbg_frame.c jonjdbg_watch.c jonjdbg_win.c jonjdbg_btree.c jonjdbg_parser.c jonjdbg_lexer.c';
+JONJDBG_DLL='jonj' + JONJ_VERSION + 'jonjdbg.dll';
+JONJDBG_EXE='jonjdbg.exe';
+
+if (JONJ_JONJDBG == "yes") {
+	SAPI('jonjdbg', JONJDBG_SOURCES, JONJDBG_EXE);
+	ADD_FLAG("LIBS_JONJDBG", "ws2_32.lib user32.lib");
+	ADD_FLAG("CFLAGS_JONJDBG", "/D YY_NO_UNISTD_H");
+}
+
+if (JONJ_JONJDBGS == "yes") {
+	SAPI('jonjdbgs', JONJDBG_SOURCES, JONJDBG_DLL, '/D JONJ_JONJDBG_EXPORTS /I win32');
+	ADD_FLAG("LIBS_JONJDBGS", "ws2_32.lib user32.lib");
+	ADD_FLAG("CFLAGS_JONJDBGS", "/D YY_NO_UNISTD_H");
+}
+

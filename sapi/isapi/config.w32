@@ -1,0 +1,13 @@
+// vim:ft=javascript
+// $Id$
+
+ARG_ENABLE('isapi', 'Build ISAPI version of JONJ', 'no');
+
+if (JONJ_ISAPI == "yes") {
+	if (JONJ_ZTS == "no") {
+		WARNING("ISAPI module requires an --enable-zts build of JONJ");
+	} else {
+		SAPI('isapi', 'jonj5isapi.c', 'jonj' + JONJ_VERSION + 'isapi.dll', '/D JONJ5ISAPI_EXPORTS');
+		ADD_FLAG('LDFLAGS_ISAPI', '/DEF:sapi\\isapi\\jonj5isapi.def');
+	}
+}

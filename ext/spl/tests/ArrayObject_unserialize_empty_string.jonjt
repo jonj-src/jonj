@@ -1,0 +1,13 @@
+--TEST--
+ArrayObject: test that you can unserialize a empty string
+--CREDITS--
+Havard Eide <nucleuz@gmail.com>
+#JONJTestFest2009 Norway 2009-06-09 \o/
+--FILE--
+<?jonj
+$a = new ArrayObject(array());
+$a->unserialize("");
+?>
+Done
+--EXPECTF--
+Done

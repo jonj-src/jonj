@@ -1,0 +1,156 @@
+--TEST--
+Phar - test specific manifest length
+--INI--
+phar.readonly=0
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+--FILE--
+<?jonj
+
+$files = array(
+	"lib/widgets/Widgets.jonj",
+	"lib/events/FormBeginEventArgs.jonj",
+	"lib/events/FormEndEventArgs.jonj",
+	"lib/Core.jonj",
+	"lib/database/MySqlDatabase.jonj",
+	"lib/utils/DateUtil.jonj",
+	"js/global.js",
+	"files/_emptyDirectory",
+	"files/search/schema.xml",
+	"vendor/Fusonic/Linq/Internal/WhereIterator.jonj",
+	"vendor/Fusonic/Linq/Internal/SelectManyIterator.jonj",
+	"vendor/Fusonic/Linq/Internal/SelectIterator.jonj",
+	"vendor/Fusonic/Linq/Internal/DiffIterator.jonj",
+	"vendor/Fusonic/Linq/Internal/GroupIterator.jonj",
+	"vendor/Fusonic/Linq/Internal/DistinctIterator.jonj",
+	"vendor/Fusonic/Linq/Internal/LinqHelper.jonj",
+	"vendor/Fusonic/Linq/Internal/OrderIterator.jonj",
+	"vendor/Fusonic/Linq/Internal/IntersectIterator.jonj",
+	"vendor/Fusonic/Linq/GroupedLinq.jonj",
+	"vendor/Fusonic/Linq.jonj",
+	"vendor/Fusonic/UI/Widgets/Forms/FormBegin.jonj",
+	"vendor/Fusonic/UI/Widgets/Forms/FormSectionBuilder.jonj",
+	"vendor/Fusonic/UI/Widgets/Forms/AutoSelect.jonj",
+	"vendor/Fusonic/UI/Widgets/Forms/ControlGroup.jonj",
+	"vendor/Fusonic/UI/Widgets/Forms/FormEnd.jonj",
+	"vendor/Fusonic/UI/Widgets/WidgetBase.jonj",
+	"modules/calendar/ajax/calendarGetInvitedUsersContentAjaxHandler.jonj",
+	"modules/calendar/js/calendarAppointmentForm.js",
+	"modules/calendar/misc/calendarAppointment.jonj",
+	"modules/calendar/pages/forms/calendarAppointmentForm.jonj",
+	"modules/calendar/setup/config.xml",
+	"modules/cmt/js/cmtMicroCommentsWidget.js",
+	"modules/cmt/setup/config.xml",
+	"modules/meta/misc/metaContentHelper.jonj",
+	"modules/meta/setup/config.xml",
+	"modules/brd/misc/brdPostStreamFormatter.jonj",
+	"modules/brd/misc/brdPost.jonj",
+	"modules/brd/setup/config/streamContents.xml",
+	"modules/brd/setup/resources/lang/en.xml",
+	"modules/brd/setup/resources/lang/de.xml",
+	"modules/brd/setup/config.xml",
+	"modules/auth/misc/authLoginService.jonj",
+	"modules/auth/setup/config.xml",
+	"modules/bwd/cache/bwdWordCacheCreator.jonj",
+	"modules/bwd/bwd.jonj",
+	"modules/bwd/setup/config.xml",
+	"modules/nws/templates/pages/forms/nwsNewsForm.tpl",
+	"modules/nws/templates/pages/nwsShowNewsPage.tpl",
+	"modules/nws/pages/forms/nwsNewsForm.jonj",
+	"modules/nws/pages/nwsShowNewsPage.jonj",
+	"modules/nws/setup/config.xml",
+	"modules/gmp/cache/gmpMarkersCacheCreator.jonj",
+	"modules/gmp/select/gmpMapContentSelect.jonj",
+	"modules/gmp/templates/gmpShowAppointmentPage.tpl",
+	"modules/gmp/templates/gmpShowLinkPage.tpl",
+	"modules/gmp/setup/config.xml",
+	"modules/mul/cache/mulVideoPortalCacheCreator.jonj",
+	"modules/mul/misc/mulPermissionHelper.jonj",
+	"modules/mul/templates/widgets/mulFileEmbedWidget_Video_Flv.tpl",
+	"modules/mul/setup/config/mulUploadVideoPortalMatches.xml",
+	"modules/mul/setup/config.xml",
+	"modules/cat/select/catCategorySelect.jonj",
+	"modules/cat/misc/catCategory.jonj",
+	"modules/cat/templates/pages/forms/catCategoryForm.tpl",
+	"modules/cat/pages/forms/catEditCategoryForm.jonj",
+	"modules/cat/pages/forms/catAddCategoryForm.jonj",
+	"modules/cat/setup/config.xml",
+	"modules/sty/events/styPageShowEventHandler.jonj",
+	"modules/sty/misc/styBox.jonj",
+	"modules/sty/templates/pages/forms/styLayoutForm.tpl",
+	"modules/sty/templates/pages/forms/styBoxForm.tpl",
+	"modules/sty/templates/pages/forms/styVariantForm.tpl",
+	"modules/sty/setup/resources/lang/en.xml",
+	"modules/sty/setup/resources/lang/de.xml",
+	"modules/sty/setup/config.xml",
+	"modules/reg/misc/regRegistrationHelper.jonj",
+	"modules/reg/setup/config.xml",
+	"modules/not/misc/notEmailNotificationProvider.jonj",
+	"modules/not/setup/config.xml",
+	"modules/styfusonic/setup/config.xml",
+	"modules/sys/ajax/sysUserAutoSuggestSelectAjaxHandler.jonj",
+	"modules/sys/js/sysUserAutoSuggestSelect.js",
+	"modules/sys/select/sysPermissionSelect.jonj",
+	"modules/sys/misc/sysHtaccessConfigWriter.jonj",
+	"modules/sys/misc/sysUserRepository.jonj",
+	"modules/sys/setup/resources/lang/en.xml",
+	"modules/sys/setup/resources/lang/de.xml",
+	"modules/sys/setup/config.xml",
+	"modules/igr/boxes/igrGreatestEntriesBoxTab.jonj",
+	"modules/igr/boxes/igrTopRatedEntriesBoxTab.jonj",
+	"modules/igr/setup/config.xml",
+	"modules/rat/ajax/ratRateAjaxHandler.jonj",
+	"modules/rat/ajax/ratUnlikeAjaxHandler.jonj",
+	"modules/rat/setup/config.xml",
+	"modules/search/select/searchModuleSelect.jonj",
+	"modules/search/select/searchOrderSelect.jonj",
+	"modules/search/misc/searchResultFormatter.jonj",
+	"modules/search/misc/searchProviderSolr.jonj",
+	"modules/search/misc/searchProviderLucene.jonj",
+	"modules/search/misc/searchResultItem.jonj",
+	"modules/search/misc/searchProviderBase.jonj",
+	"modules/search/misc/searchIProvider.jonj",
+	"modules/search/templates/misc/searchResultFormatter.tpl",
+	"modules/search/templates/pages/searchIndexPage.tpl",
+	"modules/search/templates/pages/forms/searchSearchForm.tpl",
+	"modules/search/pages/forms/searchSearchForm.jonj",
+	"modules/search/css/searchResultFormatter.css",
+	"modules/search/setup/config/sysSettings.xml",
+	"modules/search/setup/resources/lang/en.xml",
+	"modules/search/setup/resources/lang/de.xml",
+	"modules/search/setup/config.xml",
+	"style/Fusonic/40components.css",
+	"style/_emptyDirectory",
+	"index.jonj",
+//	"a", // This will make the test pass	
+);
+
+// Create Phar with the filenames above
+$phar = new Phar(__DIR__ . "/bug65028.phar");
+foreach($files as $file)
+{
+	$phar->addFromString($file, "");
+}
+
+// Copy phar
+copy(__DIR__ . "/bug65028.phar", __DIR__ . "/bug65028-copy.phar");
+
+// Open phar
+try
+{
+	$phar = new Phar(__DIR__ . "/bug65028-copy.phar");
+	echo "No exception thrown.\n";
+}
+catch(UnexpectedValueException $ex)
+{
+	echo "Exception thrown: " . $ex->getMessage() . "\n";
+}
+?>
+--CLEAN--
+<?jonj
+@unlink(__DIR__ . "/bug65028.phar");
+@unlink(__DIR__ . "/bug65028-copy.phar");
+?>
+--EXPECT--
+No exception thrown.
+

@@ -1,0 +1,32 @@
+--TEST--
+Phar: phar:// include (repeated names)
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+--INI--
+phar.require_hash=0
+--FILE--
+<?jonj
+$fname = dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.phar.jonj';
+$pname = 'phar://' . $fname;
+$file = "<?jonj __HALT_COMPILER(); ?>";
+
+$files = array();
+$files['a'] = '<?jonj echo "This is a\n"; ?>';
+$files['b'] = '<?jonj echo "This is b\n"; ?>';
+$files['b/b'] = '<?jonj echo "This is b/b\n"; ?>';
+
+include 'files/phar_test.inc';
+
+include $pname . '/a';
+include $pname . '/b';
+include $pname . '/b/b';
+
+?>
+===DONE===
+--CLEAN--
+<?jonj unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.phar.jonj'); ?>
+--EXPECT--
+This is a
+This is b
+This is b/b
+===DONE===

@@ -1,0 +1,15 @@
+--TEST--
+Bug #39082 (Output image to stdout segfaults).
+--SKIPIF--
+<?jonj
+	if (!extension_loaded('gd')) {
+		die("skip gd extension not available\n");
+	}
+?>
+--FILE--
+<?jonj
+$im = imagecreatetruecolor(1,1);
+imagegif($im);
+?>
+--EXPECTF--
+GIF87a%s

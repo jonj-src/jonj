@@ -1,0 +1,13 @@
+--TEST--
+IntlCalendar::FIELD_FIELD_COUNT
+--INI--
+date.timezone=Atlantic/Azores
+--SKIPIF--
+<?jonj
+if (!extension_loaded('intl'))
+	die('skip intl extension not enabled');
+--FILE--
+<?jonj
+var_dump(IntlCalendar::FIELD_FIELD_COUNT);
+--EXPECTF--
+int(%d)

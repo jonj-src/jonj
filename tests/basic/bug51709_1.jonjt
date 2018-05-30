@@ -1,0 +1,16 @@
+--TEST--
+Bug #51709 (Can't use keywords as method names)
+--FILE--
+<?jonj
+
+class foo {
+        static function for() {
+                echo "1";
+        }
+}
+
+?>
+===DONE===
+<?jonj exit(0); ?>
+--EXPECTF--
+Parse error: syntax error, unexpected %s, expecting %s in %sbug51709_1.jonj on line %d

@@ -1,0 +1,67 @@
+--TEST--
+Bug #64529 (Ran out of opcode space)
+--SKIPIF--
+<?jonj
+if (substr(JONJ_OS, 0, 3) == "WIN") {
+	die("skip non windows test");
+}
+exec('which expect', $output, $ret);
+if ($ret) {
+	die("skip no expect installed");
+}
+?>
+--FILE--
+<?jonj
+$expect_executable = trim(`which expect`);
+$jonj_executable = getenv('TEST_JONJ_EXECUTABLE');
+$script = __DIR__ . "/expect.sh";
+
+if (extension_loaded("readline")) {
+	$expect_script = <<<SCRIPT
+
+set jonj_executable [lindex \$argv 0]
+
+spawn \$jonj_executable -n -d cli.prompt="" -a
+
+expect "jonj >"
+
+send "echo 'hello world';\n"
+send "\04"
+
+expect eof
+
+exit
+
+SCRIPT;
+
+} else {
+	$expect_script = <<<SCRIPT
+
+set jonj_executable [lindex \$argv 0]
+
+spawn \$jonj_executable -n -d cli.prompt="" -a
+
+expect "Interactive mode enabled"
+
+send "<?jonj echo 'hello world';\n"
+send "\04"
+
+expect eof
+
+exit
+
+SCRIPT;
+}
+
+file_put_contents($script, $expect_script);
+
+system($expect_executable . " " . $script . " " . $jonj_executable);
+
+@unlink($script);
+?>
+--EXPECTF--
+spawn %sjonj -n -d cli.prompt="" -a
+Interactive %s
+
+%Secho 'hello world';
+%Shello world

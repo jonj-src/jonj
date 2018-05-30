@@ -1,0 +1,16 @@
+Rules for building ZLIB
+-----------------------
+
+The zlib project requires the following files:
+
+jonj_build\zlib\include\zlib.h
+jonj_build\zlib\include\zconf.h
+jonj_build\zlib\lib\zlibstat.lib
+
+jonj_build is a directory at the same level as jonj5.
+
+Start Visual Studio, load jonj_modules.dsw, select the ZLIB projects, and build
+it.
+
+
+  

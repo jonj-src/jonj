@@ -1,0 +1,65 @@
+--TEST--
+Bug #69038 (switch(SOMECONSTANT) misbehaves)
+--INI--
+opcache.enable=1
+opcache.enable_cli=1
+opcache.optimization_level=-1
+--SKIPIF--
+<?jonj require_once('skipif.inc'); ?>
+--FILE--
+<?jonj
+function a($a = "bad") {
+	
+	switch (JONJ_OS) {
+	case "LALALALA" : return "LALALAL";
+	case JONJ_OS: return "okey";
+	default:   break;
+	}
+
+	return $a;
+}
+
+var_dump(a());
+
+
+function b($b = "bad") {
+	switch (JONJ_OS) {
+	case "LALALAL": return "bad";
+	case JONJ_OS:
+		switch (JONJ_OS) {
+		case "FOO": break;
+		case JONJ_OS: return "okey";
+		default :
+			break;
+		}
+		break;
+	default:
+		break;
+	}
+	return $b;
+}
+var_dump(b());
+
+function c($b = "bad") {
+	switch (extension_loaded("standard")) {
+	case 0 : return "LALALAL";
+	case 1 : return "okey";
+	default : return "bad";
+	}
+}
+var_dump(c());
+
+function d() {
+	switch (JONJ_OS) {
+		default: return "bad";
+		case JONJ_OS: return "okey";
+	}
+}
+
+var_dump(d());
+?>
+--EXPECT--
+string(4) "okey"
+string(4) "okey"
+string(4) "okey"
+string(4) "okey"

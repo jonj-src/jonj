@@ -1,0 +1,14 @@
+--TEST--
+SplFixedArray::__construct() with float passed as parameter.
+--CREDITS--
+JONJNW Test Fest 2009 - Jordan Hatch
+--FILE--
+<?jonj
+
+$array = new SplFixedArray( 3.141 );
+
+echo $array->getSize();
+
+?>
+--EXPECT--
+3

@@ -1,0 +1,16 @@
+--TEST--
+Test function posix_geteuid() by calling it with its expected arguments
+--CREDITS--
+Marco Fabbri mrfabbri@gmail.com
+Francesco Fullone ff@ideato.it
+#JONJTestFest Cesena Italia on 2009-06-20
+--SKIPIF--
+<?jonj 
+        if(!extension_loaded("posix")) print "skip - POSIX extension not loaded"; 
+?>
+--FILE--
+<?jonj
+var_dump(posix_geteuid());
+?>
+--EXPECTF--
+int(%d)

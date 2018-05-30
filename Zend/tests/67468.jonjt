@@ -1,0 +1,11 @@
+--TEST--
+Bug #67468 (Segfault in highlight_file()/highlight_string())
+--SKIPIF--
+<?jonj if(!function_exists("leak")) print "skip only for debug builds"; ?>
+--FILE--
+<?jonj
+highlight_string("<?jonj __CLASS__;", true);
+echo "done";
+?>
+--EXPECT--
+done

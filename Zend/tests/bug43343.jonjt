@@ -1,0 +1,11 @@
+--TEST--
+Bug #43343 (Variable class name)
+--FILE--
+<?jonj
+namespace Foo;
+class Bar { }
+$foo = 'bar';
+var_dump(new namespace::$foo);
+?>
+--EXPECTF--
+Parse error: %s error%sexpecting%sT_NS_SEPARATOR%sin %sbug43343.jonj on line 5

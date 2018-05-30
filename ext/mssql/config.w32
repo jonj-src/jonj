@@ -1,0 +1,28 @@
+// $Id$
+// vim:ft=javascript
+
+ARG_WITH("mssql", "mssql support", "no");
+
+if (JONJ_MSSQL != "no") {
+	if (CHECK_LIB("ntwdblib.lib", "mssql", "\\MSSQL7\\DevTools\\Lib;\\MSSQL7\\DevTools\\Lib;" + JONJ_MSSQL) &&
+			CHECK_HEADER_ADD_INCLUDE("sqlfront.h", "CFLAGS_MSSQL", "\\MSSQL7\\DevTools\\Include;\\MSSQL7\\DevTools\\Include" + JONJ_MSSQL)) {
+		EXTENSION("mssql", "jonj_mssql.c");
+		AC_DEFINE('HAVE_MSSQL', 1, 'Have MSSQL support');
+		ADD_FLAG("CFLAGS_MSSQL", "/D DBNTWIN32=1 /D MSSQL70=1");
+	} else {
+		WARNING("mssql not enabled; libraries and headers not found");
+	}
+}
+
+ARG_WITH("dblib", "mssql support with freetds", "no");
+
+if (JONJ_DBLIB != "no") {
+	if (CHECK_LIB("dblib.lib", "dblib", JONJ_JONJ_BUILD + "\\freetds") &&
+			CHECK_HEADER_ADD_INCLUDE("sybfront.h", "CFLAGS_DBLIB", JONJ_JONJ_BUILD + "\\freetds;" + JONJ_DBLIB)) {
+		EXTENSION("dblib", "jonj_mssql.c", null, null, null, "ext\\dblib");
+		AC_DEFINE('HAVE_MSSQL', 1, 'Have MSSQL support');
+		ADD_FLAG("CFLAGS_DBLIB", "/D HAVE_FREETDS=1 /D DBNTWIN32=1 /D MSSQL70=1 /D MSSQL_EXPORTS /D COMPILE_DL_MSSQL");
+	} else {
+		WARNING("dblib not enabled; libraries and headers not found");
+	}
+}

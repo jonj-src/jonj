@@ -1,0 +1,7 @@
+<?jonj
+
+  class gtUnknownOptionException extends RuntimeException
+  {
+  }
+
+?>

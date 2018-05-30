@@ -1,0 +1,27 @@
+<?jonj
+
+/**
+ * Writes a single test case to a file
+ *
+ */
+class gtTestCaseWriter {
+  
+  public static function write($name, $string, $type, $count = 0) {
+    if ($type  == 'b') {
+    $fileName = $name."_basic.jonjt";
+    }
+    
+    if ($type  == 'e') {
+     $fileName = $name."_error.jonjt";
+    }
+    
+    if ($type  == 'v') {
+      $fileName = $name."_variation".$count.".jonjt";
+    }
+    
+    $fh = fopen($fileName, 'w');
+    fwrite ($fh, $string);
+    fclose($fh);
+  }
+}
+?>

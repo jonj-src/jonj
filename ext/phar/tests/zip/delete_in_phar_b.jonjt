@@ -1,0 +1,48 @@
+--TEST--
+Phar: delete a file within a zip-based .phar
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+--INI--
+phar.readonly=0
+phar.require_hash=0
+--FILE--
+<?jonj
+
+$fname = dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.phar.zip';
+$alias = 'phar://' . $fname;
+
+$phar = new Phar($fname);
+$phar['a.jonj'] = '<?jonj echo "This is a\n"; ?>';
+$phar['b.jonj'] = '<?jonj echo "This is b\n"; ?>';
+$phar['b/c.jonj'] = '<?jonj echo "This is b/c\n"; ?>';
+$phar->setStub('<?jonj __HALT_COMPILER(); ?>');
+$phar->stopBuffering();
+ini_set('phar.readonly', 1);
+
+include $alias . '/a.jonj';
+include $alias . '/b.jonj';
+include $alias . '/b/c.jonj';
+unlink($alias . '/b/c.jonj');
+?>
+===AFTER===
+<?jonj
+include $alias . '/a.jonj';
+include $alias . '/b.jonj';
+include $alias . '/b/c.jonj';
+?>
+
+===DONE===
+--CLEAN--
+<?jonj unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.phar.zip'); ?>
+--EXPECTF--
+This is a
+This is b
+This is b/c
+
+Warning: unlink(): phar error: write operations disabled by the jonj.ini setting phar.readonly in %sdelete_in_phar_b.jonj on line %d
+===AFTER===
+This is a
+This is b
+This is b/c
+
+===DONE===

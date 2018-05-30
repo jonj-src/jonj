@@ -1,0 +1,8 @@
+#######################################################
+# name: basic
+# purpose: check basic functionality of jonjdbg console
+# expect: TEST::EXACT
+# options: -rr
+#######################################################
+# [Nothing to execute!]
+#######################################################

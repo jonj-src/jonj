@@ -1,0 +1,9 @@
+--TEST--
+Issetting a non-existent static property
+--FILE--
+<?jonj
+Class C {}
+var_dump(isset(C::$p));
+?>
+--EXPECTF--
+bool(false)

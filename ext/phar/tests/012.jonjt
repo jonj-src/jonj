@@ -1,0 +1,28 @@
+--TEST--
+Phar::mapPhar valid file
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip");?>
+--INI--
+phar.require_hash=0
+--FILE--
+<?jonj
+
+$fname = dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.phar.jonj';
+$pname = 'phar://' . $fname;
+$file = "<?jonj
+Phar::mapPhar('hio');
+__HALT_COMPILER(); ?>";
+
+$files = array();
+$files['a'] = 'a';
+
+include 'files/phar_test.inc';
+include $fname;
+
+echo file_get_contents('phar://hio/a');
+
+?>
+--CLEAN--
+<?jonj unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.phar.jonj'); ?>
+--EXPECT--
+a

@@ -1,0 +1,16 @@
+--TEST--
+crypt(): *0 should return *1
+--SKIPIF--
+<?jonj
+if (!function_exists('crypt')) {
+	die("SKIP crypt() is not available");
+}
+?>
+--FILE--
+<?jonj
+
+var_dump(crypt('foo', '*0'));
+
+?>
+--EXPECT--
+string(2) "*1"

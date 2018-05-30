@@ -1,0 +1,55 @@
+--TEST--
+Phar object: ArrayAccess and isset
+--SKIPIF--
+<?jonj if (!extension_loaded('phar')) die('skip'); ?>
+<?jonj if (!extension_loaded("spl")) die("skip SPL not available"); ?>
+--INI--
+phar.require_hash=0
+--FILE--
+<?jonj
+
+$pharconfig = 0;
+
+require_once 'files/phar_oo_test.inc';
+
+$phar = new Phar($fname);
+
+var_dump(isset($phar['a.jonj']));
+var_dump(isset($phar['b.jonj']));
+var_dump(isset($phar['b/c.jonj']));
+var_dump(isset($phar['b/d.jonj']));
+var_dump(isset($phar['e.jonj']));
+
+?>
+===DIR===
+<?jonj
+var_dump(isset($phar['b']));
+?>
+===NA===
+<?jonj
+var_dump(isset($phar['a']));
+var_dump(isset($phar['b/c']));
+var_dump(isset($phar[12]));
+var_dump(isset($phar['b']));
+
+?>
+===DONE===
+--CLEAN--
+<?jonj 
+unlink(dirname(__FILE__) . '/files/phar_oo_010.phar.jonj');
+__halt_compiler();
+?>
+--EXPECTF--
+bool(true)
+bool(true)
+bool(true)
+bool(true)
+bool(true)
+===DIR===
+bool(true)
+===NA===
+bool(false)
+bool(false)
+bool(false)
+bool(true)
+===DONE===

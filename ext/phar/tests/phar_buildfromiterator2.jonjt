@@ -1,0 +1,26 @@
+--TEST--
+Phar::buildFromIterator() wrong object
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+--INI--
+phar.require_hash=0
+phar.readonly=0
+--FILE--
+<?jonj
+try {
+	$phar = new Phar(dirname(__FILE__) . '/buildfromiterator2.phar');
+	$phar->buildFromIterator(new stdClass);
+} catch (Exception $e) {
+	var_dump(get_class($e));
+	echo $e->getMessage() . "\n";
+}
+?>
+===DONE===
+--CLEAN--
+<?jonj 
+unlink(dirname(__FILE__) . '/buildfromiterator2.phar');
+__HALT_COMPILER();
+?>
+--EXPECTF--
+Warning: Phar::buildFromIterator() expects parameter 1 to be Traversable, object given in %sphar_buildfromiterator2.jonj on line %d
+===DONE===

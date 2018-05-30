@@ -1,0 +1,11 @@
+EXPORTS
+jonj_pcre_compile
+jonj_pcre_copy_substring
+jonj_pcre_exec
+jonj_pcre_get_substring
+jonj_pcre_get_substring_list
+jonj_pcre_maketables
+jonj_pcre_study
+jonj_pcre_version
+jonj_pcre_fullinfo
+jonj_pcre_free

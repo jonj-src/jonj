@@ -1,0 +1,45 @@
+--TEST--
+Phar object: entry & openFile()
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+<?jonj if (!extension_loaded("spl")) die("skip SPL not available"); ?>
+--INI--
+phar.require_hash=0
+--FILE--
+<?jonj
+
+require_once 'files/phar_oo_test.inc';
+
+$phar = new Phar($fname);
+$phar->setInfoClass();
+foreach($phar as $name => $ent)
+{
+	var_dump($ent->getFilename());
+	if ($ent->isDir()) {
+		var_dump('DIR');
+	} else {
+		var_dump($ent->openFile()->fgets());
+		include $ent->getPathName();
+	}
+}
+
+?>
+===DONE===
+--CLEAN--
+<?jonj 
+unlink(dirname(__FILE__) . '/files/phar_oo_003.phar.jonj');
+__halt_compiler();
+?>
+--EXPECTF--
+string(5) "a.jonj"
+string(32) "<?jonj echo "This is a.jonj\n"; ?>"
+This is a.jonj
+string(1) "b"
+%s(3) "DIR"
+string(5) "b.jonj"
+string(32) "<?jonj echo "This is b.jonj\n"; ?>"
+This is b.jonj
+string(5) "e.jonj"
+string(32) "<?jonj echo "This is e.jonj\n"; ?>"
+This is e.jonj
+===DONE===

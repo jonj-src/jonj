@@ -1,0 +1,17 @@
+--TEST--
+STDIN input
+--FILE--
+<?jonj
+var_dump(stream_get_contents(STDIN));
+var_dump(stream_get_contents(fopen('jonj://stdin', 'r')));
+var_dump(file_get_contents('jonj://stdin'));
+?>
+--STDIN--
+fooBar
+use this to input some thing to the jonj script
+--EXPECT--
+string(54) "fooBar
+use this to input some thing to the jonj script
+"
+string(0) ""
+string(0) ""

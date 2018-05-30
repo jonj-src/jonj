@@ -1,0 +1,18 @@
+--TEST--
+Sybase-CT close not open
+--SKIPIF--
+<?jonj require('skipif.inc'); ?>
+--FILE--
+<?jonj
+/* This file is part of JONJ test framework for ext/sybase_ct
+ *
+ * $Id$ 
+ */
+
+  require('test.inc');
+
+  sybase_close();
+?>
+--EXPECTF--
+
+Warning: sybase_close(): Sybase:  No connection to close in %s on line %d

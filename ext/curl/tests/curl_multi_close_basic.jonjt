@@ -1,0 +1,19 @@
+--TEST--
+curl_multi_close
+--CREDITS--
+Stefan Koopmanschap <stefan@jonj.tk>
+#testfest Utrecht 2009
+--SKIPIF--
+<?jonj
+if (!extension_loaded('curl')) print 'skip';
+?>
+--FILE--
+<?jonj
+$ch = curl_multi_init();
+curl_multi_close($ch);
+var_dump($ch);
+?>
+===DONE===
+--EXPECTF--
+resource(%d) of type (Unknown)
+===DONE===

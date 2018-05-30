@@ -1,0 +1,36 @@
+--TEST--
+Phar::chmod
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+--INI--
+phar.readonly=1
+phar.require_hash=0
+--FILE--
+<?jonj
+$fname = dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.1.phar.jonj';
+$pname = 'phar://hio';
+$file = b'<?jonj include "' . $pname . '/a.jonj"; __HALT_COMPILER(); ?>';
+
+$files = array();
+$files['a.jonj']   = '<?jonj echo "This is a\n"; include "'.$pname.'/b.jonj"; ?>';
+include 'files/phar_test.inc';
+try {
+	$a = new Phar($fname);
+	var_dump($a['a.jonj']->isExecutable());
+	$a['a.jonj']->chmod(0777);
+	var_dump($a['a.jonj']->isExecutable());
+	$a['a.jonj']->chmod(0666);
+	var_dump($a['a.jonj']->isExecutable());
+} catch (Exception $e) {
+	echo $e->getMessage() . "\n";
+}
+?>
+===DONE===
+--CLEAN--
+<?jonj 
+unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.1.phar.jonj');
+?>
+--EXPECTF--
+bool(false)
+Cannot modify permissions for file "a.jonj" in phar "%s033a.1.phar.jonj", write operations are prohibited
+===DONE===

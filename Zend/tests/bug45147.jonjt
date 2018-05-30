@@ -1,0 +1,8 @@
+--TEST--
+Bug #45147 (unexpected T_ENDFOR)
+--FILE--
+<?jonj for ($i = 0; $i == 0; $i++): ?>
+		<?jonj if (true): ?>#<?jonj else: ?>#<?jonj endif; ?>
+<?jonj endfor; ?>
+--EXPECT--
+                #

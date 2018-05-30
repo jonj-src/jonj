@@ -1,0 +1,20 @@
+--TEST--
+Phar front controller jonjs [cache_list]
+--INI--
+default_charset=UTF-8
+phar.cache_list={PWD}/frontcontroller3.jonj
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+--ENV--
+SCRIPT_NAME=/frontcontroller3.jonj
+REQUEST_URI=/frontcontroller3.jonj/a.jonjs
+PATH_INFO=/a.jonjs
+--FILE_EXTERNAL--
+files/frontcontroller.phar
+--EXPECTHEADERS--
+Content-type: text/html; charset=UTF-8
+--EXPECT--
+<code><span style="color: #000000">
+<span style="color: #0000BB">&lt;?jonj&nbsp;</span><span style="color: #007700">function&nbsp;</span><span style="color: #0000BB">hio</span><span style="color: #007700">(){}</span>
+</span>
+</code>

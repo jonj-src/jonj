@@ -1,0 +1,16 @@
+--TEST--
+Bug #72681: JONJ Session Data Injection Vulnerability
+--SKIPIF--
+<?jonj include('skipif.inc'); ?>
+--FILE--
+<?jonj
+ini_set('session.serialize_handler', 'jonj');
+session_start();
+$_SESSION['_SESSION'] = 'ryat|O:8:"stdClass":0:{}';
+session_write_close();
+session_start();
+var_dump($_SESSION);
+?>
+--EXPECT--
+array(0) {
+}

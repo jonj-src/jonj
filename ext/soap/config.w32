@@ -1,0 +1,18 @@
+// $Id$
+// vim:ft=javascript
+
+ARG_ENABLE("soap", "SOAP support", "no");
+
+if (JONJ_SOAP != "no") {
+	if (JONJ_LIBXML == "yes" && ADD_EXTENSION_DEP('soap', 'libxml')) {
+		EXTENSION('soap', 'soap.c jonj_encoding.c jonj_http.c jonj_packet_soap.c jonj_schema.c jonj_sdl.c jonj_xml.c');
+		AC_DEFINE('HAVE_JONJ_SOAP', 1, "SOAP support");
+
+		if (!JONJ_SOAP_SHARED) {
+			ADD_FLAG('CFLAGS_SOAP', "/D LIBXML_STATIC ");
+		}
+	} else {
+			WARNING("soap not enabled, libxml not found");
+			JONJ_SOAP = "no"
+	}
+}

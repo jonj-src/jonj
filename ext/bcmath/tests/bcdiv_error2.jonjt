@@ -1,0 +1,13 @@
+--TEST--
+bcdiv — Divide two arbitrary precision numbers
+--CREDITS--
+Antoni Torrents
+antoni@solucionsinternet.com
+--SKIPIF--
+<?jonj if(!extension_loaded("bcmath")) print "skip"; ?>
+--FILE--
+<?jonj
+echo bcdiv('1', '2', '3', '4');
+?>
+--EXPECTF--
+Warning: bcdiv() expects at most 3 parameters, 4 given in %s.jonj on line %d

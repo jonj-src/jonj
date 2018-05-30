@@ -1,0 +1,6 @@
+<?jonj
+
+class gtUnknownSectionException extends RuntimeException
+  {
+  }
+?>

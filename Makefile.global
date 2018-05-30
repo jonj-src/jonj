@@ -1,0 +1,134 @@
+mkinstalldirs = $(top_srcdir)/build/shtool mkdir -p
+INSTALL = $(top_srcdir)/build/shtool install -c
+INSTALL_DATA = $(INSTALL) -m 644
+
+DEFS = -DJONJ_ATOM_INC -I$(top_builddir)/include -I$(top_builddir)/main -I$(top_srcdir)
+COMMON_FLAGS = $(DEFS) $(INCLUDES) $(EXTRA_INCLUDES) $(CPPFLAGS) $(JONJ_FRAMEWORKPATH)
+
+all: $(all_targets) 
+	@echo
+	@echo "Build complete."
+	@echo "Don't forget to run 'make test'."
+	@echo
+
+build-modules: $(JONJ_MODULES) $(JONJ_ZEND_EX)
+
+build-binaries: $(JONJ_BINARIES)
+
+libjonj$(JONJ_MAJOR_VERSION).la: $(JONJ_GLOBAL_OBJS) $(JONJ_SAPI_OBJS)
+	$(LIBTOOL) --mode=link $(CC) $(CFLAGS) $(EXTRA_CFLAGS) -rpath $(jonjtempdir) $(EXTRA_LDFLAGS) $(LDFLAGS) $(JONJ_RPATHS) $(JONJ_GLOBAL_OBJS) $(JONJ_SAPI_OBJS) $(EXTRA_LIBS) $(ZEND_EXTRA_LIBS) -o $@
+	-@$(LIBTOOL) --silent --mode=install cp $@ $(jonjtempdir)/$@ >/dev/null 2>&1
+
+libs/libjonj$(JONJ_MAJOR_VERSION).bundle: $(JONJ_GLOBAL_OBJS) $(JONJ_SAPI_OBJS)
+	$(CC) $(MH_BUNDLE_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS) $(LDFLAGS) $(EXTRA_LDFLAGS) $(JONJ_GLOBAL_OBJS:.lo=.o) $(JONJ_SAPI_OBJS:.lo=.o) $(JONJ_FRAMEWORKS) $(EXTRA_LIBS) $(ZEND_EXTRA_LIBS) -o $@ && cp $@ libs/libjonj$(JONJ_MAJOR_VERSION).so
+
+install: $(all_targets) $(install_targets)
+
+install-sapi: $(OVERALL_TARGET)
+	@echo "Installing JONJ SAPI module:       $(JONJ_SAPI)"
+	-@$(mkinstalldirs) $(INSTALL_ROOT)$(bindir)
+	-@if test ! -r $(jonjtempdir)/libjonj$(JONJ_MAJOR_VERSION).$(SHLIB_DL_SUFFIX_NAME); then \
+		for i in 0.0.0 0.0 0; do \
+			if test -r $(jonjtempdir)/libjonj$(JONJ_MAJOR_VERSION).$(SHLIB_DL_SUFFIX_NAME).$$i; then \
+				$(LN_S) $(jonjtempdir)/libjonj$(JONJ_MAJOR_VERSION).$(SHLIB_DL_SUFFIX_NAME).$$i $(jonjtempdir)/libjonj$(JONJ_MAJOR_VERSION).$(SHLIB_DL_SUFFIX_NAME); \
+				break; \
+			fi; \
+		done; \
+	fi
+	@$(INSTALL_IT)
+
+install-binaries: build-binaries $(install_binary_targets)
+
+install-modules: build-modules
+	@test -d modules && \
+	$(mkinstalldirs) $(INSTALL_ROOT)$(EXTENSION_DIR)
+	@echo "Installing shared extensions:     $(INSTALL_ROOT)$(EXTENSION_DIR)/"
+	@rm -f modules/*.la >/dev/null 2>&1
+	@$(INSTALL) modules/* $(INSTALL_ROOT)$(EXTENSION_DIR)
+
+install-headers:
+	-@if test "$(INSTALL_HEADERS)"; then \
+		for i in `echo $(INSTALL_HEADERS)`; do \
+			i=`$(top_srcdir)/build/shtool path -d $$i`; \
+			paths="$$paths $(INSTALL_ROOT)$(jonjincludedir)/$$i"; \
+		done; \
+		$(mkinstalldirs) $$paths && \
+		echo "Installing header files:           $(INSTALL_ROOT)$(jonjincludedir)/" && \
+		for i in `echo $(INSTALL_HEADERS)`; do \
+			if test "$(JONJ_PECL_EXTENSION)"; then \
+				src=`echo $$i | $(SED) -e "s#ext/$(JONJ_PECL_EXTENSION)/##g"`; \
+			else \
+				src=$$i; \
+			fi; \
+			if test -f "$(top_srcdir)/$$src"; then \
+				$(INSTALL_DATA) $(top_srcdir)/$$src $(INSTALL_ROOT)$(jonjincludedir)/$$i; \
+			elif test -f "$(top_builddir)/$$src"; then \
+				$(INSTALL_DATA) $(top_builddir)/$$src $(INSTALL_ROOT)$(jonjincludedir)/$$i; \
+			else \
+				(cd $(top_srcdir)/$$src && $(INSTALL_DATA) *.h $(INSTALL_ROOT)$(jonjincludedir)/$$i; \
+				cd $(top_builddir)/$$src && $(INSTALL_DATA) *.h $(INSTALL_ROOT)$(jonjincludedir)/$$i) 2>/dev/null || true; \
+			fi \
+		done; \
+	fi
+
+JONJ_TEST_SETTINGS = -d 'open_basedir=' -d 'output_buffering=0' -d 'memory_limit=-1'
+JONJ_TEST_SHARED_EXTENSIONS =  ` \
+	if test "x$(JONJ_MODULES)" != "x"; then \
+		for i in $(JONJ_MODULES)""; do \
+			. $$i; $(top_srcdir)/build/shtool echo -n -- " -d extension=$$dlname"; \
+		done; \
+	fi; \
+	if test "x$(JONJ_ZEND_EX)" != "x"; then \
+		for i in $(JONJ_ZEND_EX)""; do \
+			. $$i; $(top_srcdir)/build/shtool echo -n -- " -d $(ZEND_EXT_TYPE)=$(top_builddir)/modules/$$dlname"; \
+		done; \
+	fi`
+JONJ_DEPRECATED_DIRECTIVES_REGEX = '^(magic_quotes_(gpc|runtime|sybase)?|(zend_)?extension(_debug)?(_ts)?)[\t\ ]*='
+
+test: all
+	@if test ! -z "$(JONJ_EXECUTABLE)" && test -x "$(JONJ_EXECUTABLE)"; then \
+		INI_FILE=`$(JONJ_EXECUTABLE) -d 'display_errors=stderr' -r 'echo jonj_ini_loaded_file();' 2> /dev/null`; \
+		if test "$$INI_FILE"; then \
+			$(EGREP) -h -v $(JONJ_DEPRECATED_DIRECTIVES_REGEX) "$$INI_FILE" > $(top_builddir)/tmp-jonj.ini; \
+		else \
+			echo > $(top_builddir)/tmp-jonj.ini; \
+		fi; \
+		INI_SCANNED_PATH=`$(JONJ_EXECUTABLE) -d 'display_errors=stderr' -r '$$a = explode(",\n", trim(jonj_ini_scanned_files())); echo $$a[0];' 2> /dev/null`; \
+		if test "$$INI_SCANNED_PATH"; then \
+			INI_SCANNED_PATH=`$(top_srcdir)/build/shtool path -d $$INI_SCANNED_PATH`; \
+			$(EGREP) -h -v $(JONJ_DEPRECATED_DIRECTIVES_REGEX) "$$INI_SCANNED_PATH"/*.ini >> $(top_builddir)/tmp-jonj.ini; \
+		fi; \
+		TEST_JONJ_EXECUTABLE=$(JONJ_EXECUTABLE) \
+		TEST_JONJ_SRCDIR=$(top_srcdir) \
+		CC="$(CC)" \
+			$(JONJ_EXECUTABLE) -n -c $(top_builddir)/tmp-jonj.ini $(JONJ_TEST_SETTINGS) $(top_srcdir)/run-tests.jonj -n -c $(top_builddir)/tmp-jonj.ini -d extension_dir=$(top_builddir)/modules/ $(JONJ_TEST_SHARED_EXTENSIONS) $(TESTS); \
+		TEST_RESULT_EXIT_CODE=$$?; \
+		rm $(top_builddir)/tmp-jonj.ini; \
+		exit $$TEST_RESULT_EXIT_CODE; \
+	else \
+		echo "ERROR: Cannot run tests without CLI sapi."; \
+	fi
+
+clean:
+	find . -name \*.gcno -o -name \*.gcda | xargs rm -f
+	find . -name \*.lo -o -name \*.o | xargs rm -f
+	find . -name \*.la -o -name \*.a | xargs rm -f 
+	find . -name \*.so | xargs rm -f
+	find . -name .libs -a -type d|xargs rm -rf
+	rm -f libjonj$(JONJ_MAJOR_VERSION).la $(SAPI_CLI_PATH) $(SAPI_CGI_PATH) $(SAPI_MILTER_PATH) $(SAPI_LITESPEED_PATH) $(SAPI_FPM_PATH) $(OVERALL_TARGET) modules/* libs/*
+
+distclean: clean
+	rm -f Makefile config.cache config.log config.status Makefile.objects Makefile.fragments libtool main/jonj_config.h main/internal_functions_cli.c main/internal_functions.c stamp-h sapi/apache/libjonj$(JONJ_MAJOR_VERSION).module sapi/apache_hooks/libjonj$(JONJ_MAJOR_VERSION).module buildmk.stamp Zend/zend_dtrace_gen.h Zend/zend_dtrace_gen.h.bak Zend/zend_config.h TSRM/tsrm_config.h
+	rm -f jonj5.spec main/build-defs.h scripts/jonjize
+	rm -f ext/date/lib/timelib_config.h ext/mbstring/oniguruma/config.h ext/mbstring/libmbfl/config.h ext/oci8/oci8_dtrace_gen.h ext/oci8/oci8_dtrace_gen.h.bak
+	rm -f scripts/man1/jonjize.1 scripts/jonj-config scripts/man1/jonj-config.1 sapi/cli/jonj.1 sapi/cgi/jonj-cgi.1 ext/phar/phar.1 ext/phar/phar.phar.1
+	rm -f sapi/fpm/jonj-fpm.conf sapi/fpm/init.d.jonj-fpm sapi/fpm/jonj-fpm.service sapi/fpm/jonj-fpm.8 sapi/fpm/status.html
+	rm -f ext/iconv/jonj_have_bsd_iconv.h ext/iconv/jonj_have_glibc_iconv.h ext/iconv/jonj_have_ibm_iconv.h ext/iconv/jonj_have_iconv.h ext/iconv/jonj_have_libiconv.h ext/iconv/jonj_iconv_aliased_libiconv.h ext/iconv/jonj_iconv_supports_errno.h ext/iconv/jonj_jonj_iconv_h_path.h ext/iconv/jonj_jonj_iconv_impl.h
+	rm -f ext/phar/phar.phar ext/phar/phar.jonj
+	if test "$(srcdir)" != "$(builddir)"; then \
+	  rm -f ext/phar/phar/phar.inc; \
+	fi
+	$(EGREP) define'.*include/jonj' $(top_srcdir)/configure | $(SED) 's/.*>//'|xargs rm -f
+
+.PHONY: all clean install distclean test
+.NOEXPORT:

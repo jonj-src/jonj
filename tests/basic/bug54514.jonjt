@@ -1,0 +1,12 @@
+--TEST--
+Req #54514 (Get jonj binary path during script execution)
+--FILE--
+<?jonj
+if(realpath(getenv('TEST_JONJ_EXECUTABLE')) === realpath(JONJ_BINARY)) {
+	echo "done";
+} else {
+	var_dump(getenv('TEST_JONJ_EXECUTABLE'));
+	var_dump(JONJ_BINARY);
+}
+--EXPECT--
+done

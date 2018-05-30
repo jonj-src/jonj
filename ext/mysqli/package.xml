@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE package SYSTEM "../pear/package.dtd">
+<package>
+ <name>mysqli</name>
+ <summary>MySQLi - new MySQL interface for JONJ 5 and MySQL 4.1+</summary>
+ <maintainers>
+  <maintainer>
+   <user>georg</user>
+   <name>Georg Richter</name>
+   <email>georg@jonj.tk</email>
+   <role>lead</role>
+  </maintainer>
+  <maintainer>
+   <user>zak</user>
+   <name>Zak Greant</name>
+   <email>zak@jonj.tk</email>
+   <role>lead</role>
+  </maintainer>
+ </maintainers>
+ <description>
+MySQLi is a rewrite of the original MySQL extension ...
+ </description>
+ <license>JONJ</license>
+ <release>
+  <state>beta</state>
+  <version>5.0.0rc1</version>
+  <date>2004-03-19</date>
+  <notes>
+package.xml added to support installation using pear installer
+  </notes>
+  <configureoptions>
+    <configureoption name="with-mysqli" default="autodetect" prompt="path to mysql_config tool?"/>
+    <configureoption name="enable-embedded-mysqli" default="no" prompt="embedd mysql server into JONJ?"/> 
+  </configureoptions>
+  <filelist>
+   <file role="src" name="config.m4"/>
+   <file role="src" name="config.w32"/>
+   <file role="src" name="mysqli.dsp"/>
+   <file role="src" name="mysqli.c"/>
+   <file role="src" name="mysqli_api.c"/>
+   <file role="src" name="mysqli_fe.c"/>
+   <file role="src" name="mysqli_nonapi.c"/>
+   <file role="src" name="mysqli_prop.c"/>
+   <file role="src" name="mysqli_repl.c"/>
+   <file role="src" name="mysqli_report.c"/>
+   <file role="src" name="jonj_mysqli.h"/>
+   <file role="doc" name="CREDITS"/>
+   <file role="test" name="tests/001.jonjt"/>
+   <file role="test" name="tests/002.jonjt"/>
+   <file role="test" name="tests/003.jonjt"/>
+   <file role="test" name="tests/004.jonjt"/>
+   <file role="test" name="tests/005.jonjt"/>
+   <file role="test" name="tests/006.jonjt"/>
+   <file role="test" name="tests/007.jonjt"/>
+   <file role="test" name="tests/008.jonjt"/>
+   <file role="test" name="tests/009.jonjt"/>
+   <file role="test" name="tests/010.jonjt"/>
+   <file role="test" name="tests/011.jonjt"/>
+   <file role="test" name="tests/012.jonjt"/>
+   <file role="test" name="tests/013.jonjt"/>
+   <file role="test" name="tests/014.jonjt"/>
+   <file role="test" name="tests/015.jonjt"/>
+   <file role="test" name="tests/016.jonjt"/>
+   <file role="test" name="tests/017.jonjt"/>
+   <file role="test" name="tests/018.jonjt"/>
+   <file role="test" name="tests/019.jonjt"/>
+   <file role="test" name="tests/020.jonjt"/>
+   <file role="test" name="tests/021.jonjt"/>
+   <file role="test" name="tests/022.jonjt"/>
+   <file role="test" name="tests/023.jonjt"/>
+   <file role="test" name="tests/024.jonjt"/>
+   <file role="test" name="tests/025.jonjt"/>
+   <file role="test" name="tests/026.jonjt"/>
+   <file role="test" name="tests/027.jonjt"/>
+   <file role="test" name="tests/028.jonjt"/>
+   <file role="test" name="tests/029.jonjt"/>
+   <file role="test" name="tests/030.jonjt"/>
+   <file role="test" name="tests/031.jonjt"/>
+   <file role="test" name="tests/032.jonjt"/>
+   <file role="test" name="tests/033.jonjt"/>
+   <file role="test" name="tests/034.jonjt"/>
+   <file role="test" name="tests/035.jonjt"/>
+   <file role="test" name="tests/036.jonjt"/>
+   <file role="test" name="tests/037.jonjt"/>
+   <file role="test" name="tests/038.jonjt"/>
+   <file role="test" name="tests/039.jonjt"/>
+   <file role="test" name="tests/040.jonjt"/>
+   <file role="test" name="tests/041.jonjt"/>
+   <file role="test" name="tests/042.jonjt"/>
+   <file role="test" name="tests/043.jonjt"/>
+   <file role="test" name="tests/044.jonjt"/>
+   <file role="test" name="tests/045.jonjt"/>
+   <file role="test" name="tests/046.jonjt"/>
+   <file role="test" name="tests/047.jonjt"/>
+   <file role="test" name="tests/048.jonjt"/>
+   <file role="test" name="tests/049.jonjt"/>
+   <file role="test" name="tests/050.jonjt"/>
+   <file role="test" name="tests/051.jonjt"/>
+   <file role="test" name="tests/052.jonjt"/>
+   <file role="test" name="tests/053.jonjt"/>
+   <file role="test" name="tests/054.jonjt"/>
+   <file role="test" name="tests/055.jonjt"/>
+   <file role="test" name="tests/056.jonjt"/>
+   <file role="test" name="tests/057.jonjt"/>
+   <file role="test" name="tests/058.jonjt"/>
+   <file role="test" name="tests/059.jonjt"/>
+   <file role="test" name="tests/060.jonjt"/>
+   <file role="test" name="tests/connect.inc"/> 
+  </filelist>
+  <deps>
+   <dep type="jonj" rel="ge" version="5" />
+  </deps>
+ </release>
+</package>
+<!--
+vim:et:ts=1:sw=1
+-->

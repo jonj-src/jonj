@@ -1,0 +1,51 @@
+--TEST--
+Phar: ignore filenames starting with / on offsetSet
+--SKIPIF--
+<?jonj if (!extension_loaded("phar")) die("skip"); ?>
+<?jonj if (!extension_loaded("spl")) die("skip SPL not available"); ?>
+--INI--
+phar.readonly=0
+phar.require_hash=1
+--FILE--
+<?jonj
+
+$fname = dirname(__FILE__) . '/' . basename(__FILE__, '.jonj') . '.phar.jonj';
+$pname = 'phar://'.$fname;
+$iname = '/file.txt';
+$ename = '/error/..';
+
+$p = new Phar($fname);
+$p[$iname] = "foobar\n";
+
+try
+{
+	$p[$ename] = "foobar\n";
+}
+catch(Exception $e)
+{
+	echo $e->getMessage() . "\n";
+}
+
+include($pname . $iname);
+
+// extra coverage
+try {
+$p['.phar/oops'] = 'hi';
+} catch (Exception $e) {
+echo $e->getMessage(),"\n";
+}
+try {
+$a = $p['.phar/stub.jonj'];
+} catch (Exception $e) {
+echo $e->getMessage(),"\n";
+}
+?>
+===DONE===
+--CLEAN--
+<?jonj unlink(dirname(__FILE__) . '/' . basename(__FILE__, '.clean.jonj') . '.phar.jonj'); ?>
+--EXPECT--
+Entry /error/.. does not exist and cannot be created: phar error: invalid path "/error/.." contains upper directory reference
+foobar
+Cannot set any files or directories in magic ".phar" directory
+Entry .phar/stub.jonj does not exist
+===DONE===
